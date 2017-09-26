@@ -52,7 +52,7 @@ namespace network {
         virtual ~NodeType () {}
 
         // Builds a connection between this node and another.
-        void addConnection (NodeType<T>& node, double weight) {
+        void addConnection (NodeType<T>& node, T const &weight) {
             connections.push_back({node, weight});
             node.numInputs++;
         }
