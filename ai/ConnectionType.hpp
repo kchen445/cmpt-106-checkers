@@ -35,7 +35,7 @@ namespace network {
         T weight;
 
         // Constructor
-        ConnectionType (Node& node, double weight)
+        ConnectionType (Node& node, T const &weight)
                 : weight(weight), node(node)
         {}
 
