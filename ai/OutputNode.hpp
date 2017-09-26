@@ -1,6 +1,7 @@
 //
 // Created by Jeremy S on 2017-09-26.
 //
+// ---- FOR TESTING ONLY ---- //
 
 #ifndef NNETWORK_OUTPUTNODE_HPP
 #define NNETWORK_OUTPUTNODE_HPP
@@ -18,14 +19,15 @@ namespace network {
 
     public:
 
-        OutputNode(size_t inputs)
-                : NodeType<double>(inputs), id(OutputNode::nextId++)
+        OutputNode()
+                : NodeType<double>(), id(OutputNode::nextId++)
         {}
 
         double activate () {
             return rawValue;
         }
 
+        // Print to the screen for testing.
         void send () {
             std::cout << "Output Node ["
                       << id << "] "

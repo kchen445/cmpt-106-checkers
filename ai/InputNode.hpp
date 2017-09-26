@@ -1,6 +1,15 @@
 //
 // Created by Jeremy S on 2017-09-26.
 //
+// network::InputNode               (object)
+//      A child class of network::NodeType<double> used
+//      to represent an input node for the network.
+//
+//      Activation Function Type: bypass
+//          Does not change the rawValue during activation.
+//
+//      Use the method fireWithValue(double) to trigger the
+//      node with a given value.
 
 #ifndef NNETWORK_INPUTNODE_HPP
 #define NNETWORK_INPUTNODE_HPP
@@ -12,20 +21,20 @@ namespace network {
     class InputNode : public NodeType<double> {
     public:
 
-        double val;
-
-        InputNode (double val)
-                : NodeType<double>(0), val(val)
+        // Default constructor
+        InputNode ()
+                : NodeType<double>()
         {}
 
+        // Bypass activation function.
         double activate () {
-            return val;
+            return rawValue;
         }
 
-        void send () {
-            for (int i = 0; i < connections.size(); ++i) {
-                connections[i].feedForward(val);
-            }
+        // Sets rawValue to be a given value then calls send()
+        void fireWithValue (double val) {
+            rawValue = val;
+            send();
         }
 
     };
