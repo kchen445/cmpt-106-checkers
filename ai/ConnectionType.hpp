@@ -36,7 +36,7 @@ namespace network {
 
         // Constructor
         ConnectionType (Node& node, T const &weight)
-                : weight(weight), node(node)
+                : node(node), weight(weight)
         {}
 
         // Transfers data through this connection.
