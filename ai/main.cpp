@@ -4,11 +4,14 @@
 #include "ThresholdNode.hpp"
 #include "InputNode.hpp"
 #include "OutputNode.hpp"
+#include "NNetworkPrintOutput.hpp"
 
 using namespace network;
 
 int main () {
     // -- Set Up -- //
+
+    NNetworkOutputType* outputObject = new NNetworkPrintOutput(4);
 
     InputNode inputNode_1;
     InputNode inputNode_2;

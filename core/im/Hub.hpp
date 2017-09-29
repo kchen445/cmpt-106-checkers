@@ -50,7 +50,7 @@ namespace im {
             try {
 
                 for (size_t i = 0; i < subscribers.at(chan).size(); ++i) {
-                    subscribers.at(chan).at(i)->onMessageRecieved(msg);
+                    subscribers.at(chan).at(i)->onMessageReceived(msg);
                 } 
 
             } catch (...) { return; }
