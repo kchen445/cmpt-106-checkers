@@ -20,7 +20,7 @@ namespace im {
 
             virtual void subscribeTo (Channel const &chan) = 0;
 
-            virtual void onMessageReceived (Message const &msg) = 0;
+            virtual void onMessageReceived (Channel const &chan, Message const &msg) = 0;
 
         };
 

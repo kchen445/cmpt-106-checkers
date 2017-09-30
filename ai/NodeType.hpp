@@ -78,6 +78,9 @@ namespace network {
             }
         }
 
+        // Returns the type of this node, used in saving to a file.
+        virtual char getType () const = 0;
+
     };
 
 }

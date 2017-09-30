@@ -37,6 +37,10 @@ namespace network {
             return rawValue >= threshold ? 1 : -1;
         }
 
+        char getType () const {
+            return 'T';
+        }
+
     };
 
 }

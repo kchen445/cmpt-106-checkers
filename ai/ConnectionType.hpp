@@ -39,6 +39,16 @@ namespace network {
                 : node(node), weight(weight)
         {}
 
+        // Default Constructor
+        ConnectionType ()
+                : node(), weight(0)
+        {}
+
+        // Copy Constructor
+        ConnectionType (ConnectionType<T, Node> const &other)
+                : node(other.node), weight(other.weight)
+        {}
+
         // Transfers data through this connection.
         //
         // The input value, 'value', is multiplied by the

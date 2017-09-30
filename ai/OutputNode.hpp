@@ -36,7 +36,9 @@ namespace network {
                 : NodeType<double>(),
                   im::Sender(im::Channel::neuralOutputNode),
                   id(OutputNode::nextId++)
-        {}
+        {
+            sendMessage(im::Channel::neuralOutputNodeCreated, {{id}});
+        }
 
         // Bypass activation function
         double activate () {
@@ -50,11 +52,13 @@ namespace network {
             sendMessage({{id, rawValue}});
         }
 
+        char getType () const {
+            return 'O';
+        }
+
     };
 
 }
-
-size_t network::OutputNode::nextId = 0;
 
 
 #endif //NNETWORK_OUTPUTNODE_HPP

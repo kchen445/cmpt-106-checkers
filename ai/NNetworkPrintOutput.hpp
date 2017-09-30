@@ -15,8 +15,8 @@ namespace network {
     class NNetworkPrintOutput : public NNetworkOutputType {
     public:
 
-        NNetworkPrintOutput (size_t numberOfNodes)
-                : NNetworkOutputType(numberOfNodes)
+        NNetworkPrintOutput ()
+                : NNetworkOutputType()
         {}
 
         void onReceivedAllOutputs () {

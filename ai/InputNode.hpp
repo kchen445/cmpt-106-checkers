@@ -37,6 +37,10 @@ namespace network {
             send();
         }
 
+        char getType () const {
+            return 'I';
+        }
+
     };
 
 }

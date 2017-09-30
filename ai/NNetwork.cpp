@@ -5,17 +5,25 @@
 
 using namespace network;
 
-NNetwork::NNetwork() {
-	// no code
-}
+NNetwork::NNetwork(NNetworkOutputType* outputDevice)
+        : inputs(),
+          internals(),
+          outputs(),
+          outputDevice(outputDevice)
+{}
 
-NNetwork::NNetwork(const char *filename) {
+NNetwork::NNetwork(NNetworkOutputType* outputDevice, const char *filename)
+        : inputs(),
+          internals(),
+          outputs(),
+          outputDevice(outputDevice)
+{
 	std::ifstream file(filename, std::ifstream::in);
 	
 	// --- parse first line: "12 IIIIITTTOOOO" ---
 	
 	//read number of nodes
-	int num;
+	size_t num;
 	file >> num >> std::ws;		//(skip whitespace after)
 	
 	//create nodes from node types
@@ -45,7 +53,7 @@ NNetwork::NNetwork(const char *filename) {
 		double weight;
 		file >> startid >> endid >> weight >> std::ws;	//skip trailing whitespace too
 		
-		nodes[startid]->addConnection(nodes[endid], weight);
+		nodes[startid]->addConnection(*nodes[endid], weight);
 	}
 	file.close();
 }
@@ -62,8 +70,8 @@ NNetwork::~NNetwork() {
 //Visits all children of [node] and adds any non-output nodes to [internals]
 void visit(NodeType<double>* node, std::unordered_map<NodeType<double>*, bool>& visited, std::vector<NodeType<double>*>& internals) {
 	for (auto conn : node->connections) {
-		if (!visited.count(conn.node)) {
-			visit(conn.node, visited, internals);
+		if (!visited.count(&conn.node)) {
+			visit(&conn.node, visited, internals);
 		}
 	}
 	visited[node] = true;
@@ -79,19 +87,22 @@ void NNetwork::linearize() {
 	internals.clear();
 	for (InputNode* nptr : inputs) {
 		for (auto conn : nptr->connections) {
-			if (!visited.count(conn.node))
-				visit(conn.node, visited, internals);
+			if (!visited.count(&conn.node))
+				visit(&conn.node, visited, internals);
 		}
 	}
 }
 		
-void NNetwork::calculate() {
+void NNetwork::calculate(std::vector<double> const &inputValues) {
+    if (inputValues.size() != inputs.size()) {
+        std::cout << inputs.size() << " : " << inputValues.size() << std::endl;
+        throw std::runtime_error("Input value vector does not match number of input nodes.");
+    }
+
 	//since linearized, just run through them in order
-	for (auto node : inputs)
-		node->send();
-	for (auto node : internals)
-		node->send();
-	//output nodes too?
+	for (size_t i = 0; i < inputs.size(); ++i) {
+        inputs[i]->fireWithValue(inputValues[i]);
+	}
 }
 		
 void NNetwork::save(const char *filename) {
@@ -111,13 +122,13 @@ void NNetwork::save(const char *filename) {
 	
 	//write out types of nodes in network
 	for (auto node : nodes)
-		file << node->type;
+		file << node->getType();
 	file << std::endl;
 	
 	// --- write connections ---
 	for (size_t i=0; i<nodes.size(); i++) {
 		for (auto conn : nodes[i]->connections) {
-			NodeType<double>* next = conn.node;
+			NodeType<double>* next = &conn.node;
 			file << i << ' '
 				 << indices[next] << ' '
 				 << conn.weight << std::endl;

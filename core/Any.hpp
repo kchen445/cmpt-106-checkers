@@ -91,7 +91,7 @@ namespace lang {
     //      ex. If no type is defined for long and double, then since each
     //      has a size of 8 bytes, is<double>(Any<long>) will return true.
     template<typename T>
-    bool is (Any const &any) {
+    inline bool is (Any const &any) {
         if (any.elemType != "" || type_of<T>() != "") {
             return any.elemType == type_of<T>();
         } else {
@@ -102,7 +102,7 @@ namespace lang {
     // Casts an any type to a given type. Throws std::logic_error if
     // unable to cast. Calls lang::is<T> to check for valid cast.
     template<typename T>
-    T as (Any const &any) {
+    inline T as (Any const &any) {
         if (!is<T>(any)) {
             throw std::logic_error("as<T>(Any): Given 'Any' type may not be converted to this type.");
         }
@@ -113,7 +113,7 @@ namespace lang {
 }
 
 #include <ostream>
-std::ostream& operator<< (std::ostream &os, lang::Any const &any) {
+inline std::ostream& operator<< (std::ostream &os, lang::Any const &any) {
     os << "Any" << '(';
     if (any.type() != "") {
         os << any.type();

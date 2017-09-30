@@ -177,7 +177,7 @@ namespace lang {
 //
 // T must have an << operator to use this function.
 template<typename T>
-std::ostream& operator<< (std::ostream &os, lang::Optional<T> const &anOptional) {
+inline std::ostream& operator<< (std::ostream &os, lang::Optional<T> const &anOptional) {
     if (anOptional.isNil()) {
         os << "nil";
     } else {

@@ -18,7 +18,11 @@ namespace im {
         // Message Contents:
         //  [0] (size_t): unique output node identifier
         //  [1] (double): output node value
-        neuralOutputNode
+        neuralOutputNode,
+
+        // Message Contents:
+        //  [0] (size_t): unique output node identifier
+        neuralOutputNodeCreated
 
     };
 

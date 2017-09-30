@@ -31,30 +31,42 @@
 #include "ThresholdNode.hpp"
 #include "InputNode.hpp"
 #include "OutputNode.hpp"
+#include "NNetworkOutputType.hpp"
 #include <vector>
 
 namespace network {
+
+    using Connection = ConnectionType<double, NodeType<double>>;
+
 	class NNetwork {
-		public:
-			std::vector<InputNode*> inputs;
-			std::vector<NodeType<double>*> internals;
-			std::vector<OutputNode*> outputs;
-			
-			//Construct an empty neural network
-			NNetwork();
-			//Load a neural network from a file
-			NNetwork(const char *filename);
-			~NNetwork();
-			
-			//Linearizes [internals] for calculation
-			//	[haven't really tested this yet, hope it works]
-			void linearize();
-			
-			//Propagate the input values through the network, assuming linearized
-			void calculate();
-			
-			//Save the neural network to a file
-			void save(const char *filename);
+    public:
+
+        // Nodes
+        std::vector<InputNode*> inputs;
+        std::vector<NodeType<double>*> internals;
+        std::vector<OutputNode*> outputs;
+
+        // Output Device
+        NNetworkOutputType* outputDevice;
+
+        //Construct an empty neural network
+        NNetwork(NNetworkOutputType* outputDevice);
+
+        //Load a neural network from a file
+        NNetwork(NNetworkOutputType* outputDevice, const char *filename);
+
+        ~NNetwork();
+
+        //Linearizes [internals] for calculation
+        //	[haven't really tested this yet, hope it works]
+        void linearize();
+
+        //Propagate the input values through the network, assuming linearized
+        void calculate(std::vector<double> const &inputValues);
+
+        //Save the neural network to a file
+        void save(const char *filename);
 	};
+
 }
 #endif

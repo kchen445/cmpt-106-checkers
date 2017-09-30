@@ -50,7 +50,7 @@ namespace im {
             try {
 
                 for (size_t i = 0; i < subscribers.at(chan).size(); ++i) {
-                    subscribers.at(chan).at(i)->onMessageReceived(msg);
+                    subscribers.at(chan).at(i)->onMessageReceived(chan, msg);
                 } 
 
             } catch (...) { return; }
@@ -59,7 +59,5 @@ namespace im {
     };
 
 }
-
-im::Hub* im::Hub::__instance = nullptr;
 
 #endif
