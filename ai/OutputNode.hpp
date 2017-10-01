@@ -11,7 +11,6 @@
 
 #include "NodeType.hpp"
 #include "../core/im/Sender.hpp"
-#include <iostream>
 
 namespace network {
 
@@ -32,29 +31,17 @@ namespace network {
 
     public:
 
-        OutputNode()
-                : NodeType<double>(),
-                  im::Sender(im::Channel::neuralOutputNode),
-                  id(OutputNode::nextId++)
-        {
-            sendMessage(im::Channel::neuralOutputNodeCreated, {{id}});
-        }
+        OutputNode();
 
         // Bypass activation function
-        double activate () {
-            return rawValue;
-        }
+        double activate ();
 
         // Send a message to channel neuralOutputNode
         // with the identifier for this node and the
         // value that the node has.
-        void send () {
-            sendMessage({{id, rawValue}});
-        }
+        void send ();
 
-        char getType () const {
-            return 'O';
-        }
+        char getType () const;
 
     };
 

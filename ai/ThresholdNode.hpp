@@ -23,23 +23,15 @@ namespace network {
         double threshold;
 
         // Default constructor, threshold = 0
-        ThresholdNode ()
-                : NodeType<double>(), threshold(0)
-        {}
+        ThresholdNode ();
 
         // Threshold constructor
-        ThresholdNode (double threshold)
-                : NodeType<double>(), threshold(threshold)
-        {}
+        ThresholdNode (double threshold);
 
         // Activation function as described above.
-        double activate () {
-            return rawValue >= threshold ? 1 : -1;
-        }
+        double activate () override;
 
-        char getType () const {
-            return 'T';
-        }
+        char getType () const override;
 
     };
 

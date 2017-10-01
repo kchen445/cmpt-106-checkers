@@ -22,24 +22,16 @@ namespace network {
     public:
 
         // Default constructor
-        InputNode ()
-                : NodeType<double>()
-        {}
+        InputNode ();
 
         // Bypass activation function.
-        double activate () {
-            return rawValue;
-        }
+        double activate ();
 
         // Sets rawValue to be a given value then calls send()
-        void fireWithValue (double val) {
-            rawValue = val;
-            send();
-        }
+        void fireWithValue (double val);
 
-        char getType () const {
-            return 'I';
-        }
+        // 'I'
+        char getType () const;
 
     };
 

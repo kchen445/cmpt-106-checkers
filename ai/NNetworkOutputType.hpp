@@ -10,7 +10,6 @@
 #define AI_NNETWORKOUTPUTTYPE_HPP
 
 #include <vector>
-#include <tuple>
 #include "../core/im/Listener.hpp"
 
 namespace network {
@@ -20,16 +19,9 @@ namespace network {
 
         size_t numberOfNodesLeftToReceive;
 
-        // Recursively append more elements to outputValues until able
-        // to add a value with a given id.
-        void addValue (size_t id, double val) {
-            if (id >= outputValues.size()) {
-                outputValues.push_back(0);
-                addValue(id, val);
-            } else {
-                outputValues.at(id) = val;
-            }
-        }
+        // Recursively append more elements to outputValues
+        // until able to add a value with a given id.
+        void addValue (size_t id, double val);
 
     protected:
 
@@ -38,46 +30,10 @@ namespace network {
 
     public:
 
-        NNetworkOutputType ()
-                : im::Listener(im::Channel::neuralOutputNode),
-                  numberOfNodesLeftToReceive(0),
-                  outputValues()
-        {
-            subscribeTo(im::Channel::neuralOutputNodeCreated);
-        }
+        NNetworkOutputType ();
 
         // Once it gets a message from a node, store its id and value.
-        void onMessageReceived (im::Channel const &chan, im::Message const &msg) {
-
-            size_t id = 0;
-            double value = 0;
-
-            switch (chan) {
-                // A new output node has been created, await for its output value.
-                case im::Channel::neuralOutputNodeCreated: {
-                    numberOfNodesLeftToReceive++;
-                    addValue(lang::as<size_t>(msg[0]), 0);
-                    break;
-                }
-
-                // An output node has a value, store it.
-                case im::Channel::neuralOutputNode: {
-                    id = lang::as<size_t>(msg[0]);
-                    value = lang::as<double>(msg[1]);
-                    outputValues.at(id) = value;
-                    numberOfNodesLeftToReceive--;
-
-                    // Check if that was the last message that it was waiting for.
-                    if (numberOfNodesLeftToReceive == 0) {
-                        onReceivedAllOutputs();
-                    }
-                    break;
-                }
-
-                default: break;
-            }
-
-        }
+        void onMessageReceived (im::Channel const &chan, im::Message const &msg);
 
         // Called once all the outputs have been received.
         virtual void onReceivedAllOutputs () = 0;

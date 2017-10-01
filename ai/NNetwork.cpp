@@ -44,6 +44,8 @@ NNetwork::NNetwork(NNetworkOutputType* outputDevice, const char *filename)
 				outputs.push_back(new OutputNode());
 				nodes[i] = outputs.back();
 				break;
+            default:
+                throw std::runtime_error("parse error: invalid symbol detected");
 		}
 	}
 	
@@ -95,7 +97,6 @@ void NNetwork::linearize() {
 		
 void NNetwork::calculate(std::vector<double> const &inputValues) {
     if (inputValues.size() != inputs.size()) {
-        std::cout << inputs.size() << " : " << inputValues.size() << std::endl;
         throw std::runtime_error("Input value vector does not match number of input nodes.");
     }
 
