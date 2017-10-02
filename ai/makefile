@@ -1,43 +1,38 @@
-###############################################################################
-# Makefile for building on Unix machines without an IDE
 #
-# Object files will be created in a 'out' directory within the current
-# directory.
+# Neural Framework Libray Makefile
 #
-# Usage:
-#   $ make all
-#       Build the executable with name defined in EXEC.
-#
-#   $ make clean
-#       Remove all .o files created during building.
-#
-# Note: This generic makefile is extreamly inefficient, having to build all
-#       source files even if only a single file is changed.
-###############################################################################
 
 # Compiler
 CC = g++
 CC_FLAGS = -std=c++14 -Wall
 
+# Library Dependencies
+LIB_DEP = ../lib/imlib.a
+
 # Directories
 OUT_DIR = ./out/
 
-# Output executable name
-# Value may be safely changed.
-EXEC = aiexe 
+LIB = ../lib/ailib.a
+EXE = ../bin/aiexe
 
 # File names
-SOURCES = $(wildcard *.cpp)
+SOURCES = $(filter-out debug.cpp, $(wildcard *.cpp))
 OBJECT_FILES = $(SOURCES:.cpp=.o)
 OBJECTS = $(addprefix $(OUT_DIR), $(OBJECT_FILES))
 
-# Main target
-$(EXEC): $(OBJECTS)
-	$(CC) $(OBJECTS) -o $(EXEC)
+# Debug Target
+exe: ./out/debug.o lib
+	$(CC) -o $(EXE) ./out/debug.o $(LIB) $(LIB_DEP)
 
-# Convenience build option
-all:
-	@make $(EXEC)
+# Library Target
+# Does NOT compile debug.cpp
+lib: $(OBJECTS)
+	$(info Archiving...)
+	@ar rvs $(LIB) $(OBJECTS)
+
+# Debug object
+./out/debug.o: debug.cpp $(OBJECTS)
+	$(CC) $(CC_FLAGS) -c debug.cpp -o ./out/debug.o
 
 # To build objects
 $(OUT_DIR)%.o: %.cpp

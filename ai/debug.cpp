@@ -3,12 +3,11 @@
 #include "NNetwork.hpp"
 #include "NNetworkPrintOutput.hpp"
 
-im::Hub* im::Hub::__instance = nullptr; // To be added to its own src file at a later date.
-
 using namespace network;
 
 int main () {
 
+    // neural.txt must be located in the calling directory
     NNetwork neural{new NNetworkPrintOutput{}, "neural.txt"};
     neural.linearize();
     neural.calculate({-1, 8, -1});

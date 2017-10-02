@@ -10,7 +10,6 @@
 
 #include "Channel.hpp"
 #include "Message.hpp"
-#include "Hub.hpp"
 #include "../Optional.hpp"
 
 namespace im {
@@ -22,25 +21,13 @@ namespace im {
 
     public:
 
-        Sender ()
-        : __channel(lang::nil)
-        {}
+        Sender ();
 
-        Sender (Channel const &channel)
-        : __channel(channel)
-        {}
+        Sender (Channel const &channel);
 
-        void sendMessage (Message const &msg) {
-            if (__channel != lang::nil) {
-                Hub::instance().sendMessageToSubscribers(__channel.value(), msg);
-            } else {
-                throw std::runtime_error("im::Sender::sendMessage(im::Message): No channel specified");
-            }
-        }
+        void sendMessage (Message const &msg);
 
-        void sendMessage (Channel const &chan, Message const &msg) {
-            Hub::instance().sendMessageToSubscribers(chan, msg);
-        }
+        void sendMessage (Channel const &chan, Message const &msg);
 
     };
 
