@@ -26,35 +26,17 @@ namespace im {
 
     public:
 
-        static Hub& instance () {
-            if (__instance == nullptr) {
-                __instance = new Hub{};
-            }
-            return *__instance;
-        }
+        // Instance interface method.
+        // Uses lazy initalization of the instance.
+        static Hub& instance ();
 
-        Hub ()
-        : subscribers()
-        {}
+        Hub ();
 
-        void addSubscriber (Channel const &chan, foundation::ListenerType* lptr) {
-            try {
-                subscribers.at(chan).push_back(lptr);
-            } catch (...) {
-                subscribers.insert({chan, std::vector<foundation::ListenerType*>{}});
-                subscribers.at(chan).push_back(lptr);
-            }
-        }
+        // Subscribes an object to a given channel.
+        void addSubscriber (Channel const &chan, foundation::ListenerType* lptr);
 
-        void sendMessageToSubscribers (Channel const &chan, Message const &msg) {
-            try {
-
-                for (size_t i = 0; i < subscribers.at(chan).size(); ++i) {
-                    subscribers.at(chan).at(i)->onMessageReceived(chan, msg);
-                } 
-
-            } catch (...) { return; }
-        }
+        // Sends a message to all subscribed objects of a given channel.
+        void sendMessageToSubscribers (Channel const &chan, Message const &msg);
 
     };
 

@@ -21,13 +21,9 @@ namespace im {
         std::vector<lang::Any> contents;
 
         // --- Convenince Operator Overloads --- //
-        lang::Any operator[] (size_t idx) const {
-            return contents.at(idx);
-        }
+        lang::Any operator[] (size_t idx) const;
 
-        lang::Any operator[] (int idx) const {
-            return contents.at(idx);
-        }
+        lang::Any operator[] (int idx) const;
 
     };
 

@@ -26,16 +26,13 @@ namespace im {
     class Listener : public foundation::ListenerType {
     public:
 
-        Listener () {}
+        Listener ();
 
-        Listener (Channel const &chan) {
-            this->subscribeTo(chan);
-        }
+        // Subscribes this object to a given channel upon initalization.
+        Listener (Channel const &chan);
 
-        // Subscribes this method to a given channel.
-        void subscribeTo (Channel const &chan) {
-            Hub::instance().addSubscriber(chan, this);
-        }
+        // Subscribes this object to a given channel.
+        void subscribeTo (Channel const &chan);
 
     };
 

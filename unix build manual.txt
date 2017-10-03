@@ -1,0 +1,59 @@
+Instructions for building on unix machines
+
+Executables and archives may be built either from the local makefiles
+in the repective directory or from the master makefile located in the
+project root directory. Archives are placed in the /lib/ drirectory
+located in the project root and executables are placed in the /bin/
+directory.
+
+NOTE: Archives and executables will difinatly NOT run on Windows
+      (they may if you run them through a Linux subsystem).
+
+Archives/Libraries:
+
+    imlib.a: archive for the internal messaging system.
+        location: /lib/imlib.a
+
+        master build command:
+            $ make imlib.a
+
+        local build command: (from /core/im/)
+            $ make lib
+
+    ailib.a: archive for the nerual framework
+        location: /lib/ailib.a
+
+        master build command:
+            $ make ailib.a
+
+        local build command: (from /ai/)
+            $ make lib
+
+
+Debug Executables:
+
+    imexe: executable for testing the internal messaging system
+        location: /bin/imexe
+
+        dependent on: 
+            imlib.a
+
+        master build command:
+            $ make imexe
+
+        local build command: (from /core/im/)
+            $ make exe
+
+    aiexe: executable for testing the nerual framework
+        location: /bin/aiexe
+
+        dependent on:
+            imlib.a
+
+        master build command:
+            $ make aiexe
+
+        local build command: (from /ai/)
+            $ make exe
+
+

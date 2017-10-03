@@ -7,7 +7,6 @@
 #ifndef AI_NNETWORKPRINTOUTPUT_HPP
 #define AI_NNETWORKPRINTOUTPUT_HPP
 
-#include <iostream>
 #include "NNetworkOutputType.hpp"
 
 namespace network {
@@ -15,15 +14,10 @@ namespace network {
     class NNetworkPrintOutput : public NNetworkOutputType {
     public:
 
-        NNetworkPrintOutput ()
-                : NNetworkOutputType()
-        {}
+        NNetworkPrintOutput ();
 
-        void onReceivedAllOutputs () {
-            for (size_t i = 0; i < outputValues.size(); ++i) {
-                std::cout << "Id[" << i << "]: " << outputValues[i] << std::endl;
-            }
-        }
+        // Print the output values of all nodes to the screen.
+        void onReceivedAllOutputs ();
 
     };
 

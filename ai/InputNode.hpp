@@ -14,32 +14,23 @@
 #ifndef NNETWORK_INPUTNODE_HPP
 #define NNETWORK_INPUTNODE_HPP
 
-#include "NodeType.hpp"
+#include "NodeTypeEx.hpp"
 
 namespace network {
 
-    class InputNode : public NodeType<double> {
+    class InputNode : public NodeTypeEx<double> {
     public:
 
         // Default constructor
-        InputNode ()
-                : NodeType<double>()
-        {}
+        InputNode (double const &value);
 
         // Bypass activation function.
-        double activate () {
-            return rawValue;
-        }
+        double activationFunction (double const &in);
 
-        // Sets rawValue to be a given value then calls send()
-        void fireWithValue (double val) {
-            rawValue = val;
-            send();
-        }
+        double calculate ();
 
-        char getType () const {
-            return 'I';
-        }
+        // 'I'
+        char getType () const;
 
     };
 
