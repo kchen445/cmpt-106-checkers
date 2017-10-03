@@ -7,17 +7,17 @@
 using namespace network;
 
 ThresholdNode::ThresholdNode()
-        : NodeType<double>(),
+        : NodeTypeEx<double>(),
           threshold(0)
 {}
 
 ThresholdNode::ThresholdNode(double threshold)
-        : NodeType<double>(),
+        : NodeTypeEx<double>(),
           threshold(threshold)
 {}
 
-double ThresholdNode::activate() {
-    return rawValue >= threshold ? 1 : -1;
+double ThresholdNode::activationFunction(double const &in) {
+    return in >= threshold ? 1 : -1;
 }
 
 char ThresholdNode::getType() const {

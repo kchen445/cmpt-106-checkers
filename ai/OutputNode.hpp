@@ -9,12 +9,12 @@
 #ifndef NNETWORK_OUTPUTNODE_HPP
 #define NNETWORK_OUTPUTNODE_HPP
 
-#include "NodeType.hpp"
+#include "NodeTypeEx.hpp"
 #include "../core/im/Sender.hpp"
 
 namespace network {
 
-    class OutputNode : public NodeType<double>,
+    class OutputNode : public NodeTypeEx<double>,
                        public im::Sender
     {
     private:
@@ -34,12 +34,12 @@ namespace network {
         OutputNode();
 
         // Bypass activation function
-        double activate ();
+        double activationFunction (double const &in);
 
         // Send a message to channel neuralOutputNode
         // with the identifier for this node and the
         // value that the node has.
-        void send ();
+        double calculate ();
 
         char getType () const;
 

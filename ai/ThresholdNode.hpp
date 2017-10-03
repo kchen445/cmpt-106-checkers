@@ -13,11 +13,11 @@
 #ifndef NNETWORK_THRESHOLDNODE_HPP
 #define NNETWORK_THRESHOLDNODE_HPP
 
-#include "NodeType.hpp"
+#include "NodeTypeEx.hpp"
 
 namespace network {
 
-    class ThresholdNode : public NodeType<double> {
+    class ThresholdNode : public NodeTypeEx<double> {
     public:
 
         double threshold;
@@ -29,9 +29,9 @@ namespace network {
         ThresholdNode (double threshold);
 
         // Activation function as described above.
-        double activate () override;
+        double activationFunction (double const &in) override;
 
-        char getType () const override;
+        char getType () const;
 
     };
 

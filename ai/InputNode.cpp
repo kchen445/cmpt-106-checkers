@@ -6,17 +6,16 @@
 
 using namespace network;
 
-InputNode::InputNode()
-        : NodeType<double>()
+InputNode::InputNode(double const &value)
+        : NodeTypeEx<double>(value)
 {}
 
-double InputNode::activate() {
-    return rawValue;
+double InputNode::activationFunction(double const &in) {
+    return in;
 }
 
-void InputNode::fireWithValue (double val) {
-    rawValue = val;
-    send();
+double InputNode::calculate() {
+    return rawValue;
 }
 
 char InputNode::getType() const {
