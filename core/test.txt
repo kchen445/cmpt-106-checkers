@@ -1,0 +1,42 @@
+#include <iostream>
+#include "Point.hpp"
+#include "MatrixType.hpp"
+
+using namespace lang::math;
+
+template<typename T, size_t M, size_t N>
+using Grid = foundation::MatrixType<T, M, N>;
+
+int main () {
+
+    std::cout << "MatrixType Test" << std::endl;
+
+    Grid<char, 2, 2> grid = {
+        'a', 'b',
+        'c', 'd'
+    };
+    // a b
+    // c d
+
+    grid.at(1, 0) = 'z';
+    // a b
+    // z d
+
+    std::cout << grid.row(0) << std::endl;
+    std::cout << grid.row(1) << std::endl;
+
+    std::cout << std::endl << "Point Test" << std::endl;
+
+    Point<4> p = {1, 0, 0, 0};
+    Point<4> q = {0, 1, 0, 0};
+
+    std::cout << p << std::endl;
+    // (1, 0, 0, 0)
+
+    std::cout << q << std::endl;
+    // (0, 1, 0, 0)
+
+    std::cout << p + q << std::endl;
+    // (1, 1, 0, 0)
+
+}
