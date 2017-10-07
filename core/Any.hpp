@@ -21,6 +21,9 @@
 #include <string> // Use of std::string instead of lang::String for compatibility.
 #include "typeof.hpp"
 
+#include <cstring>
+#include <memory>
+
 namespace lang {
     
     class Any {
