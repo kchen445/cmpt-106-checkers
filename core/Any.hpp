@@ -1,5 +1,5 @@
 //
-//  Any.hpp, version 2.00
+//  Any.hpp, version 2.01
 //  lang
 //
 //  Created by Jeremy S on 2017-09-05.
@@ -18,7 +18,9 @@
 #define Any_hpp
 
 #include <stdlib.h>
+#include <cstring> // for std::memcpy()
 #include <string> // Use of std::string instead of lang::String for compatibility.
+#include <memory> // for std::shared_ptr
 #include "typeof.hpp"
 
 namespace lang {

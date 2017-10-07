@@ -9,6 +9,9 @@ CC_FLAGS = -std=c++14 -Wall
 # Library Dependencies
 LIB_DEP = ../lib/imlib.a
 
+# Excluded Files
+EXCLUDE = debug.cpp NNetwork.cpp
+
 # Directories
 OUT_DIR = ./out/
 
@@ -16,7 +19,7 @@ LIB = ../lib/ailib.a
 EXE = ../bin/aiexe
 
 # File names
-SOURCES = $(filter-out debug.cpp, $(wildcard *.cpp))
+SOURCES = $(filter-out $(EXCLUDE), $(wildcard *.cpp))
 OBJECT_FILES = $(SOURCES:.cpp=.o)
 OBJECTS = $(addprefix $(OUT_DIR), $(OBJECT_FILES))
 
@@ -36,7 +39,7 @@ lib: $(OBJECTS)
 
 # To build objects
 $(OUT_DIR)%.o: %.cpp
-	@[[ -d $(OUT_DIR) ]] || mkdir $(OUT_DIR) 
+	@ if [ ! -d $(OUT_DIR) ]; then mkdir $(OUT_DIR); fi 
 	$(CC) $(CC_FLAGS) -c $< -o $@;
 
 # To remove object files

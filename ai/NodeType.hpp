@@ -14,6 +14,7 @@
 #ifndef NNETWORK_NODE_HPP
 #define NNETWORK_NODE_HPP
 
+#include <stdlib.h>
 #include <vector>
 #include "ConnectionType.hpp"
 

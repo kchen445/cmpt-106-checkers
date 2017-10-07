@@ -33,7 +33,7 @@ lib: $(OBJECTS)
 
 # To build objects
 $(OUT_DIR)%.o: %.cpp
-	@[[ -d $(OUT_DIR) ]] || mkdir $(OUT_DIR) 
+	@ if [ ! -d $(OUT_DIR) ]; then mkdir $(OUT_DIR); fi 
 	$(CC) $(CC_FLAGS) -c $< -o $@;
 
 # To remove object files
