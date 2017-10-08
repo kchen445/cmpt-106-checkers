@@ -44,7 +44,7 @@ while read p
 do
     if [[ "$p" == \#include\ \"* ]]; then
         str=${p:10}
-        str=${str%\"}
+        str=${str%\"*}
         # prepend the relative direcotry and add file
         INCLUDE_FILES+="${FDIR}${str} "
     fi
