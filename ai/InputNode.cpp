@@ -9,6 +9,10 @@ using namespace network;
 InputNode::InputNode(double const &value)
         : NodeTypeEx<double>(value)
 {}
+		
+InputNode::InputNode()
+        : NodeTypeEx<double>()
+{}
 
 double InputNode::activationFunction(double const &in) {
     return in;

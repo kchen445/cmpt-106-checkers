@@ -2,20 +2,29 @@
 
 // #include "NNetwork.hpp"
 #include "NNetworkPrintOutput.hpp"
-#include "OutputNode.hpp"
-#include "InputNode.hpp"
-#include "ThresholdNode.hpp"
+//#include "OutputNode.hpp"
+//#include "InputNode.hpp"
+//#include "ThresholdNode.hpp"
+#include "NNetwork.hpp"
+#include <iostream>
 
 using namespace network;
 
+void print_vector(const std::vector<double>& v) {
+	for (auto i : v) {
+		std::cout << i << ' ';
+	}
+	std::cout << std::endl;
+}
+
 int main () {
-
     // neural.txt must be located in the calling directory
-    // NNetwork neural{new NNetworkPrintOutput{}, "neural.txt"};
+    NNetwork neural{new NNetworkPrintOutput{}, "neural.txt"};
     // neural.linearize();
-    // neural.calculate({-1, 8, -1});
-
-    auto outputDevice = new NNetworkPrintOutput{};
+    print_vector(neural.calculate({1, 0, -1}));
+    print_vector(neural.calculate({-1, -1, -1}));
+    print_vector(neural.calculate({69.69, 420.420, 911.911}));
+    /*auto outputDevice = new NNetworkPrintOutput{};
 
     OutputNode o1{};
     ThresholdNode t1{};
@@ -29,8 +38,8 @@ int main () {
     t1.addConnection(&i2, 0.2);
     t1.addConnection(&i1, 0.6);
 
-    o1.calculate();
+    o1.calculate();*/
 
     fflush(stdout);
-
+	neural.save("neural_out.txt");
 }

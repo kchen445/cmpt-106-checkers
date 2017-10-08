@@ -3,31 +3,37 @@
 //		inputs		(for input nodes)
 //		outputs		(for output nodes)
 //		internals	(for hidden nodes)
-//	
-//	Nodes are assumed to be stored in topological order, or properly "linearized":
-//	each node only depends on the values of nodes before it.
-//	The input and output nodes are always ordered correctly,
-//	but internal nodes may be moved out-of-order with neuron insertions.
-//	You can use linearize() to reorder it.
+//	node ids are counted from 0, in the order of vectors above:
+//	ex. inputs go 0,1,2,3,4, then outputs 5,6,7, then internals 8,9,10
+//	Connections are also stored in a vector,
+//		conns
 //
-//	Use calculate() to update the output node values (after linearizing)
-//	You have to write input values/read output values from the inputs/outputs vectors directly (for now)
+//	Currently, connections are double-stored,
+//		once in conns (for storage),
+//		once as an actual link between nodes (for calculation)
+//	because of this, please use the connection functions to modify the network!
+//
+//	Use calculate(inpvalues) to calculate outputs from inputs
 //
 //	Files are saved in the following format, each token separated by whitespace:
 // 		first line: node data
 //			<size_t>:	number of nodes N
-//			<char[]>:	N characters, listing the type of each node (I, T, or O)
-//			ex. 12 IIIIITTTOOOO
+//			<size_t>:	number of input nodes
+//			<size_t>:	number of output nodes
+//			<size_t>:	number of internal nodes
+//			ex. 12 5 4 3
 //		following lines: connection data
-//			<size_t>:	start node	(0 <= val < N)
 //			<size_t>:	end node	(0 <= val < N)
+//			<size_t>:	start node	(0 <= val < end node)
 //			<double>: 	weight of connection
-//			ex. 5 9 0.7
+//			<uint>: 	innovation number
+//			<bool>:		is connection enabled?
+//			ex. 9 5 0.7 4 0
 
 #ifndef NNETWORK_NNETWORK_HPP
 #define NNETWORK_NNETWORK_HPP
 
-#include "NodeType.hpp"
+#include "NodeTypeEx.hpp"
 #include "ThresholdNode.hpp"
 #include "InputNode.hpp"
 #include "OutputNode.hpp"
@@ -35,17 +41,32 @@
 #include <vector>
 
 namespace network {
-
-    using Connection = ConnectionType<double, NodeType<double>>;
+	
+	struct Edge {
+		size_t endid;
+		size_t startid;
+		double weight;
+		
+		unsigned int innov;
+		bool enabled;
+	};
+	
+    //using Connection = ConnectionType<double, NodeTypeEx<double>>;
 
 	class NNetwork {
+	private:
+		//fetch a node from within the vectors given its id
+		NodeTypeEx<double>* getNode(size_t id);
+	
     public:
-
         // Nodes
         std::vector<InputNode*> inputs;
-        std::vector<NodeType<double>*> internals;
         std::vector<OutputNode*> outputs;
-
+		std::vector<NodeTypeEx<double>*> internals;
+		size_t numNodes;
+		
+		std::vector<Edge> conns;
+		
         // Output Device
         NNetworkOutputType* outputDevice;
 
@@ -56,13 +77,23 @@ namespace network {
         NNetwork(NNetworkOutputType* outputDevice, const char *filename);
 
         ~NNetwork();
+		
+		//Add a (hidden) node to the neural network and returns its id
+		size_t addNode();
+		//size_t addNode(connections)?
+		
+		//deleting nodes is pretty hairy cause you have to repair the connections -- not gonna get into that rn
+		
+		//Add a connection to the neural network
+		void addConnection(size_t endid, size_t startid, double weight, unsigned int innov, bool enabled = true);
+		
+		//Enable a connection, given its index within the [conns] list
+		void enableConnection(size_t idx);
+		//Disable a connection, given its index within the [conns] list
+		void disableConnection(size_t idx);
 
-        //Linearizes [internals] for calculation
-        //	[haven't really tested this yet, hope it works]
-        void linearize();
-
-        //Propagate the input values through the network, assuming linearized
-        void calculate(std::vector<double> const &inputValues);
+        //Return the value of the output nodes, given some inputs
+        std::vector<double> calculate(std::vector<double> const &inputValues);
 
         //Save the neural network to a file
         void save(const char *filename);

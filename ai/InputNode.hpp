@@ -22,7 +22,8 @@ namespace network {
     public:
 
         // Default constructor
-        InputNode (double const &value);
+        InputNode(double const &value);
+		InputNode();
 
         // Bypass activation function.
         double activationFunction (double const &in);

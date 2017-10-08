@@ -6,7 +6,6 @@
 #include "../core/Optional.hpp"
 
 namespace network {
-
     template<typename T>
     class NodeTypeEx {
     public:
