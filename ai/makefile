@@ -9,6 +9,8 @@ CC_FLAGS = -std=c++14 -Wall
 # Library Dependencies
 LIB_DEP = ../lib/imlib.a
 
+SCRIPT_DIR = ../scripts/dep.sh
+
 # Excluded Files
 EXCLUDE = debug.cpp NNetwork.cpp
 
@@ -38,7 +40,8 @@ lib: $(OBJECTS)
 	$(CC) $(CC_FLAGS) -c debug.cpp -o ./out/debug.o
 
 # To build objects
-$(OUT_DIR)%.o: %.cpp
+.SECONDEXPANSION:
+$(OUT_DIR)%.o: %.cpp $$(shell $(SCRIPT_DIR) %.cpp)
 	@ if [ ! -d $(OUT_DIR) ]; then mkdir $(OUT_DIR); fi 
 	$(CC) $(CC_FLAGS) -c $< -o $@;
 
