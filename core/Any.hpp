@@ -23,9 +23,6 @@
 #include <memory> // for std::shared_ptr
 #include "typeof.hpp"
 
-#include <cstring>
-#include <memory>
-
 namespace lang {
     
     class Any {
