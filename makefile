@@ -2,8 +2,14 @@
 # MASTER MAKEFILE #
 ###################
 
+# Call to make the dependency script executable.
+setup:
+	$(shell chmod a+x ./scripts/dep.sh)
+
 
 # Archives #
+
+all-lib: imlib.a ailib.a
 
 imlib.a:
 	@cd core/im && $(MAKE) lib
@@ -41,3 +47,6 @@ clean-ai:
 
 clean-im:
 	@cd core/im && $(MAKE) clean
+
+clean-game:
+	@cd game && $(MAKE) clean

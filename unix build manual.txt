@@ -5,6 +5,11 @@ make the shell script for extracting dependecies executable.
 
     $ chmod a+x ./scripts/dep.sh
 
+    or
+
+    $ make setup
+    (from the project root)
+
 If you get an error saying something like dep.sh is not executable then
 run the above command to make it executable. Whether this will happen or
 not I don't know.
