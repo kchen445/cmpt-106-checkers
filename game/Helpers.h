@@ -9,6 +9,7 @@ enum class Tile: char;
 //function to test whether a given change will go out of bounds for the game board
 bool withinBounds(int baseY, int baseX, int changeY = 0, int changeX = 0);
 
+
 struct point{
     int row;
     int col;
@@ -22,13 +23,14 @@ struct line{
     line(point start, point end);
 };
 
+//all pieces are on square where the row and column add up to 
+//an odd number, this is a function to help make finding
+//whether a number is odd or not easier and more readable
 bool isOdd(int x);
+
 bool operator== (point a, point b);
 
-//helper function to see where pieces should go
-//pieces are positioned from top to bottom such that
-//adding the row and column (0 indexed ) together of
-//the Piece add up to an odd number
+
 
 std::string pointToString(point a);
 

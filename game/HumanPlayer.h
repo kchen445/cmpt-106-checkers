@@ -8,25 +8,18 @@
 
 struct HumanPlayer: public Player {
 public:
-    //int to store the index of the players chosen move from a
-    //vector storing all possible moves for a given turn
-
-    std::vector< pieces > pieces;
-    //inner vector refers to how a Piece can jump multiple times
-    //by taking more than 1 Piece
-    //outer vector is a list of all possible moves a player can make
-    std::vector< std::vector < line > > possibleMoves;
-
+  	//variables inherited from player class
+    //int player;
+    //int indexOfMove;
+    //bool canMove;
+    //std::vector< Piece > pieces;
+    //std::vector< std::vector < line > > possibleMoves;
+    //std::vector< std::string > movesAsString;
 
     HumanPlayer(int whichPlayer);
-    //set up a player's Piece vector
-    void reinitializePlayer();
-    std::vector< Piece > getVectorOfPieces();
-
-    //find all possible moves by finding the possible moves
-    //of each individual Piece and add all of it to a vector
-    void findMoves();
-
+    void findMoves(const Board &board);
+	void movesToString();
+    void initializePlayer();
     void getMove();
 };
 

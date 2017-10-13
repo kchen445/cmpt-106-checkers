@@ -43,8 +43,8 @@ int main() {
   while (stillPlay) {
     listOfPlayers[0].canMove = true;
     listOfPlayers[1].canMove = true;
-	listOfPlayers[0].reinitializePlayer();
-	listOfPlayers[1].reinitializePlayer();
+	listOfPlayers[0].initializePlayer();
+	listOfPlayers[1].initializePlayer();
     gameBoard.initializeBoard();
     cout << "X is player1" << endl;
     cout << "O is player2" << endl;

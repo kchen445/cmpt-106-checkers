@@ -18,13 +18,8 @@ struct Piece {
     //has a proper Piece or not
     bool isEmpty;
 
-    Piece(point initialPosition, int player1Or2)
-            :position(initialPosition), isKing(false), player(player1Or2), isEmpty(false)
-    {}
-    Piece(point initialPosition)
-            :position(initialPosition), isKing(false), player(0), isEmpty(true)
-    {}
-
+    Piece(point initialPosition, int player1Or2);
+    Piece(point initialPosition);
     std::vector< std::vector<line> > findMoves (const Board &board);
 };
 
