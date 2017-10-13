@@ -2,8 +2,14 @@
 # MASTER MAKEFILE #
 ###################
 
+# Call to make the dependency script executable.
+setup:
+	$(shell chmod a+x ./scripts/dep.sh)
+
 
 # Archives #
+
+all-lib: imlib.a ailib.a
 
 imlib.a:
 	@cd core/im && $(MAKE) lib
@@ -25,14 +31,22 @@ imexe:
 
 # Cleaning #
 
-# Calls 'clean' for all makefiles in the project
-deep-clean:
-	$(info Preforming Deep Clean....)
-	@cd ai && $(MAKE) clean
-	@cd core/im && $(MAKE) clean
+# Removes all object (.o), archive (.a), and executable files from the project.
+purge:
+	$(info Preforming binary file purge...)
+	$(info Removing object files...)
+	@rm -f $(shell find . -name '*.o')
+	$(info Removing archive files...)
+	@rm -f $(shell find . -name '*.a')
+	$(info Removing executables...)
+	@rm -f bin/*
+	$(info Done)
 
 clean-ai:
 	@cd ai && $(MAKE) clean
 
 clean-im:
 	@cd core/im && $(MAKE) clean
+
+clean-game:
+	@cd game && $(MAKE) clean
