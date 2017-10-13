@@ -19,6 +19,8 @@ namespace network {
 
         size_t numberOfNodesLeftToReceive;
 
+        size_t totalNumberOfNodes;
+
         // Recursively append more elements to outputValues
         // until able to add a value with a given id.
         void addValue (size_t id, double val);

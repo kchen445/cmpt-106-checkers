@@ -9,14 +9,14 @@ using namespace network;
 size_t OutputNode::nextId = 0;
 
 OutputNode::OutputNode()
-        : NodeTypeEx<double>(),
+        : NodeType('O'),
           im::Sender(im::Channel::neuralOutputNode),
           id(OutputNode::nextId++)
 {
     sendMessage(im::Channel::neuralOutputNodeCreated, {{id}});
 }
 
-double OutputNode::activationFunction(double const &in) {
+double OutputNode::activationFunction(double in) {
     return in >= 0 ? 1 : -1;
 }
 
@@ -31,8 +31,4 @@ double OutputNode::calculate() {
 
     sendMessage({{id, rawValue}});
     return rawValue;
-}
-
-char OutputNode::getType () const {
-    return 'O';
 }

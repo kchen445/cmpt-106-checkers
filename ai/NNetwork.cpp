@@ -69,7 +69,7 @@ NNetwork::~NNetwork() {
 }
 
 
-NodeTypeEx<double>* NNetwork::getNode(size_t id) {
+NodeType* NNetwork::getNode(size_t id) {
 	if (id < inputs.size()) {
 		return inputs[id];
 	} else if (id-inputs.size() < outputs.size()) {
@@ -91,8 +91,8 @@ void NNetwork::addConnection(size_t endid, size_t startid, double weight, unsign
 	conns.push_back({endid, startid, weight, innov, enabled});
 	//add it to node, if enabled
 	if (enabled) {
-		NodeTypeEx<double>* end   = getNode(endid);
-		NodeTypeEx<double>* start = getNode(startid);
+		NodeType* end   = getNode(endid);
+		NodeType* start = getNode(startid);
 		end->addConnection(start, weight);
 	}
 }
@@ -101,8 +101,8 @@ void NNetwork::enableConnection(size_t idx) {
 	//enable connection in list
 	auto conn = conns.at(idx);
 	conn.enabled = true;
-	NodeTypeEx<double>* end   = getNode(conn.endid);
-	NodeTypeEx<double>* start = getNode(conn.startid);
+	NodeType* end   = getNode(conn.endid);
+	NodeType* start = getNode(conn.startid);
 	//add connection to node
 	end->addConnection(start, conn.weight);
 }
@@ -111,8 +111,8 @@ void NNetwork::disableConnection(size_t idx) {
 	//disable connection in list
 	auto conn = conns.at(idx);
 	conn.enabled = false;
-	NodeTypeEx<double>* end   = getNode(conn.endid);
-	NodeTypeEx<double>* start = getNode(conn.startid);
+	NodeType* end   = getNode(conn.endid);
+	NodeType* start = getNode(conn.startid);
 	//search for connection in node and remove it
 	for(auto it = end->connections.begin(); it != end->connections.end(); ++it) {
 		if (it->node == start) {

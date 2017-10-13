@@ -1,90 +1,72 @@
 //
-// Created by Jeremy S on 2017-09-26.
+// Created by Jeremy Schwartz, 10/13/17
 //
-// network::NodeType<T>             (abstract base class)
-//      The base class for all node/neuron objects.
-//      All other node types should extend this class
-//      and provide their own activate() method.
-//
-//      Child objects may also override the send() method
-//      to change how the neuron is fired. An example of
-//      this is an output node which prints its value to
-//      the screen instead of sending it on.
+// network::NodeType                (abstract base class)
+//  The base class for all node/neuron objects.
 
-#ifndef NNETWORK_NODE_HPP
-#define NNETWORK_NODE_HPP
+#ifndef NNETWORK_NODETYPEEX_HPP
+#define NNETWORK_NODETYPEEX_HPP
 
-#include <stdlib.h>
 #include <vector>
-#include "ConnectionType.hpp"
+#include "Connection.hpp"
 
 namespace network {
-
-    // Generic abstract class to represent a neuron in the neural network.
-    // Template Restrictions:
-    //      T must be constructable from 0
-    //      T must have valid operators + and *
-    template<typename T>
+    
     class NodeType {
+    private:
+
+        // The type of this node as a character.
+        char type;
+
     public:
 
-        // The number of connections into this node.
-        size_t numInputs;
+        // Stored value of the node. Output values are summed
+        // up here before being passed though the activation
+        // function and sent to the next node.
+        double rawValue;
 
-        // The 'raw', unactivated value for this node.
-        T rawValue;
+        // A list of connections to other nodes in the network.
+        // The connections represent prerequisite nodes that
+        // feed into this node.
+        std::vector<Connection<NodeType>> connections;
 
-        // All the connections to other nodes.
-        std::vector<ConnectionType<T, NodeType<T>>> connections;
+        // Constructors
+        NodeType (char type);
 
-        // Default constructor.
-        NodeType ()
-                : numInputs(0), rawValue(0), connections()
-        {}
+        NodeType (char type, double const &rawValue);
 
-        // Copy constructor.
-        NodeType (NodeType<T> const &other)
-                : numInputs(other.numInputs),
-                  rawValue(other.rawValue),
-                  connections(other.connections)
-        {}
-
-        // Virtual Destructor (Does nothing)
+        // Destructor (does nothing)
         virtual ~NodeType () {}
 
-        // Builds a connection between this node and another.
-        void addConnection (NodeType<T>& node, T const &weight) {
-            connections.push_back({node, weight});
-            node.numInputs++;
-        }
-
-        // Abstract activation function.
-        //      Should return a value between -1 and 1 based
-        //      on the current rawValue.
+        // Returns the value from this node by summing up the
+        // value of the nodes connected to it and passing that
+        // value through the activation function.
         //
-        // Child class MUST properly implement this method.
-        virtual T activate () = 0;
-
-        // "Fires this neuron"
-        // First activates this node by calling activate(),
-        // then send the result too all connected nodes via
-        // the ConnectionType objects int the connections array.
+        // Sets rawValue to be the output value once it has
+        // been caluclated.
         //
-        // Child classes may override this method to do something
-        // different when the node is triggered.
-        virtual void send () {
-            T value = activate();
-            for (auto connection : connections) {
-                connection.feedForward(value);
-            }
-        }
+        // This method is half of the recursive algorithm that
+        // solves the network with Connection<Node>::getValue
+        // being the other half.
+        // The base case for the recursive structure is defined
+        // in InputNode's override of this method.
+        virtual double calculate ();
 
-        // Returns the type of this node, used in saving to a file.
-        virtual char getType () const = 0;
+        // Abstract activation function to be implemented by 
+        // subclasses.
+        //
+        // Return value MUST be between 1 and -1 or equal to 1 or -1.
+        virtual double activationFunction (double calculatedValue) = 0;
+
+        // Creates a connection between this node and another
+        // with a given weight value.
+        void addConnection (NodeType* node, double const &weight);
+
+        // Getter function for type variable.
+        char getType () const;
 
     };
 
 }
 
-
-#endif //NNETWORK_NODE_HPP
+#endif

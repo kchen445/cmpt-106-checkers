@@ -33,7 +33,7 @@
 #ifndef NNETWORK_NNETWORK_HPP
 #define NNETWORK_NNETWORK_HPP
 
-#include "NodeTypeEx.hpp"
+#include "NodeType.hpp"
 #include "ThresholdNode.hpp"
 #include "InputNode.hpp"
 #include "OutputNode.hpp"
@@ -56,13 +56,13 @@ namespace network {
 	class NNetwork {
 	private:
 		//fetch a node from within the vectors given its id
-		NodeTypeEx<double>* getNode(size_t id);
+		NodeType* getNode(size_t id);
 	
     public:
         // Nodes
         std::vector<InputNode*> inputs;
         std::vector<OutputNode*> outputs;
-		std::vector<NodeTypeEx<double>*> internals;
+		std::vector<NodeType*> internals;
 		size_t numNodes;
 		
 		std::vector<Edge> conns;

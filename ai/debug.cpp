@@ -17,9 +17,16 @@ void print_vector(const std::vector<double>& v) {
 	std::cout << std::endl;
 }
 
-int main () {
+int main (int argc, char** argv) {
+
+    if (argc != 2) {
+        std::cout << "Error: Invalid number of arguments" << std::endl;
+        std::cout << "Number of needed arguments: " << 1 << std::endl;
+        exit(101);
+    }
+
     // neural.txt must be located in the calling directory
-    NNetwork neural{new NNetworkPrintOutput{}, "neural.txt"};
+    NNetwork neural{new NNetworkPrintOutput{}, argv[1]};
     // neural.linearize();
     print_vector(neural.calculate({1, 0, -1}));
     print_vector(neural.calculate({-1, -1, -1}));
