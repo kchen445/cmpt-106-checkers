@@ -17,6 +17,9 @@ imlib.a:
 ailib.a:
 	@cd ai && $(MAKE) lib
 
+gamelib.a:
+	@cd game && $(MAKE) lib
+
 
 # Executables #
 
@@ -27,6 +30,9 @@ aiexe: imlib.a
 
 imexe:
 	@cd core/im && $(MAKE) exe
+
+gameexe:
+	@cd game && $(MAKE) exe
 
 
 # Cleaning #
