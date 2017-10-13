@@ -48,7 +48,7 @@ int main() {
     gameBoard.initializeBoard();
     cout << "X is player1" << endl;
     cout << "O is player2" << endl;
-    cout << "Enter moves in the form of column,row i.e 6E" << endl;
+    cout << "Enter moves in the form of row,column-row,column i.e 6E-5F" << endl;
     //actual game loop
     while (listOfPlayers[0].canMove || listOfPlayers[1].canMove) {
       cout << endl;
