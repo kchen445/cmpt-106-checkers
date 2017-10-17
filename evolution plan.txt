@@ -1,0 +1,68 @@
+order by inovation numbers
+difference function
+breeding
+mutations
+    adding a node
+    adding connection
+    changing weights
+    removing connection
+    removing nodes
+
+separating into species:
+    whole bunch of neural networks
+    pick a neural network
+    calculate the difference function to all other networks
+    separate all networks into a species
+    repeat until no networks remain
+
+competition:
+    X games (win rate), or tournaments
+    no cross-species games?
+
+after games:
+    breeding within species
+    mutations (on the network or separating into a new network)
+
+- species splitting
+- competition between two species
+- breeding within species
+- mutation
+
+load bunch of neural network -> vector
+vector -> Generation
+
+Generation class:
+    - a vector of vectors of neural networks (species)
+    Generation(file)
+
+    evolve(species), species.evolve()
+        takes ordered vector of neural networks
+        modifies vector, breeding networks
+
+        breed(species)
+        mutate(species)
+            network.mutate()
+
+    network.difference(network)
+
+Generation class:
+    - a vector of vectors of neural networks (species)
+    - a set of edges made in the current generation's breeding (id, id, innovation number)
+    - the current largest innovation number
+    Generation.getInnoNum(nodeid, nodeid)
+        looks up set and returns innovation number if there, or adds edge to set and increments innovation number
+    Generation.compete(vector<network>)
+    
+    Generation.breed(vector<network>)
+    Generation.mutate(vector<network>)
+        calls Network.mutate(Generation)
+
+    Generation.evolve(vector<network>)
+        calls Generation.breed(vector<network>)
+        calls Generation.mutate(vector<network>)
+
+Network class:
+    Network.difference(other network)
+        returns 
+    mutate(Gener&)
+    nodes store IDs
