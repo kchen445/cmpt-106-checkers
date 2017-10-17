@@ -47,7 +47,7 @@ namespace network {
 		size_t startid;
 		double weight;
 		
-		unsigned int innov;
+		size_t innov;
 		bool enabled;
 	};
 	
@@ -97,6 +97,15 @@ namespace network {
 
         //Save the neural network to a file
         void save(const char *filename);
+
+        // Returns a value which coresonds the similarity between two networks.
+        // Larger values mean a larger difference and so on.
+        //
+        //  d = (c1 * E)/N + (c2 * D)/N + (c3 * W)
+        //
+        // Formula from K. O. Stanley and R. Miikkulainen Neural Evolution
+        // through Augmenting Topologies.
+        double difference (NNetwork& other);
 	};
 
 }

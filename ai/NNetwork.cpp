@@ -165,3 +165,94 @@ void NNetwork::save(const char *filename) {
 	
 	file.close();
 }
+
+bool containsInnov (Edge* begin, Edge* end, size_t innov) {
+	for (; begin < end; ++begin) {
+		if (begin->innov == innov) {
+			return true;
+		}
+	}
+	return false;
+}
+
+void differenceMerge (std::vector<Edge> &diff, 
+					  std::vector<Edge> &base, 
+					  std::vector<Edge> &ref) 
+{
+
+	auto basePtr = &base.front();
+	auto refPtr = &ref.front();
+
+	for (; basePtr < &base.back() + 1; ++basePtr) {
+		if (!containsInnov(refPtr, &ref.back() + 1, basePtr->innov)) {
+			diff.push_back(*basePtr);
+		} else {
+			refPtr++;
+		}
+	}
+}
+
+bool compareEdge (Edge a, Edge b) {
+	return a.innov < b.innov;
+}
+
+double NNetwork::difference (NNetwork& other) {
+	
+	// Number of genes in the larger network.
+	size_t N = std::max(conns.size(), other.conns.size());
+
+	size_t E = 0;
+	size_t D = 0;
+
+	std::vector<Edge> diff;
+	differenceMerge(diff, conns, other.conns);
+	differenceMerge(diff, conns, other.conns);
+
+	std::vector<Edge> same;
+	auto diffRefPtr = &diff.front();
+	for (size_t i = 0; i < conns.size(); ++i) {
+		if (!containsInnov(diffRefPtr, &diff.back() + 1, conns[i].innov)) {
+			same.push_back(conns[i]);
+		}
+	}
+	diffRefPtr = &diff.front();
+	for (size_t i = 0; i < other.conns.size(); ++i) {
+		if (!containsInnov(diffRefPtr, &diff.back() + 1, other.conns[i].innov)) {
+			same.push_back(conns[i]);
+		}
+	}
+	std::sort(&same.front(), &same.back() + 1, compareEdge);
+
+
+
+	size_t disjointPivot = same.back().innov;
+
+	for (size_t i = 0; i < diff.size(); ++i) {
+		if (diff[i].innov < disjointPivot) {
+			D++;
+		} else {
+			E++;
+		}
+	}
+
+	double c1 = 1.0;
+	double c2 = 1.0;
+	double c3 = 1.0;
+
+	double W = 0;
+
+	for (size_t i = 0; i < same.size(); i += 2) {
+		double val = same[i].innov - same[i + 1].innov;
+		W += val < 0 ? -val : val;
+	}
+
+	W = W / (same.size() / 2);
+
+	return (c1 * double(D))/N + (c2 * double(E))/N + (c3 * W);
+
+}
+
+
+
+
+
