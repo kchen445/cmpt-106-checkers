@@ -106,6 +106,16 @@ namespace network {
         // Formula from K. O. Stanley and R. Miikkulainen Neural Evolution
         // through Augmenting Topologies.
         double difference (NNetwork& other);
+
+
+        // Mutation functions //
+        void mutate ();
+
+        void mutateChangeWeightValue (size_t index);
+
+        void mutateAddNode (size_t index);
+
+        void mutateAddConn ();
 	};
 
 }

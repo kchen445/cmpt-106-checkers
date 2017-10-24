@@ -1,7 +1,8 @@
 #include "NNetwork.hpp"
-
+#include "Helper.hpp"
 #include <unordered_map>
 #include <fstream>
+#include <cstdlib>
 
 using namespace network;
 
@@ -252,7 +253,51 @@ double NNetwork::difference (NNetwork& other) {
 
 }
 
+double rand_double() {
+	return static_cast<double>(rand()) / static_cast<double>(RAND_MAX);
+}
 
+void mutate () {
+
+	const int weightChangePercent = 20;
+	const int addNodeChance = 5;
+
+	for (size_t i = 0; i < conns.size(); ++i) {
+		
+		if (randomChance(weightChangePercent)) {
+			mutateChangeWeightValue(i);
+		}
+
+		if (randomChance(addNodeChance)) {
+			mutateAddNoe(i);
+		}
+
+	}
+
+}
+
+void mutateChangeWeightValue (size_t index) {
+
+	const double defaultMax = 0.2;
+
+	double newValue;
+
+	if (randomChance(20)) {
+		newValue = 2 * (rand_double() - 0.5);
+	} else {
+
+		double crnt = conn[i].weight;
+
+		double maxAdd = std::min(1 - crnt, defaultMax);
+		double maxSub = std::max(-1 + crnt, -defaultMax);
+
+		double rand = rand_double();
+		newValue = ((maxAdd - maxSub) * rand) + maxSub;
+	}
+
+	conns[i].weight = newValue;
+
+}
 
 
 
