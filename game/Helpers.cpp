@@ -7,17 +7,13 @@ enum class Tile: char {
 };
 
 //function to test whether a given change will go out of bounds for the game board
-bool withinBounds(int baseY, int baseX, int changeY = 0, int changeX = 0) {
+bool withinBounds(int baseX, int baseY, int changeX = 0, int changeY = 0) {
     return ((baseY + changeY) < 8  && (baseY + changeY) >= 0 &&
             (baseX + changeX) < 8 && (baseX + changeX) >= 0);
 }
 
 point::point(int x, int y)
         :row(x),col(y)
-{}
-
-line::line(point start, point end)
-        :start(start),end(end)
 {}
 
 bool isOdd(int x){

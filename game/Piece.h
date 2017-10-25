@@ -6,23 +6,6 @@
 
 #ifndef CMPT_106_CHECKERS_GAME_PIECE_H
 #define CMPT_106_CHECKERS_GAME_PIECE_H
-//  x  x
-//   []
-//     x
-//      o
-//
-//o is player one
-//x is player two
-//[] represents position after jump
-//in scenario shown above, two possible moves can be made from
-//the position after jump and therefore needs 2 vectors to represents
-//branch struct represents directions in which a piece can jump
-//given a direction
-struct branch {
-	point position;
-	std::vector <point> listOfDirectionChanges;
-}
-
 
 struct Piece {
     point position;
@@ -33,13 +16,18 @@ struct Piece {
     //use this to determine whether a point on the board
     //has a proper Piece or not
     bool isEmpty;
+	std::vector< std::vector<point> > allJumps;
 	
     Piece(point initialPosition, int player1Or2);
     Piece(point initialPosition);
 	//helper functions to find piece jumps
-	std::vector < line > getJumpsPiece (const Board &board, point position ,int rowDirection);
-	std::vector < line > getJumpsKing  (const Board &board, point position ,int rowDirection, int colDirection);
-    std::vector< std::vector<line> > findMoves (const Board &board);
+	bool canJump(const Board &board);
+	bool canJumpKing (const Board &board);
+	void getJumpsPiece (const Board &board, int rowDirection);
+	void getJumpsKing  (const Board &board, int rowDirection, int colDirection);
+	void getJumpsToEmptyPiece (const Board &board);
+	void getJumpsToEmptyKing  (const Board &board);
+    std::vector< std::vector<point> > findMoves (const Board &board);
 };
 
 

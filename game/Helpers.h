@@ -7,20 +7,13 @@
 enum class Tile: char;
 
 //function to test whether a given change will go out of bounds for the game board
-bool withinBounds(int baseY, int baseX, int changeY = 0, int changeX = 0);
+bool withinBounds(int baseX, int baseY, int changeX = 0, int changeY = 0);
 
 
 struct point{
     int row;
     int col;
     point(int x, int y);
-};
-
-struct line{
-    point start;
-    point end;
-
-    line(point start, point end);
 };
 
 //all pieces are on square where the row and column add up to 

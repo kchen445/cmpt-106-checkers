@@ -4,45 +4,107 @@
 
 #include "Piece.h"
  using namespace std;
- 
+	//list of piece variables
     //point position;
     //bool isKing;
     //int player;
     //bool isEmpty;
- 
-vector<  vector < line > > piece::getJumpsPiece (const Board &board, point position,int rowDirection){
-	//for loop to run recursion, each recurse leads to a separate move
+    //vector< vector<point> > allJumps;
+// two functions to see if a particular piece can jump over another piece
+// so we can ignore looking for empty spaces ahead if it can
+
+Piece::Piece(point initialPosition, int player1Or2){
+	position = initialPosition;
+	isKing = false;
+	player = player1Or2;
+	isEmpty = false;
+}
+
+Piece::Piece(point initialPosition){
+	position = initialPosition;
+	isKing = false;
+	player = 0;
+	isEmpty = true;
+}
+
+bool Piece::canJumpPiece (const Board &board){
 	int row = position.row;
 	int col = position.col;
+	int colAddition;
+	this->player == 1 ? colAddition = -1 : colAddition = 1;
+	
+	int rowLeft =-1;
+	int rowRight = 1;
+	int newCol = col+colAdditon;
+	
 	
 }
+
+bool Piece::canJumpKing (const Board &board){
+	
+}
+
+void Piece::getJumpsToEmptyPiece (const Board &board){
+	
+}
+void Piece::getJumpsToEmptyKing  (const Board &board){
+	
+}
+
+//helper functions to recursively find all possible moves for a particular piece
+void Piece::getJumpsPiece (vector < point > jumps, const Board &board){
+	bool hasJumped = false;
+	int row = jumps.back().row;
+	int col = jumps.back().col;
+	int colAddition;
+	this->player == 1 ? colAddition = -1 : colAddition = 1;
+	int rowLeft = -1;
+	int rowRight = 1;
+	int newCol = col + colAddition;
+	if(withinBounds(row,col,rowLeft,colAddition)){
+		if(!board.at(row + rowLeft).at(newCol).isEmpty()
+			&&withinBounds(row,col,2*rowLeft,2*colAddition)){
+			if(board.at(row + rowLeft).at(newCol).player != this->player && 
+			board.at(row + (2*rowLeft)).at(newCol+colAddition).isEmpty(){
+				hasJumped = true;
+				point jumpDestination(rowLeft-1,newCol+colAddition);
+				jumps.push_back(jumpDestination);
+				getJumpsPiece(jumps,board);
+			}
+		}
+	}
+	if(withinBounds(row,col,rowRight,colAddition)){
+		if(!board.at(row + rowRight).at(newCol).isEmpty()
+			&&withinBounds(row,col,2*rowLeft,2*colAddition)){
+			if(board.at(row + rowRight).at(newCol).player != this->player && 
+			board.at(row + (2*rowRight)).at(newCol+colAddition).isEmpty(){
+				hasJumped = true;
+				point jumpDestination(rowRight+1,newCol+colAddition);
+				jumps.push_back(jumpDestination);
+				getJumpsPiece(jumps,board);
+			}
+		}
+	}
+	if(!hasJumped){
+		allJumps.push_back(jumps);
+	}
+}
  
- vector < line > piece::getJumpsKing (const Board &board, point position, bool isKing){
+void Piece::getJumpsKing (const Board &board, point position, bool isKing){
 	 
 }
  
- vector< vector<line> > piece::findMoves (const Board &board){
-	vector<line> currentJump;
-	vector< vector<line> > allJumps;
-	int row = position.row;
-	int col = position.col;
+ vector< vector< point > > Piece::findMoves (const Board &board){
+	allJumps.clear();
 	if(!isKing){
-		while(canMove){
-			//check for empty spots to a piece's upper diagonal right and left
-			for(int rowAddition = -1; rowAddition < 2; rowAddition+=2){
-				int newRow = row + rowAddition;
-				int newCol = col + 1;
-				if(board.gameBoard[newRow][newCol].isEmpty()){
-					point end(newRow,newCol);
-					point start(row,col);
-					line move(start, end);
-					currentJump.push_back(move);
-					allJumps.push_back(currentJump);
-				} else if (board.gameBoard[newRow][newCol] != this->player){
-					vector< vector <lines> > allJumpsByPiece = getJumpsPiece(const &board, position, rowAddition);
-					allJumps.insert(allJumps.end(), allJumpsByPiece.begin(), allJumpsByPiece.end());
-				}
-			}
+		if(canJumpPiece){
+			vector <point> jumps;
+			jumps.push_back(position);
+			getJumpsPiece(jumps,board);
+			return allJumps;
+		}else{
+			getJumpsToEmptyPiece(board);
+			return allJumps;
 		}
 	//piece is a king
 	}else{

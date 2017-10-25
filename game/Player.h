@@ -14,6 +14,8 @@
 struct Player {
 public:
 	//variable to determine if a player object is player 1 or player 2
+	//player 2 will be at the top part of the board
+	//player 1 will be at the bottom of the board
     int player;
 	
 	//rather than have a function that returns an int
