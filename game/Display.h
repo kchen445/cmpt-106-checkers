@@ -3,6 +3,7 @@
 //
 #include "Helpers.h"
 #include "Piece.h"
+#include "Board.h"
 #include <vector>
 #ifndef CMPT_106_CHECKERS_GAME_DISPLAY_H
 #define CMPT_106_CHECKERS_GAME_DISPLAY_H
@@ -17,7 +18,7 @@ public:
 	
 	//given the gameBoard, decide which of the tiles from the enumerated class
 	//should go in a displayBoard spot
-	void setUpBoard(const std::vector <std::vector <Piece>> &gameBoard);
+	void setUpBoard(const Board &gameBoard);
 	
 	//actually display the board, along with the axis
     void displayGame();

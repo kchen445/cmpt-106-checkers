@@ -36,7 +36,13 @@ bool Piece::canJumpPiece (const Board &board){
 	int rowLeft =-1;
 	int rowRight = 1;
 	int newCol = col+colAdditon;
-	
+	if(col = 0){
+		if()
+	}else if (col = 7){
+		
+	}else{
+		
+	}
 	
 }
 
