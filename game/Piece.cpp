@@ -3,6 +3,7 @@
 //
 
 #include "Piece.h"
+#include "Helpers.h"
  using namespace std;
 	//list of piece variables
     //point position;
@@ -31,23 +32,43 @@ bool Piece::canJumpPiece (const Board &board){
 	int row = position.row;
 	int col = position.col;
 	int colAddition;
+	
 	this->player == 1 ? colAddition = -1 : colAddition = 1;
+	bool canJump = false;
 	
-	int rowLeft =-1;
-	int rowRight = 1;
-	int newCol = col+colAdditon;
-	if(col = 0){
-		if()
-	}else if (col = 7){
-		
-	}else{
-		
+	for(int rowAddition = -1; rowAddition < 2; rowAddition += 2){
+		if(withinBounds(row,col,rowAddition,colAddition)){
+			if(withinBounds(row,col,2*rowAddition,2*colAddition)&&
+			!board.gameBoard.at(row+rowAddition).at(col+colAddition).isEmpty()){
+				if(board.gameBoard.at(row+rowAddition).at(col+colAddition).player != this->player&&
+				board.gameBoard.at(row+(2*rowAddition)).at(col+(2*colAddition)).isEmpty()){
+					return true;
+				}
+			}
+		}
 	}
-	
+	return canJump;
 }
 
 bool Piece::canJumpKing (const Board &board){
+	int row = position.row;
+	int col = position.col
+	bool canJump = false;
+	for(int rowAddition = -1; rowAddition < 2; rowAddition += 2){
+		for(int colAddition = -1; colAddition < 2; rowAddition += 2){
+			if(withinBounds(row,col,rowAddition,colAddition)){
+				if(withinBounds(row,col,2*rowAddition,2*colAddition)&&
+				!board.gameBoard.at(row+rowAddition).at(col+colAddition).isEmpty()){
+					if(board.gameBoard.at(row+rowAddition).at(col+colAddition).player != this->player&&
+					board.gameBoard.at(row+(2*rowAddition)).at(col+(2*colAddition)).isEmpty()){
+							return canJump = true;
+					}
+				}
+			}
+		}
+	}
 	
+	return canJump;
 }
 
 void Piece::getJumpsToEmptyPiece (const Board &board){
@@ -96,8 +117,26 @@ void Piece::getJumpsPiece (vector < point > jumps, const Board &board){
 	}
 }
  
-void Piece::getJumpsKing (const Board &board, point position, bool isKing){
-	 
+void Piece::getJumpsKing (vector < point > jumps, const Board &board){
+	bool hasJumped = false;
+	int row = jumps.back().row;
+	int col = jumps.back().col;
+	for(int rowAddition = -1; rowAddition < 2; rowAddition += 2){
+		for(int colAddition = -1; colAddition < 2; rowAddition += 2){
+			if(withinBounds(row,col,rowRight,colAddition)){
+				if(!board.at(row + rowRight).at(newCol).isEmpty()
+				&&withinBounds(row,col,2*rowLeft,2*colAddition)){
+					if(board.at(row + rowRight).at(newCol).player != this->player && 
+					board.at(row + (2*rowRight)).at(newCol+colAddition).isEmpty(){
+						hasJumped = true;
+						point jumpDestination(rowRight+1,newCol+colAddition);
+						jumps.push_back(jumpDestination);
+						getJumpsPiece(jumps,board);
+					}
+				}
+			}
+		}
+	}
 }
  
  vector< vector< point > > Piece::findMoves (const Board &board){

@@ -35,24 +35,26 @@ public:
 	//a checker piece can have multiple jumps in different directions
 	//the inner vector stores all the jumps a single piece makes
 	//the outer vector stores the inner vectors as a move for a single turn
-    std::vector< std::vector < line > > possibleMoves;
+    std::vector< std::vector < point > > possibleMoves;
 	
 	//easiest way to get player input is to compare strings
 	//convert the possibleMoves vector into strings that can
 	//be easily outputted onto the terminal and easy to compare
     std::vector< std::string > movesAsString;
-
+	
+	//NON VIRTUAL FUNCTIONS CAN BE IMPLEMENTED INTO A PLAYER.CPP FILE
+	
 	//call the findMoves function for each piece in the vector of pieces
 	//and push them to the possibleMoves vector
-    virtual void findMoves(const Board &board) = 0;
+    void findMoves(const Board &board);
 	
 	//convert the lines in possibleMoves to strings to put in
 	//movesAsStrings
-	virtual void movesToString() = 0;
+	void movesToString();
 	
 	//set up the initial conditions for the player
 	//by resetting variables like pieces, canMove, etc
-    virtual void initializePlayer() = 0;
+    void initializePlayer();
 	
 	//use cin to take in player input and check to see if the
 	//input matches any of the strings in movesAsString
@@ -60,7 +62,7 @@ public:
 	//to show what choices are possible
 	//my idea is to have moves be outputted and compared as:
 	//XY-XY-XY...
-	//where the first xy is the current position of a given piece
+ 	//where the first xy is the current position of a given piece
 	//and the xy's after that will be the position after the jumps
 	//more than 2 xy's are for when a player can take more than one
 	//checker piece at a time
