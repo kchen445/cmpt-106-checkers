@@ -89,10 +89,10 @@ void Piece::getJumpsPiece (vector < point > jumps, const Board &board){
 	int rowRight = 1;
 	int newCol = col + colAddition;
 	if(withinBounds(row,col,rowLeft,colAddition)){
-		if(!board.at(row + rowLeft).at(newCol).isEmpty()
+		if(!board.gameBoard.at(row + rowLeft).at(newCol).isEmpty()
 			&&withinBounds(row,col,2*rowLeft,2*colAddition)){
-			if(board.at(row + rowLeft).at(newCol).player != this->player && 
-			board.at(row + (2*rowLeft)).at(newCol+colAddition).isEmpty(){
+			if(board.gameBoard.at(row + rowLeft).at(newCol).player != this->player && 
+			board.gameBoard.at(row + (2*rowLeft)).at(newCol+colAddition).isEmpty(){
 				hasJumped = true;
 				point jumpDestination(rowLeft-1,newCol+colAddition);
 				jumps.push_back(jumpDestination);
@@ -101,10 +101,10 @@ void Piece::getJumpsPiece (vector < point > jumps, const Board &board){
 		}
 	}
 	if(withinBounds(row,col,rowRight,colAddition)){
-		if(!board.at(row + rowRight).at(newCol).isEmpty()
+		if(!board.gameBoard.at(row + rowRight).at(newCol).isEmpty()
 			&&withinBounds(row,col,2*rowLeft,2*colAddition)){
-			if(board.at(row + rowRight).at(newCol).player != this->player && 
-			board.at(row + (2*rowRight)).at(newCol+colAddition).isEmpty(){
+			if(board.gameBoard.at(row + rowRight).at(newCol).player != this->player && 
+			board.gameBoard.at(row + (2*rowRight)).at(newCol+colAddition).isEmpty(){
 				hasJumped = true;
 				point jumpDestination(rowRight+1,newCol+colAddition);
 				jumps.push_back(jumpDestination);
@@ -124,10 +124,10 @@ void Piece::getJumpsKing (vector < point > jumps, const Board &board){
 	for(int rowAddition = -1; rowAddition < 2; rowAddition += 2){
 		for(int colAddition = -1; colAddition < 2; rowAddition += 2){
 			if(withinBounds(row,col,rowRight,colAddition)){
-				if(!board.at(row + rowRight).at(newCol).isEmpty()
+				if(!board.gameBoard.at(row + rowRight).at(newCol).isEmpty()
 				&&withinBounds(row,col,2*rowLeft,2*colAddition)){
-					if(board.at(row + rowRight).at(newCol).player != this->player && 
-					board.at(row + (2*rowRight)).at(newCol+colAddition).isEmpty(){
+					if(board.gameBoard.at(row + rowRight).at(newCol).player != this->player && 
+					board.gameBoard.at(row + (2*rowRight)).at(newCol+colAddition).isEmpty(){
 						hasJumped = true;
 						point jumpDestination(rowRight+1,newCol+colAddition);
 						jumps.push_back(jumpDestination);
@@ -153,6 +153,14 @@ void Piece::getJumpsKing (vector < point > jumps, const Board &board){
 		}
 	//piece is a king
 	}else{
-		
+		if(canJumpPiece){
+			vector <point> jumps;
+			jumps.push_back(position);
+			getJumpsPiece(jumps,board);
+			return allJumps;
+		}else{
+			getJumpsToEmptyPiece(board);
+			return allJumps;
+		}
 	}
  }
