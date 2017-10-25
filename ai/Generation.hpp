@@ -27,12 +27,13 @@ namespace network {
 			std::vector<std::vector<NNetwork*>> networks;
 
 			//lookup table of connections -> innovation numbers for all connections added this generation
+			//change to map for now -- specify hash function for pair
 			std::unordered_map<std::pair<size_t,size_t>,size_t> curgenes;
 			size_t curinnov;	//the current highest innovation number
 
 
 			//sorts the species by fitness value, descending
-			void compete(std::vector<NNetwork*>&) = 0;
+			virtual void compete(std::vector<NNetwork*>&) = 0;
 			
 
 			//breeding functions
@@ -60,40 +61,12 @@ namespace network {
 
 			~Generation();
 
-			//Evolves everything forward a generation.
+			//Evolve forward a generation.
 			void step();
 
-			//given an edge that a network wants to add, returns the innovation number that edge should take
-			//to be called by NNetwork when mutating
-			size_t getInnovNum(size_t endid, size_t startid);
+			//Given an edge that a network wants to add, returns the innovation number that edge should take
+			//	(to be called by NNetwork when mutating)
+			size_t getInnovNum(size_t startid, size_t endid);
 	};
 }
-
-/*double NNetwork::difference (NNetwork& other) {
-	size_t E = 0;
-	size_t D = 0;
-	size_t N = 0;
-
-
-	double W = 0;
-	size_t Wcount = 0;
-
-	auto it = this.conns.begin();
-	auto jt = other.conns.begin();
-
-	if (it->innov == jt->innov) {
-		W += abs(it->weight - jt->weight);
-		Wcount++;
-		it++;
-		jt++;
-	} else {
-		D++;
-		if (it->innov < jt->innov) {
-			it++;
-		} else {
-			jt++;
-		}
-	}
-
-}*/
 #endif

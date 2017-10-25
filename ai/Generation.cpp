@@ -1,8 +1,10 @@
 #include "Generation.hpp"
 #include <sstream>
+#include <fstream>
+#include "../include/dirent.h"
 
+#include <stdlib.h>
 //random number generation, replace it with something more C++-like if there is one
-#include <stdlib>
 inline double rand_double() {
 	return static_cast<double>(rand()) / static_cast<double>(RAND_MAX);
 }
@@ -10,23 +12,47 @@ inline double rand_double() {
 using namespace network;
 
 Generation::Generation(const char *directory) {
-	/*
 	//load constants from constants.ini?
 	
 	//load innovation numbers from innovations.txt
-
-
+	std::ostringstream filename;
+	filename << directory << '/' << "innovations.txt";
+	std::ifstream file(filename.str(), std::ifstream::in);
+	filename.clear();
+	
+	while (file.good()) {
+		size_t innov, startid, endid;
+		file >> innov >> startid >> endid >> std::ws;	//skip trailing whitespace too
+		curgenes[{startid, endid}] = innov;
+	}
+	file.close();
+	
 	//load neural networks
 	//create empty species vector
 	std::vector<NNetwork*>& species;
 	networks.push_back(species);
 
-	while there are still *.txt files to read
-		NNetwork* network = new NNetwork(filename);
-		species.push_back(network);
-
-	
-	*/
+	//copied from ls.c test script for dirent
+	DIR *dir;
+    struct dirent *ent;
+	dir = opendir(directory);
+    if (dir != NULL) {
+        while ((ent = readdir(dir)) != NULL) {
+			if (ent->d_type == DT_REG && ent->d_name[0] == 'n') {
+				filename << directory << '/' << ent->d_name;
+				NNetwork* network = new NNetwork(filename.str());
+				filename.clear();
+				
+				species.push_back(network);
+			}
+        }
+        closedir(dir);
+    } else {
+		std::ostringstream error;
+		error << "Cannot open directory " << directory;
+        throw std::runtime_error(error.str());
+    }
+	//while there are still *.txt files to read
 }
 
 Generation::~Generation() {
@@ -38,16 +64,42 @@ Generation::~Generation() {
 }
 
 void Generation::save(const char *directory) {
-	//delete all files in the directory beforehand?
-
+	//prepare directory
+	//create directory, if it doesn't already exist
+	{
+	std::ostringstream command;
+	command << "mkdir " << directory;	//name is the same on windows/UNIX :D
+	system(command);
+	}	//braces so stringstream goes out of scope
+	//delete all files in directory (?)
+	
+	//save innovation numbers
+	//open file
+	std::ostringstream filename;
+	filename << directory << '/' << "innovations.txt";
+	std::ofstream file(filename.str(), std::ifstream::out);
+	filename.clear();
+	//test if file was opened -> directory is available
+	if (!file.good()) {				
+		std::ostringstream error;
+		error << "Cannot open directory " << directory;
+        throw std::runtime_error(error.str());
+	}
+	//save innovation number data
+	for (auto it=curgenes.begin(); it!=curgenes.end(); ++it) {
+		file << it->second << ' '				//innovation number
+			 << it->first->first << ' '			//start id
+			 << it->first->second << std::endl;	//end id
+	}
+	file.close();
+	
+	//save networks into sequential text files
 	size_t count = 1;
-	std::ostringstream name;
-	//save each network into a sequential text file
 	for (auto species : networks) {
 		for (auto network : species) {
-			name << directory << '/' << "network" << count << ".txt";
-			network.save(name.str());
-			name.clear();
+			filename << directory << '/' << "network" << count << ".txt";
+			network.save(filename.str());
+			filename.clear();
 			count++;
 		}
 	}
@@ -70,25 +122,27 @@ void Generation::step() {
 		a.mutate(this);
 		species[i] = a;
 	}
+	
+	//depending on whether innovation numbers 
+	curgenes.clear();
 }
 
-size_t Generation::getInnovNum(size_t endid, size_t startid) {
+size_t Generation::getInnovNum(size_t startid, size_t endid) {
 	//	if that edge has already been added that generation, returns its value in [curgenes]
 	//	otherwise, increments [curinnov] and adds the new edge to [curgenes]
-	auto it = curgenes.find({endid, startid});
+	auto it = curgenes.find({startid, endid});
 	if (it == curgenes.end()) {
 		curinnov++;
-		curgenes[{endid, startid}] = curinnov;
+		curgenes[{startid, endid}] = curinnov;
 		return curinnov;
 	} else {
 		return *it;
 	}
 }
 
-void compete() {
+//void compete();
 
 
-}
 //breeding stuff
 
 /*

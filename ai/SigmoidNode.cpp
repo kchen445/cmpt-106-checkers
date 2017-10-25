@@ -4,8 +4,8 @@
 using namespace network;
 
 SigmoidNode::SigmoidNode()
-        : NodeType('S')
-          threshold(0)
+        : NodeType('S', 2)
+          //threshold(0)
 {}
 
 double SigmoidNode::activationFunction(double in) {
