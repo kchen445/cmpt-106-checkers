@@ -66,7 +66,8 @@ public:
 	//and the xy's after that will be the position after the jumps
 	//more than 2 xy's are for when a player can take more than one
 	//checker piece at a time
-    virtual void getMove() = 0;
+	//Board parameter is for ai, not necessary for human
+    virtual void getMove(const board &board) = 0;
 	
     virtual~player() {}
 };

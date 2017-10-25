@@ -15,11 +15,13 @@ public:
     //std::vector< Piece > pieces;
     //std::vector< std::vector < line > > possibleMoves;
     //std::vector< std::string > movesAsString;
-
+	
+	//commented functions should be implemented into player.h/cpp
+	
     HumanPlayer(int whichPlayer);
-    void findMoves(const Board &board);
-	void movesToString();
-    void initializePlayer();
+    //void findMoves(const Board &board);
+	//void movesToString();
+    //void initializePlayer();
     void getMove();
 };
 
