@@ -11,7 +11,7 @@ import Darwin // for arc4random_uniform
 
 let numInNodes = 64
 let numOutNodes = 32
-let hiddenLayers = [40, 34]
+let hiddenLayers = [40]
 
 // Objects and functions
 
@@ -47,7 +47,7 @@ for i in hiddenLayers {
 }
 let totalNodeCount = numInNodes + numOutNodes + hiddenNodeCount
 
-print("\(totalNodeCount) \(numInNodes) \(hiddenNodeCount) \(numOutNodes)")
+print("\(totalNodeCount) \(numInNodes) \(numOutNodes) \(hiddenNodeCount)")
 
 var layers = [[Node]]()
 
@@ -80,7 +80,7 @@ for i in 0..<(layers.count - 1) {
         for targetNode in targetLayer {
             let weight = randomWeight()
             let innov = Conn.nextInnov
-            print("\(baseNode.id) \(targetNode.id) \(weight) \(innov) 1")
+            print("\(baseNode.id) \(targetNode.id) \(innov) \(weight) 1")
         }
     }
 }
