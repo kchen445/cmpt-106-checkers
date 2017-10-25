@@ -145,7 +145,7 @@ std::vector<double> NNetwork::calculate(std::vector<double> const &inputValues) 
         nodes[i]->rawValue = inputValues[i];
 	for (size_t i = numInputs+numOutputs; i < numNodes; i++) {
         node->rawValue = 2;
-	
+	}
 	//calculate output nodes and store results
 	std::vector<double> outvals;
 	for (size_t i = numInputs; i < numInputs+numOutputs; i++) {
@@ -191,7 +191,7 @@ double rand_double() {
 	return static_cast<double>(rand()) / static_cast<double>(RAND_MAX);
 }
 
-void mutate () {
+void NNetwork::mutate () {
 
 	const int weightChangePercent = 20;
 	const int addNodeChance = 5;
@@ -210,7 +210,7 @@ void mutate () {
 
 }
 
-void mutateChangeWeightValue (size_t index) {
+void NNetwork::mutateChangeWeightValue (size_t index) {
 
 	const double defaultMax = 0.2;
 
@@ -220,7 +220,7 @@ void mutateChangeWeightValue (size_t index) {
 		newValue = 2 * (rand_double() - 0.5);
 	} else {
 
-		double crnt = conn[i].weight;
+		double crnt = conn[index].weight;
 
 		double maxAdd = std::min(1 - crnt, defaultMax);
 		double maxSub = std::max(-1 + crnt, -defaultMax);
