@@ -1,4 +1,4 @@
-// ConsoleApplication5.cpp : Defines the entry point for the console application.
+// ConsoleApplication16.cpp : Defines the entry point for the console application.
 //
 
 #include "stdafx.h"
@@ -6,7 +6,13 @@
 #include <cmath>
 #include <iomanip>
 using namespace std;
-
+char turn = '153'; 
+bool game_running = true;
+int row1,row2,column1, column2; 
+void input();
+void move();
+void king();
+void game_over();
 void GetPlayersNames(char[], char[]);
 void ShowPlayersNames(char[], char[]);
 void ShowTitle();
@@ -14,9 +20,6 @@ void GameBoard();
 void Pause();
 void ClearScreen();
 void PlayersLegends();
-void Player1(char[], char[]);
-void Player2(char[], char[]);
-void TheGame(char[], char[]);
 
 int main()
 {
@@ -25,8 +28,38 @@ int main()
 	ShowTitle();
 	GetPlayersNames(player1, player2);
 
-	return 0;
+	while (game_running)//game_running was initialzed to true so will run
+	{
+		GameBoard();//function is called to display board
+
+		if (turn == '153')//was initialzed to '153'line 9
+		{
+			cout << "--Player 1 [153]--\n";//says player 1 turn
+		}
+		else if (turn == '79')
+		{
+			cout << "--Player 2 [73]--\n";
+		}
+		//funcitons called
+		input();
+		move();
+		king();
+		game_over();
+	}
+
+	if (turn == '153')
+	{
+		cout << endl << endl << "Player 2 [Red] wins!!!\n";
+	}
+	else if (turn == '79')
+	{
+		cout << endl << endl << "Player 1 [Black] wins!!!\n";
+	}
+
+	cout << "GAME OVER!\n";
 }
+	
+
 
 //--------------------------------------------------------------------------------------------
 
@@ -45,8 +78,6 @@ void GetPlayersNames(char player1[50], char player2[50])
 	ShowPlayersNames(player1, player2);
 	PlayersLegends();
 	GameBoard();
-	Player1(player1, player2);
-	Player2(player1, player2);
 	Pause();
 
 }
@@ -151,57 +182,84 @@ void GameBoard()
 	board[7][7] = (char)79;
 	//-------------------------------------------------------------------------------
 
-	cout << setw(44) << "Columns \n\n " << endl;
-	cout << setw(60) << "	1	2	3	4	5	6	7	8	" << endl;
-	cout << setw(60) << "   +----+----+----+----+----+----+----+----+ " << endl;
-	cout << setw(17) << "1" << " | " << board[0][0] << "  |" << board[0][1] << "   | " << board[0][2] << "  |" << board[0][3] << "   | " << board[0][4] << "  | " << board[0][5] << "  | " << board[0][6] << "  |" << board[0][7] << "   |" << endl;
-	cout << setw(57) << "	  |    |    |    |    |    |    |    |    |" << endl;
-	cout << setw(60) << "   +----+----+----+----+----+----+----+----+ " << endl;
-	cout << setw(17) << "2" << " | " <<  board[1][0] << "  |" << board[1][1] << "   | " << board[1][2] << "  |" << board[1][3] << "   | " << board[1][4] << "  | " << board[1][5] << "  | " << board[1][6] << "  |" << board[1][7] << "   |" << endl;
-	cout << setw(57) << "	  |    |    |    |    |    |    |    |    |" << endl;
-	cout << setw(60) << "   +----+----+----+----+----+----+----+----+ " << endl;
-	cout << setw(17) << "3" << " | " << board[2][0] << "  |" << board[2][1] << "   | " << board[2][2] << "  |" << board[2][3] << "   | " << board[2][4] << "  | " << board[2][5] << "  | " << board[2][6] << "  |" << board[2][7] << "   |" << endl;
-	cout << setw(57) << "	  |    |    |    |    |    |    |    |    |" << endl;
-	cout << setw(60) << "   +----+----+----+----+----+----+----+----+ " << endl;
-	cout << setw(17) << "4" << " | " << board[3][0] << "  |" << board[3][1] << "   | " << board[3][2] << "  |" << board[3][3] << "   | " << board[3][4] << "  | " << board[3][5] << "  | " << board[3][6] << "  |" << board[3][7] << "   |" << endl;
-	cout << setw(57) << "	  |    |    |    |    |    |    |    |    |" << endl;
-	cout << setw(60) << "   +----+----+----+----+----+----+----+----+ " << endl;
-	cout << setw(17) << "5" << " | " << board[4][0] << "  |" << board[4][1] << "   | " << board[4][2] << "  |" << board[4][3] << "   | " << board[4][4] << "  | " << board[4][5] << "  | " << board[4][6] << "  |" << board[4][7] << "   |" << endl;
-	cout << setw(57) << "	  |    |    |    |    |    |    |    |    |" << endl;
-	cout << setw(60) << "   +----+----+----+----+----+----+----+----+ " << endl;
-	cout << setw(17) << "6" << " | " << board[5][0] << "  |" << board[5][1] << "   | " << board[5][2] << "  |" << board[5][3] << "   | " << board[5][4] << "  | " << board[5][5] << "  | " << board[5][6] << "  |" << board[5][7] << "   |" << endl;
-	cout << setw(57) << "	  |    |    |    |    |    |    |    |    |" << endl;
-	cout << setw(60) << "   +----+----+----+----+----+----+----+----+ " << endl;
-	cout << setw(17) << "7" << " | " << board[6][0] << "  |" << board[6][1] << "   | " << board[6][2] << "  |" << board[6][3] << "   | " << board[6][4] << "  | " << board[6][5] << "  | " << board[6][6] << "  |" << board[6][7] << "   |" << endl;
-	cout << setw(57) << "	  |    |    |    |    |    |    |    |    |" << endl;
-	cout << setw(60) << "   +----+----+----+----+----+----+----+----+ " << endl;
-	cout << setw(17) << "8" << " | " << board[7][0] << "  |" << board[7][1] << "   | " << board[7][2] << "  |" << board[7][3] << "   | " << board[7][4] << "  | " << board[7][5] << "  | " << board[7][6] << "  |" << board[7][7] << "   |" << endl;
-	cout << setw(57) << "	  |    |    |    |    |    |    |    |    |" << endl;
-	cout << setw(60) << "   +----+----+----+----+----+----+----+----+ " << endl;
+	cout << "==================================================================================\n\n\n\n";
+	cout << "       0         1         2         3         4         5         6         7     \n";
+	cout << "  _________________________________________________________________________________\n";
+	cout << "  |         |         |         |         |         |         |         |         |\n";
+	cout << "  |         |         |         |         |         |         |         |         |\n";
+	cout << "0 |    " << board[0][0] << "    |    " << board[0][1] << "    |    " << board[0][2] << "    |    " << board[0][3] << "    |    " << board[0][4] << "    |    " << board[0][5] << "    |    " << board[0][6] << "    |    " << board[0][7] << "    |\n";
+	cout << "  |         |         |         |         |         |         |         |         |\n";
+	cout << "  |_________|_________|_________|_________|_________|_________|_________|_________|\n";
+	cout << "  |         |         |         |         |         |         |         |         |\n";
+	cout << "  |         |         |         |         |         |         |         |         |\n";
+	cout << "1 |    " << board[1][0] << "    |    " << board[1][1] << "    |    " << board[1][2] << "    |    " << board[1][3] << "    |    " << board[1][4] << "    |    " << board[1][5] << "    |    " << board[1][6] << "    |    " << board[1][7] << "    |\n";
+	cout << "  |         |         |         |         |         |         |         |         |\n";
+	cout << "  |_________|_________|_________|_________|_________|_________|_________|_________|\n";
+	cout << "  |         |         |         |         |         |         |         |         |\n";
+	cout << "  |         |         |         |         |         |         |         |         |\n";
+	cout << "2 |    " << board[2][0] << "    |    " << board[2][1] << "    |    " << board[2][2] << "    |    " << board[2][3] << "    |    " << board[2][4] << "    |    " << board[2][5] << "    |    " << board[2][6] << "    |    " << board[2][7] << "    |\n";
+	cout << "  |         |         |         |         |         |         |         |         |\n";
+	cout << "  |_________|_________|_________|_________|_________|_________|_________|_________|\n";
+	cout << "  |         |         |         |         |         |         |         |         |\n";
+	cout << "  |         |         |         |         |         |         |         |         |\n";
+	cout << "3 |    " << board[3][0] << "    |    " << board[3][1] << "    |    " << board[3][2] << "    |    " << board[3][3] << "    |    " << board[3][4] << "    |    " << board[3][5] << "    |    " << board[3][6] << "    |    " << board[3][7] << "    |\n";
+	cout << "  |         |         |         |         |         |         |         |         |\n";
+	cout << "  |_________|_________|_________|_________|_________|_________|_________|_________|\n";
+	cout << "  |         |         |         |         |         |         |         |         |\n";
+	cout << "  |         |         |         |         |         |         |         |         |\n";
+	cout << "4 |    " << board[4][0] << "    |    " << board[4][1] << "    |    " << board[4][2] << "    |    " << board[4][3] << "    |    " << board[4][4] << "    |    " << board[4][5] << "    |    " << board[4][6] << "    |    " << board[4][7] << "    |\n";
+	cout << "  |         |         |         |         |         |         |         |         |\n";
+	cout << "  |_________|_________|_________|_________|_________|_________|_________|_________|\n";
+	cout << "  |         |         |         |         |         |         |         |         |\n";
+	cout << "  |         |         |         |         |         |         |         |         |\n";
+	cout << "5 |    " << board[5][0] << "    |    " << board[5][1] << "    |    " << board[5][2] << "    |    " << board[5][3] << "    |    " << board[5][4] << "    |    " << board[5][5] << "    |    " << board[5][6] << "    |    " << board[5][7] << "    |\n";
+	cout << "  |         |         |         |         |         |         |         |         |\n";
+	cout << "  |_________|_________|_________|_________|_________|_________|_________|_________|\n";
+	cout << "  |         |         |         |         |         |         |         |         |\n";
+	cout << "  |         |         |         |         |         |         |         |         |\n";
+	cout << "6 |    " << board[6][0] << "    |    " << board[6][1] << "    |    " << board[6][2] << "    |    " << board[6][3] << "    |    " << board[6][4] << "    |    " << board[6][5] << "    |    " << board[6][6] << "    |    " << board[6][7] << "    |\n";
+	cout << "  |         |         |         |         |         |         |         |         |\n";
+	cout << "  |_________|_________|_________|_________|_________|_________|_________|_________|\n";
+	cout << "  |         |         |         |         |         |         |         |         |\n";
+	cout << "  |         |         |         |         |         |         |         |         |\n";
+	cout << "7 |    " << board[7][0] << "    |    " << board[7][1] << "    |    " << board[7][2] << "    |    " << board[7][3] << "    |    " << board[7][4] << "    |    " << board[7][5] << "    |    " << board[7][6] << "    |    " << board[7][7] << "    |\n";
+	cout << "  |         |         |         |         |         |         |         |         |\n";
+	cout << "  |_________|_________|_________|_________|_________|_________|_________|_________|\n";
 
 }
 
 
-void ShowTitle()
+void input()
 {
+	cout << "Move piece\n";
+	cout << "Row: ";
+	cin >> row1;//
+	cout << "Column: ";
+	cin >> column1;
+
+	while (row1 < 0 || row1 > 7 || column1 < 0 || column1 > 7)//CHOOSE PIECE ...makes sure the input(Chosen piece) is within range
+	{
+		cout << "Incorrect input. Enter numbers between 0 and 7.\n";//runs if input out of range
+		cout << "Move piece\n";
+		cout << "Row: ";
+		cin >> row1;//allows another chance to enter input 
+		cout << "Column: ";
+		cin >> column1;
+	}
+
+	cout << "To box\n";//allows to MOVE to another location based on row and column
+	cout << "Row: ";
+	cin >> row2;
+	cout << "Column: ";
+	cin >> column2;
+
+	while (row2 < 0 || row2 > 7 || column2 < 0 || column2 > 7)//MOVE PIECE...makes sure the move is legal
+	{
+		cout << "Incorrect input. Enter numbers between 0 and 7.\n";
+		cout << "To box\n";
+		cout << "Row: ";
+		cin >> row2;
+		cout << "Column: ";
+		cin >> column2;
+	}
 }
-
-void PlayersLegends()
-{
-}
-
-void Player1(char[], char[])
-{
-}
-
-void Player2(char[], char[])
-{
-}
-
-void TheGame(char[], char[])
-{
-}
-
-//struct winsize size;
-// loct(STDOUT_FILEN0\0
-
