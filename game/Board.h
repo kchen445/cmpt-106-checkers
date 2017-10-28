@@ -24,7 +24,7 @@ public:
     void initializeBoard();
 
     //after a player's move is taken in, change the board to reflect that
-    void update(Player player);
+    void update(vector<*Player> listOfPlayers, int whichPlayer);
 };
 
 

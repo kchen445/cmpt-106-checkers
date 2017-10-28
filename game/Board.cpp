@@ -13,25 +13,25 @@ void Board::initializeBoard (){
 		for(int j = 0; j < 8; j++){
 			Point position(i,j);
 			if(isOdd(i+j)){
-				board.at(i).at(j) = Piece(position,2);
+				gameBoard.at(i).at(j) = Piece(position,2);
 			}else{
-				board.at(i).at(j) = Piece(position);
+				gameBoard.at(i).at(j) = Piece(position);
 			}
 		}
 	}
 	for(int i = 3; i < 5; i++){
 		for(int j = 0; j < 8; j++){
 			Point position(i,j);
-			board.at(i).at(j) = Piece(position);
+			gameBoard.at(i).at(j) = Piece(position);
 		}
 	}
 	for(int i = 5; i < 8; i++){
 		for(int j = 0; j < 8; j++){
 			Point position(i,j);
 			if(isOdd(i+j)){
-				board.at(i).at(j) = Piece(position,1);
+				gameBoard.at(i).at(j) = Piece(position,1);
 			}else{
-				board.at(i).at(j) = Piece(position);
+				gameBoard.at(i).at(j) = Piece(position);
 			}
 		}
 	}
@@ -87,27 +87,27 @@ void update(vector<*Player> listOfPlayers, int whichPlayer){
 			
 			//change the board by removing the other player's piece from the board
 			//and remove this element from the vector of pieces for the other player
-			board.at(otherPlayerPieceRow).at(otherPlayerPieceCol).isEmpty = true;
-			board.at(otherPlayerPieceRow).at(otherPlayerPieceCol).player = 0;
+			gameBoard.at(otherPlayerPieceRow).at(otherPlayerPieceCol).isEmpty = true;
+			gameBoard.at(otherPlayerPieceRow).at(otherPlayerPieceCol).player = 0;
 			*Vector< Piece > otherPlayerPieces = &(listOfPlayers[otherPlayer]->pieces);
 			OtherPlayerPieces->erase(*(otherPlayerPieces.begin())+i-1);
 			
-			//change the board according to a player's chosen move
-			board.at(endPosition.row).at(endPosition.col) = board.at(initialPosition.row).at(initialPosition.col);
-			board.at(endPosition.row).at(endPosition.col).position = endPosition;
+			//change the gameBoard according to a player's chosen move
+			gameBoard.at(endPosition.row).at(endPosition.col) = gameBoard.at(initialPosition.row).at(initialPosition.col);
+			gameBoard.at(endPosition.row).at(endPosition.col).position = endPosition;
 			pieceToBeMoved->position = endPosition;
-			board.at(initialPosition.row).at(initialPosition.col).isEmpty = true;
-			board.at(initialPosition.row).at(initialPosition.col).player = 0;
+			gameBoard.at(initialPosition.row).at(initialPosition.col).isEmpty = true;
+			gameBoard.at(initialPosition.row).at(initialPosition.col).player = 0;
 			
 			
 		}
 		//this block handles when a piece moves to an empty space
 		else{
-			board.at(endPosition.row).at(endPosition.col) = board.at(initialPosition.row).at(initialPosition.col);
-			board.at(endPosition.row).at(endPosition.col).position = endPosition;
+			gameBoard.at(endPosition.row).at(endPosition.col) = gameBoard.at(initialPosition.row).at(initialPosition.col);
+			gameBoard.at(endPosition.row).at(endPosition.col).position = endPosition;
 			pieceToBeMoved->position = endPosition;
-			board.at(initialPosition.row).at(initialPosition.col).isEmpty = true;
-			board.at(initialPosition.row).at(initialPosition.col).player = 0;
+			gameBoard.at(initialPosition.row).at(initialPosition.col).isEmpty = true;
+			gameBoard.at(initialPosition.row).at(initialPosition.col).player = 0;
 		}
 		int rowToBeKinged;
 		whichPlayer == 0 ? rowToBeKinged = 0 : rowToBeKinged = 7;
