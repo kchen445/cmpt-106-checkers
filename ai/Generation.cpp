@@ -1,58 +1,53 @@
 #include "Generation.hpp"
-#include <sstream>
-#include <fstream>
-#include "../include/dirent.h"
+#include "Constants.hpp"
 
+#include <fstream>
+#include <string>
+
+#include "../include/dirent.h"
 #include <stdlib.h>
-//random number generation, replace it with something more C++-like if there is one
 inline double rand_double() {
 	return static_cast<double>(rand()) / static_cast<double>(RAND_MAX);
 }
 
 using namespace network;
 
-Generation::Generation(const char *directory) {
-	//load constants from constants.ini?
+Generation::Generation(NNetworkOutputType* outputDevice) : outputDevice(outputDevice) {
 	
-	//load innovation numbers from innovations.txt
-	std::ostringstream filename;
-	filename << directory << '/' << "innovations.txt";
-	std::ifstream file(filename.str(), std::ifstream::in);
-	filename.clear();
+}
+	
+Generation::Generation(NNetworkOutputType* outputDevice, const std::string &directory) : outputDevice(outputDevice), networks(1) {	
+	//load innovation numbers
+	std::ifstream file(directory + "/_innovations.ini");
+	if (!file) {
+		throw std::runtime_error("Generation: unable to read " + directory + "/_innovations.ini");
+	}
 	
 	while (file.good()) {
 		size_t innov, startid, endid;
-		file >> innov >> startid >> endid >> std::ws;	//skip trailing whitespace too
+		file >> innov >> startid >> endid >> std::ws;
 		curgenes[{startid, endid}] = innov;
 	}
 	file.close();
 	
 	//load neural networks
-	//create empty species vector
-	std::vector<NNetwork*>& species;
-	networks.push_back(species);
-
-	//copied from ls.c test script for dirent
+	//std::vector<NNetwork*> species;		//create empty species vector
+	//networks.push_back(species);
+	
 	DIR *dir;
     struct dirent *ent;
-	dir = opendir(directory);
+	dir = opendir(directory.c_str());
     if (dir != NULL) {
         while ((ent = readdir(dir)) != NULL) {
-			if (ent->d_type == DT_REG && ent->d_name[0] == 'n') {
-				filename << directory << '/' << ent->d_name;
-				NNetwork* network = new NNetwork(filename.str());
-				filename.clear();
-				
-				species.push_back(network);
+			if (ent->d_type == DT_REG && ent->d_name[0] != '_') {
+				NNetwork* network = new NNetwork(outputDevice, directory + '/' + ent->d_name);
+				networks.front().push_back(network);
 			}
         }
         closedir(dir);
     } else {
-		std::ostringstream error;
-		error << "Cannot open directory " << directory;
-        throw std::runtime_error(error.str());
+        throw std::runtime_error("Generation: cannot open directory " + directory);
     }
-	//while there are still *.txt files to read
 }
 
 Generation::~Generation() {
@@ -63,33 +58,17 @@ Generation::~Generation() {
 	}
 }
 
-void Generation::save(const char *directory) {
-	//prepare directory
-	//create directory, if it doesn't already exist
-	{
-	std::ostringstream command;
-	command << "mkdir " << directory;	//name is the same on windows/UNIX :D
-	system(command);
-	}	//braces so stringstream goes out of scope
-	//delete all files in directory (?)
-	
+void Generation::save(const std::string &directory) {
 	//save innovation numbers
-	//open file
-	std::ostringstream filename;
-	filename << directory << '/' << "innovations.txt";
-	std::ofstream file(filename.str(), std::ifstream::out);
-	filename.clear();
-	//test if file was opened -> directory is available
-	if (!file.good()) {				
-		std::ostringstream error;
-		error << "Cannot open directory " << directory;
-        throw std::runtime_error(error.str());
+	std::ofstream file(directory + "/_innovations.ini");
+	if (!file) {
+		throw std::runtime_error("Generation: unable to save to " + directory + "/_innovations.ini");
 	}
-	//save innovation number data
-	for (auto it=curgenes.begin(); it!=curgenes.end(); ++it) {
-		file << it->second << ' '				//innovation number
-			 << it->first->first << ' '			//start id
-			 << it->first->second << std::endl;	//end id
+	
+	for (auto& kv : curgenes) {
+		file << kv.second << ' '				//innovation number
+			 << kv.first.first << ' '			//start id
+			 << kv.first.second << std::endl;	//end id
 	}
 	file.close();
 	
@@ -97,9 +76,7 @@ void Generation::save(const char *directory) {
 	size_t count = 1;
 	for (auto species : networks) {
 		for (auto network : species) {
-			filename << directory << '/' << "network" << count << ".txt";
-			network.save(filename.str());
-			filename.clear();
+			network->save(directory + "/network" + std::to_string(count) + ".txt");
 			count++;
 		}
 	}
@@ -108,39 +85,40 @@ void Generation::save(const char *directory) {
 void Generation::step() {
 	//mutations only: assume there is only one species
 
-	compete();	//sorts networks descending by fitness value
+	compete();
 	std::vector<NNetwork*>& species = networks.front();
 	
 	//repopulate generation
-	for(size_t i=GEN_KEEP; i<GEN_SIZE; i++) {	
-		//delete network
-		delete species[i];
-
-		//fill in its spot
-		NNetwork* chosen = species[rand() % GEN_KEEP];	//pick a random network
-		NNetwork* a = new NNetwork(chosen);				//put a mutated copy of it back into species
-		a.mutate(this);
-		species[i] = a;
+	size_t GEN_KEEP = species.size()*KEEP_RATIO;
+	for(size_t i=GEN_KEEP; i<species.size(); i++) {
+		delete species[i];		//delete network
+								//fill in its spot with a mutated copy of a good network
+		NNetwork* chosen = species[rand() % GEN_KEEP];
+		NNetwork* off = new NNetwork(*chosen);
+		off->mutate(*this);
+		species[i] = off;
 	}
 	
-	//depending on whether innovation numbers 
-	curgenes.clear();
+	//depending on whether innovation numbers are saved between generations
+	//curgenes.clear();
 }
 
 size_t Generation::getInnovNum(size_t startid, size_t endid) {
 	//	if that edge has already been added that generation, returns its value in [curgenes]
-	//	otherwise, increments [curinnov] and adds the new edge to [curgenes]
+	//	otherwise, increments [maxinnov] and adds the new edge to [curgenes]
 	auto it = curgenes.find({startid, endid});
 	if (it == curgenes.end()) {
-		curinnov++;
-		curgenes[{startid, endid}] = curinnov;
-		return curinnov;
+		maxinnov++;
+		curgenes[{startid, endid}] = maxinnov;
+		return maxinnov;
 	} else {
-		return *it;
+		return it->second;
 	}
 }
 
-//void compete();
+void Generation::compete() {
+	//sorts networks descending by fitness value
+}
 
 
 //breeding stuff

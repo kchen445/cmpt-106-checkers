@@ -6,10 +6,10 @@
 namespace network {
 
     class SigmoidNode : public NodeType {
-
-        SigmoidNode ();
-
-        double activationFunction (double in) override;
+	
+		public:
+			SigmoidNode ();
+			double activationFunction (double in) override;
 
     };
 

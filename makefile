@@ -22,11 +22,11 @@ ailib.a:
 
 # builds ailib.a from local makefile
 # does not build imlib.a though, so we build it here
-aiexe: imlib.a
-	@cd ai && $(MAKE) exe
+#aiexe: ailib.a imlib.a
+#	@cd ai && $(MAKE) exe
 
-imexe:
-	@cd core/im && $(MAKE) exe
+#imexe:
+#	@cd core/im && $(MAKE) exe
 
 
 # Cleaning #

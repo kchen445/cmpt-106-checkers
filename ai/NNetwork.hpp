@@ -34,14 +34,12 @@
 #define NNETWORK_NNETWORK_HPP
 
 #include "NodeType.hpp"
-//#include "ThresholdNode.hpp"
-//#include "InputNode.hpp"
-//#include "OutputNode.hpp"
 #include "NNetworkOutputType.hpp"
 #include <vector>
 #include <string>
 
 namespace network {
+	class Generation;	//forward declaration to resolve circular reference
 	
 	struct Edge {
 		size_t startid;
@@ -51,23 +49,12 @@ namespace network {
 		double weight;
 		bool enabled;
 	};
-	
-    //using Connection = ConnectionType<double, NodeTypeEx<double>>;
 
-	class NNetwork {
-	private:
-		//fetch a node from within the vectors given its id
-		static const double c1, c2, c3;
-		NodeType* getNode(size_t id);
-	
+	class NNetwork {	
     public:
         // Nodes
 		std::vector<NodeType*> nodes;
 		
-        /*std::vector<InputNode*> inputs;
-        std::vector<OutputNode*> outputs;
-		std::vector<NodeType*> internals;
-		size_t numNodes;*/
 		size_t numInputs;
 		size_t numOutputs;
 		size_t numNodes;
@@ -76,33 +63,37 @@ namespace network {
 		
         // Output Device
         NNetworkOutputType* outputDevice;
-
+		
+	/* saving, loading, constructors, destructors */
         //Construct an empty neural network
-        NNetwork(NNetworkOutputType* outputDevice);
+        NNetwork(NNetworkOutputType* outputDevice, size_t numInputs, size_t numOutputs, size_t numHidden = 0);
+		//Copy constructor
+		NNetwork(const NNetwork &other);
 
         //Load a neural network from a file
-        NNetwork(NNetworkOutputType* outputDevice, const std::string& filename);
+        NNetwork(NNetworkOutputType* outputDevice, const std::string &filename);
         //Save the neural network to a file
-        void save(const std::string& filename);
+        void save(const std::string &filename);
 		
+		//Destructor
         ~NNetwork();
 		
+	/* Network modification functions */
 		//Add a (hidden) node to the neural network and returns its id
 		size_t addNode();
-		//size_t addNode(connections)?
-		
 		//Add a connection to the neural network
-		void addConnection(size_t startid, size_t endid, double weight, unsigned int innov, bool enabled = true);
+		void addConnection(size_t startid, size_t endid, size_t innov, double weight, bool enabled = true);
 		
 		//Enable a connection, given its index within the [conns] list
 		void enableConnection(size_t idx);
 		//Disable a connection, given its index within the [conns] list (note -- not very efficient)
 		void disableConnection(size_t idx);
 
+	/* Calculation functions */
         //Given some inputs, return the value of the output nodes
         std::vector<double> calculate(std::vector<double> const &inputValues);
 
-
+	/* Difference functions */
         // Returns a value which coresonds the similarity between two networks.
         // Larger values mean a larger difference and so on.
         //
@@ -110,11 +101,10 @@ namespace network {
         //
         // Formula from K. O. Stanley and R. Miikkulainen Neural Evolution
         // through Augmenting Topologies.
-        double difference (const NNetwork& other);
+        double difference (const NNetwork &other);
 
-
-        // Mutation functions //
-        void mutate ();
+    /* Mutation functions */
+        void mutate(const Generation &parent);
 
         void mutateChangeWeightValue (size_t index);
 
