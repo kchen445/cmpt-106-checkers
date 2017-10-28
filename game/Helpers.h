@@ -10,10 +10,10 @@ enum class Tile: char;
 bool withinBounds(int baseX, int baseY, int changeX = 0, int changeY = 0);
 
 
-struct point{
+struct Point{
     int row;
     int col;
-    point(int x, int y);
+    Point(int x, int y);
 };
 
 //all pieces are on square where the row and column add up to 
@@ -21,7 +21,7 @@ struct point{
 //whether a number is odd or not easier and more readable
 bool isOdd(int x);
 
-bool operator== (point a, point b);
+bool operator== (Point a, Point b);
 
 
 

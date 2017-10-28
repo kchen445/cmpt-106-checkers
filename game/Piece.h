@@ -16,18 +16,18 @@ struct Piece {
     //use this to determine whether a point on the board
     //has a proper Piece or not
     bool isEmpty;
-	std::vector< std::vector<point> > allJumps;
+	std::vector< std::vector<Point> > allJumps;
 	
     Piece(point initialPosition, int player1Or2);
     Piece(point initialPosition);
 	//helper functions to find piece jumps
-	bool canJump(const Board &board);
-	bool canJumpKing (const Board &board);
-	void getJumpsPiece (const Board &board, int rowDirection);
-	void getJumpsKing  (const Board &board, int rowDirection, int colDirection);
-	void getJumpsToEmptyPiece (const Board &board);
-	void getJumpsToEmptyKing  (const Board &board);
-    std::vector< std::vector<point> > findMoves (const Board &board);
+	bool canJump(const vector<vector<Piece>> &gameBoard);
+	bool canJumpKing (const vector<vector<Piece>> &gameBoard);
+	void getJumpsPiece (const vector<vector<Piece>> &gameBoard, int rowDirection);
+	void getJumpsKing  (const vector<vector<Piece>> &gameBoard, int rowDirection, int colDirection);
+	void getJumpsToEmptyPiece (const vector<vector<Piece>> &gameBoard);
+	void getJumpsToEmptyKing  (const vector<vector<Piece>> &gameBoard);
+    std::vector< std::vector<point> > findMoves (const vector< vector < Piece > > &gameBoard);
 };
 
 

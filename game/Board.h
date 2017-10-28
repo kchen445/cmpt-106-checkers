@@ -17,7 +17,7 @@ public:
     Board();
 	
 	//test whether a piece has its 'isEmpty' variable as true
-    bool positionIsEmpty(const point &point);
+    bool positionIsEmpty(const Point &point);
 
     //function to create the starting conditions for checkers in case
     //player decides to have multiple games in one build

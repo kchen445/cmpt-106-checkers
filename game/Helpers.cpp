@@ -12,7 +12,7 @@ bool withinBounds(int baseX, int baseY, int changeX = 0, int changeY = 0) {
             (baseX + changeX) < 8 && (baseX + changeX) >= 0);
 }
 
-point::point(int x, int y)
+Point::Point(int x, int y)
         :row(x),col(y)
 {}
 
@@ -20,7 +20,7 @@ bool isOdd(int x){
     return ((x%2) == 1);
 }
 
-bool operator== (point a, point b) {
+bool operator== (Point a, Point b) {
     return (a.row == b.row && a.col == b.col);
 }
 
@@ -29,7 +29,7 @@ bool operator== (point a, point b) {
 //adding the row and column (0 indexed ) together of
 //the Piece add up to an odd number
 
-std::string pointToString(point a) {
+std::string pointToString(Point a) {
     std::string move = "";
     move.push_back(a.row + 1 +'0');
     char cCol = a.col + 65;

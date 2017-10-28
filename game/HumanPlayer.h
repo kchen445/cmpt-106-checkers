@@ -18,6 +18,7 @@ public:
 	
 	//commented functions should be implemented into player.h/cpp
 	
+	//have the constructor set canMove to true and player to the parameter
     HumanPlayer(int whichPlayer);
     //void findMoves(const Board &board);
 	//void movesToString();

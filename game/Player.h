@@ -46,7 +46,7 @@ public:
 	
 	//call the findMoves function for each piece in the vector of pieces
 	//and push them to the possibleMoves vector
-    void findMoves(const Board &board);
+    void findMoves(const vector< vector<Piece> > &gameBoard);
 	
 	//convert the lines in possibleMoves to strings to put in
 	//movesAsStrings
