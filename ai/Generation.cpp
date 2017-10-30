@@ -4,7 +4,11 @@
 #include <fstream>
 #include <string>
 
+#ifdef _WIN32
 #include "../include/dirent.h"
+#else
+#include <dirent.h>
+#endif
 #include <stdlib.h>
 inline double rand_double() {
 	return static_cast<double>(rand()) / static_cast<double>(RAND_MAX);
