@@ -3,9 +3,10 @@
 //
 
 #include "Board.h"
-
+using namespace std;
 Board::Board()
-:gameBoard(8,vector<Piece>(8,Piece(Point(0,0)))
+		:gameBoard(8,vector<Piece>(8,Piece(Point(0,0))))
+{}
 
 //set up the initial positions of checker pieces
 void Board::initializeBoard (){
@@ -20,7 +21,7 @@ void Board::initializeBoard (){
 		}
 	}
 	for(int i = 3; i < 5; i++){
-		for(int j = 0; j < 8; j++){
+		for(int j = 3; j < 5; j++){
 			Point position(i,j);
 			gameBoard.at(i).at(j) = Piece(position);
 		}
@@ -39,17 +40,19 @@ void Board::initializeBoard (){
 
 bool Board::positionIsEmpty(const Point &point){
 	if(withinBounds(point.row,point.col)){
-		return gameBoard.at(row).at(col).isEmpty;
+		return gameBoard.at(point.row).at(point.col).isEmpty;
 	}
 }
 
 //function to take a player's move and apply it to the game board
-void update(vector<*Player> listOfPlayers, int whichPlayer){
+void Board::update(vector<Player*> listOfPlayers, int whichPlayer){
 	int otherPlayer;
 	whichPlayer == 0 ? otherPlayer = 1 : otherPlayer = 0;
 	
-	vector < Point > chosenMove(listOfPlayers[whichPlayer]->possibleMoves.at(listOfPlayers[whichPlayer]->indexOfMove));
-	
+	vector< Point > chosenMove = (listOfPlayers.at(whichPlayer)->possibleMoves.at(listOfPlayers.at(whichPlayer)->indexOfMove));
+
+
+
 	int indexOfPieceToBeMoved;
 	for(int i = 0;i < listOfPlayers[whichPlayer]->pieces.size(); i++){
 		if(chosenMove.at(0) == listOfPlayers[whichPlayer]->pieces.at(i).position){
@@ -59,13 +62,13 @@ void update(vector<*Player> listOfPlayers, int whichPlayer){
 	}
 	//when updating the board, it is also necessary to update the piece stored inside
 	//a player struct
-	*Piece pieceToBeMoved = &(listOfPlayers[whichPlayer]->pieces.at(indexOfPieceToBeMoved));
+	Piece* pieceToBeMoved = &(listOfPlayers[whichPlayer]->pieces.at(indexOfPieceToBeMoved));
 	
 	//a jump that takes a piece will result in a position difference of +-2 for row and column
 	//of initial Point and end Point
-	bool moveTakesPiece = (chosenMove.at(1).row - chosenMove.at(0).row)%2 == 0);
+	bool moveTakesPiece = (chosenMove.at(1).row - chosenMove.at(0).row)%2 == 0;
 	
-	for(int i = 0, i < chosenMove.size()-1; i++){
+	for(int i = 0; i < chosenMove.size()-1; i++){
 		
 		Point initialPosition = chosenMove.at(i);
 		Point endPosition = chosenMove.at(i+1);
@@ -86,11 +89,11 @@ void update(vector<*Player> listOfPlayers, int whichPlayer){
 			}
 			
 			//change the board by removing the other player's piece from the board
-			//and remove this element from the vector of pieces for the other player
+			//by setting the player value to 0 so finding moves will ignore it
 			gameBoard.at(otherPlayerPieceRow).at(otherPlayerPieceCol).isEmpty = true;
 			gameBoard.at(otherPlayerPieceRow).at(otherPlayerPieceCol).player = 0;
-			*Vector< Piece > otherPlayerPieces = &(listOfPlayers[otherPlayer]->pieces);
-			OtherPlayerPieces->erase(*(otherPlayerPieces.begin())+i-1);
+			vector< Piece >* otherPlayerPieces = &(listOfPlayers[otherPlayer]->pieces);
+			otherPlayerPieces->at(i).player = 0;
 			
 			//change the gameBoard according to a player's chosen move
 			gameBoard.at(endPosition.row).at(endPosition.col) = gameBoard.at(initialPosition.row).at(initialPosition.col);

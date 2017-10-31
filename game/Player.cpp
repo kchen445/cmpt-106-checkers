@@ -1,15 +1,17 @@
 #include "Player.h"
 
 
-void Player::findMoves(const vector<vector<Piece>> &gameBoard){
+void Player::findMoves(const std::vector<std::vector<Piece>> &gameBoard){
+    possibleMoves.clear();
 	for(int i = 0; i < pieces.size(); i++){
-		vector < vector < point> > currentPieceMoves;
+		std::vector < std::vector < Point> > currentPieceMoves;
+		if(pieces.at(i).player == 0){continue;}
 		currentPieceMoves = pieces.at(i).findMoves(gameBoard);
 		possibleMoves.insert(possibleMoves.end(),currentPieceMoves.begin(),currentPieceMoves.end());
 	}
 }
 
-void Player::movesToString(const vector<vector<Piece>> &gameBoard){
+void Player::movesToString(const std::vector<std::vector<Piece>> &gameBoard){
 	
 }
 

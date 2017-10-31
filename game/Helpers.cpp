@@ -7,7 +7,7 @@ enum class Tile: char {
 };
 
 //function to test whether a given change will go out of bounds for the game board
-bool withinBounds(int baseX, int baseY, int changeX = 0, int changeY = 0) {
+bool withinBounds(int baseX, int baseY, int changeX, int changeY) {
     return ((baseY + changeY) < 8  && (baseY + changeY) >= 0 &&
             (baseX + changeX) < 8 && (baseX + changeX) >= 0);
 }
@@ -15,7 +15,12 @@ bool withinBounds(int baseX, int baseY, int changeX = 0, int changeY = 0) {
 Point::Point(int x, int y)
         :row(x),col(y)
 {}
-
+Point::Point(const Point &other)
+        :row(other.row),col(other.col)
+{}
+Point::Point()
+:row(0),col(0)
+{}
 bool isOdd(int x){
     return ((x%2) == 1);
 }
@@ -32,7 +37,8 @@ bool operator== (Point a, Point b) {
 std::string pointToString(Point a) {
     std::string move = "";
     move.push_back(a.row + 1 +'0');
-    char cCol = a.col + 65;
+    char cCol = a.col + 1 + '0';
+    move.push_back(',');
     move.push_back(cCol);
     return move;
 }

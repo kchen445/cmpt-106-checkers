@@ -14,6 +14,8 @@ struct Point{
     int row;
     int col;
     Point(int x, int y);
+    Point(const Point &other);
+    Point();
 };
 
 //all pieces are on square where the row and column add up to 
@@ -25,7 +27,7 @@ bool operator== (Point a, Point b);
 
 
 
-std::string pointToString(point a);
+std::string pointToString(Point a);
 
 //function that determines if the player wants to play another round
 bool retry();

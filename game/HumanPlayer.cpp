@@ -5,3 +5,8 @@
 #include "HumanPlayer.h"
 
 
+HumanPlayer::HumanPlayer(int whichPlayer)
+:player(whichPlayer),indexOfMove(0),canMove(true)
+{
+
+}

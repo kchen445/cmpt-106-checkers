@@ -7,7 +7,9 @@
 
 
 struct AIPlayer: public Player{
-
+	AIPlayer(int whichPlayer);
+	
+	void getMove(const std::vector< std::vector<Piece> > &gameBoard);
 };
 
 

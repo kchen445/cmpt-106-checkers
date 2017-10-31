@@ -35,7 +35,7 @@ public:
 	//a checker piece can have multiple jumps in different directions
 	//the inner vector stores all the jumps a single piece makes
 	//the outer vector stores the inner vectors as a move for a single turn
-    std::vector< std::vector < point > > possibleMoves;
+    std::vector< std::vector < Point > > possibleMoves;
 	
 	//easiest way to get player input is to compare strings
 	//convert the possibleMoves vector into strings that can
@@ -46,7 +46,7 @@ public:
 	
 	//call the findMoves function for each piece in the vector of pieces
 	//and push them to the possibleMoves vector
-    void findMoves(const vector< vector<Piece> > &gameBoard);
+    void findMoves(const std::vector< std::vector<Piece> > &gameBoard);
 	
 	//convert the lines in possibleMoves to strings to put in
 	//movesAsStrings
@@ -67,7 +67,7 @@ public:
 	//more than 2 xy's are for when a player can take more than one
 	//checker piece at a time
 	//Board parameter is for ai, not necessary for human
-    virtual void getMove(const board &board) = 0;
+    virtual void getMove(const std::vector< std::vector<Piece> > &gameBoard) = 0;
 	
     virtual~player() {}
 };

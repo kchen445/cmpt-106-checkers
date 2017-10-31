@@ -3,3 +3,8 @@
 //
 
 #include "AIPlayer.h"
+AIPlayer::AIPlayer(int whichPlayer)
+:player(whichPlayer),indexOfMove(0),canMove(true)
+{
+
+}

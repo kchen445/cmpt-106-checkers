@@ -8,7 +8,7 @@
 #define CMPT_106_CHECKERS_GAME_PIECE_H
 
 struct Piece {
-    point position;
+    Point position;
     bool isKing;
     //determines which player the Piece belongs to
     int player;
@@ -18,16 +18,16 @@ struct Piece {
     bool isEmpty;
 	std::vector< std::vector<Point> > allJumps;
 	
-    Piece(point initialPosition, int player1Or2);
-    Piece(point initialPosition);
+    Piece(Point initialPosition, int player1Or2);
+    Piece(Point initialPosition);
 	//helper functions to find piece jumps
-	bool canJump(const vector<vector<Piece>> &gameBoard);
-	bool canJumpKing (const vector<vector<Piece>> &gameBoard);
-	void getJumpsPiece (const vector<vector<Piece>> &gameBoard, int rowDirection);
-	void getJumpsKing  (const vector<vector<Piece>> &gameBoard, int rowDirection, int colDirection);
-	void getJumpsToEmptyPiece (const vector<vector<Piece>> &gameBoard);
-	void getJumpsToEmptyKing  (const vector<vector<Piece>> &gameBoard);
-    std::vector< std::vector<point> > findMoves (const vector< vector < Piece > > &gameBoard);
+	bool canJumpPiece(const std::vector<std::vector<Piece>> &gameBoard);
+	bool canJumpKing (const std::vector<std::vector<Piece>> &gameBoard);
+    void getJumpsPiece (std::vector < Point > jumps, const std::vector< std::vector < Piece > > &gameBoard);
+	void getJumpsKing  (std::vector < Point > jumps, const std::vector<std::vector<Piece>> &gameBoard, Point direction);
+	void getJumpsToEmptyPiece (const std::vector<std::vector<Piece>> &gameBoard);
+	void getJumpsToEmptyKing  (const std::vector<std::vector<Piece>> &gameBoard);
+    std::vector< std::vector<Point> > findMoves (const std::vector< std::vector < Piece > > &gameBoard);
 };
 
 

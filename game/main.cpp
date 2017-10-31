@@ -27,13 +27,13 @@ int main() {
 	//so it will be easier to change between a human vs human
 	//and human vs ai mode
 	if(gameMode == '1'){
-		HumanPlayer player1(PLAYER1);
-		HumanPlayer player2(PLAYER2);
+		Player* player1 = new HumanPlayer(PLAYER1);
+		Player* player2 = new HumanPlayer(PLAYER2);
 		listOfPlayers.push_back(&player1);
 		listOfPlayers.push_back(&player2);
 	}else{
-		HumanPlayer player1(PLAYER1);
-		AIPlayer player2;
+		Player* player1 = new HumanPlayer(PLAYER1);
+		Player* player2 = new AIPlayer(PLAYER2);
 		listOfPlayers.push_back(&player1);
 		listOfPlayers.push_back(&player2);
 	}
