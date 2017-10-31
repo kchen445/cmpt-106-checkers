@@ -12,6 +12,8 @@ gensave: gensave.cpp
 
 netbreed: netbreed.cpp
 	$(CXX) $(CXX_FLAGS) -o netbreed netbreed.cpp ../lib/ailib.a ../lib/imlib.a
-	
+
+xortest: xortest.cpp
+	$(CXX) $(CXX_FLAGS) -o xortest xortest.cpp ../lib/ailib.a ../lib/imlib.a
 clean:
 	rm *.exe

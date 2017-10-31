@@ -19,9 +19,9 @@ namespace network {
 	const double c3 = 0.4;	//weight sum	(0.4)
 	
 	//NNetwork mutate constants
-	const int CHANGE_WEIGHT_CHANCE = 20;	//chance a weight value will be modified		(80)
+	const int CHANGE_WEIGHT_CHANCE = 80;	//chance a weight value will be modified		(80)
 	const int RANDOM_WEIGHT_CHANCE = 20;	//chance for completely random weight value		(10)
-	const double MAX_WEIGHT_DIFF = 0.2;		//maximum change in weights if not randomly assigned
+	const double MAX_WEIGHT_DIFF = 0.5;		//maximum change in weights if not randomly assigned
 	
 	const int ADD_NODE_CHANCE = 5;			//	(3)
 	const int ADD_CONN_CHANCE = 5;			//	(5, or 30)

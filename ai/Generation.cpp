@@ -103,6 +103,9 @@ void Generation::step() {
 		species[i] = off;
 	}
 	
+	/*for(size_t i=0; i<GEN_KEEP; i++) {
+		species[i]->mutate(*this);
+	}*/
 	//depending on whether innovation numbers are saved between generations
 	//curgenes.clear();
 }

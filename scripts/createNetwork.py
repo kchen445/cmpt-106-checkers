@@ -21,7 +21,7 @@ from random import uniform
 # Configuration
 numInNodes = 3
 numOutNodes = 1
-hiddenLayers = [2] # must have at least one element
+hiddenLayers = [2, 2] # must have at least one element
 # End of configuration
 
 def randWeight (): 

@@ -279,6 +279,8 @@ void NNetwork::mutate (const Generation& parent) {
 
 	}
 
+	precalc();
+
 }
 
 void NNetwork::mutateChangeWeightValue (size_t index) {
@@ -298,7 +300,6 @@ void NNetwork::mutateChangeWeightValue (size_t index) {
 	}
 
 	conns[index].weight = newValue;
-
 }
 
 void NNetwork::mutateAddNode (size_t index) {

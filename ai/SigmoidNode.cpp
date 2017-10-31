@@ -9,5 +9,5 @@ SigmoidNode::SigmoidNode()
 {}
 
 double SigmoidNode::activationFunction(double in) {
-    return tanh(in);
+    return tanh(in/2);
 }

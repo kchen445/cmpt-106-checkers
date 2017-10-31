@@ -3,6 +3,7 @@
 //
 
 #include "OutputNode.hpp"
+#include <cmath>
 
 using namespace network;
 
@@ -13,11 +14,12 @@ OutputNode::OutputNode()
           im::Sender(im::Channel::neuralOutputNode),
           id(OutputNode::nextId++)
 {
-    sendMessage(im::Channel::neuralOutputNodeCreated, {{id}});
+    //sendMessage(im::Channel::neuralOutputNodeCreated, {{id}});
 }
 
 double OutputNode::activationFunction(double in) {
-    return in >= 0 ? 1 : -1;
+    return tanh(in/2);
+    //return in >= 0 ? 1 : -1;
 }
 
 double OutputNode::calculate() {
@@ -29,6 +31,6 @@ double OutputNode::calculate() {
 
     rawValue = activationFunction(calculatedValue);
 
-    sendMessage({{id, rawValue}});
+    //sendMessage({{id, rawValue}});
     return rawValue;
 }
