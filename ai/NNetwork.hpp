@@ -63,6 +63,8 @@ namespace network {
 		
         // Output Device
         NNetworkOutputType* outputDevice;
+
+        double fitnessValue = 0.0;
 		
 	/* saving, loading, constructors, destructors */
         //Construct an empty neural network
@@ -121,4 +123,10 @@ namespace network {
 	};
 
 }
+
+// Compare networks based on fitness values.
+inline bool operator< (network::NNetwork const & lhs, network::NNetwork const &rhs) {
+    return lhs.fitnessValue < rhs.fitnessValue;
+}
+
 #endif

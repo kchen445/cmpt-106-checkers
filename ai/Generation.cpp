@@ -120,9 +120,9 @@ size_t Generation::getInnovNum(size_t startid, size_t endid) {
 	}
 }
 
-void Generation::compete() {
-	//sorts networks descending by fitness value
-}
+// void Generation::compete() {
+// 	//sorts networks descending by fitness value
+// }
 
 
 //breeding stuff

@@ -12,7 +12,7 @@ LIB_DEP = ../lib/imlib.a
 SCRIPT_DIR = ../scripts/dep.sh
 
 # Excluded Files
-EXCLUDE = 
+EXCLUDE = Generation_sampleuse.cpp
 
 # Directories
 OUT_DIR = ./out/

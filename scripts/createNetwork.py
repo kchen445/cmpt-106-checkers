@@ -19,9 +19,9 @@ from random import uniform
 #
 
 # Configuration
-numInNodes = 64
-numOutNodes = 32
-hiddenLayers = [40, 34] # must have at least one element
+numInNodes = 3
+numOutNodes = 1
+hiddenLayers = [2] # must have at least one element
 # End of configuration
 
 def randWeight (): 
