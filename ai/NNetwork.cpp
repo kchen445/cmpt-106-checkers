@@ -25,7 +25,6 @@ NNetwork::NNetwork(NNetworkOutputType* outputDevice, size_t numInputs, size_t nu
 	numNodes = numInputs + numOutputs + numHidden;
 }
 
-
 NNetwork::NNetwork(NNetworkOutputType* outputDevice, const std::string &filename)
         : outputDevice(outputDevice)
 {
@@ -113,6 +112,25 @@ NNetwork::~NNetwork() {
 	}
 }
 
+void NNetwork::precalc() {
+	for (auto node : nodes) {
+		node->connections.clear();
+	}
+	
+	size_t newnumNodes = 0;
+	for(auto conn : conns) {
+		newnumNodes = std::max(conn.endid, newnumNodes);
+	}
+	for(size_t i=numNodes; i<newnumNodes+1; i++) {
+		addNode();
+	}
+	numNodes = newnumNodes+1;
+	
+	for (auto conn : conns) {
+		nodes[conn.endid]->addConnection(nodes[conn.startid], conn.weight);
+	}
+}
+
 size_t NNetwork::addNode() {
 	nodes.push_back(new SigmoidNode());
 	return ++numNodes;
@@ -189,7 +207,7 @@ double NNetwork::difference(const NNetwork &other) {
 	auto it = (*this).conns.begin(), iend = (*this).conns.end();
 	auto jt = other.conns.begin(), jend = other.conns.end();
 	while (true) {
-		if (it->innov == jt->innov) {					//same
+		if (it->innov == jt->innov) {					//matching
 			Wsum += abs(it->weight - jt->weight);		//update weight avg
 			++Wcount;
 			++it; ++jt;
@@ -208,6 +226,40 @@ double NNetwork::difference(const NNetwork &other) {
 	}
 	
 	return (c1 * double(E))/N + (c2 * double(D))/N + (c3 * Wsum/Wcount);
+}
+
+//assumes this neural network is the more fit one
+//	(only add excess or disjoint edges from this network)
+NNetwork* NNetwork::breed(const NNetwork &other) {
+	assert(numInputs == other.numInputs && numOutputs == other.numOutputs);
+	
+	NNetwork* off = new NNetwork(outputDevice, numInputs, numOutputs);
+
+	auto it = (*this).conns.begin(), iend = (*this).conns.end();
+	auto jt = other.conns.begin(), jend = other.conns.end();
+	while (true) {
+		if (it->innov == jt->innov) {					//matching
+			off->conns.push_back((rand() % 2) ? *it : *jt);
+			++it; ++jt;
+		} else if (it->innov < jt->innov) {				//this network is disjoint
+			off->conns.push_back(*it);
+			++it;
+		} else {										//other network is disjoint
+			//off->conns.push_back(jt);
+			++jt;
+		}
+		
+		if (it == iend) {								//other network has excess
+			//while (jt != jend) {off->conns.push_back(jt); ++jt;}
+			break;
+		} else if (jt == jend) {						//this network has excess
+			while (it != iend) {off->conns.push_back(*it); ++it;}
+			break;
+		}
+	}
+	
+	off->precalc();		//make node structure for conns list
+	return off;
 }
 
 static double rand_double() {
@@ -230,9 +282,6 @@ void NNetwork::mutate (const Generation& parent) {
 }
 
 void NNetwork::mutateChangeWeightValue (size_t index) {
-
-	const double defaultMax = 0.2;
-
 	double newValue;
 
 	if (randomChance(RANDOM_WEIGHT_CHANCE)) {
@@ -241,8 +290,8 @@ void NNetwork::mutateChangeWeightValue (size_t index) {
 
 		double crnt = conns[index].weight;
 
-		double maxAdd = std::min(1 - crnt, defaultMax);
-		double maxSub = std::max(-1 + crnt, -defaultMax);
+		double maxAdd = std::min(1 - crnt, MAX_WEIGHT_DIFF);
+		double maxSub = std::max(-1 + crnt, -MAX_WEIGHT_DIFF);
 
 		double rand = rand_double();
 		newValue = ((maxAdd - maxSub) * rand) + maxSub;

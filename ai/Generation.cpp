@@ -126,7 +126,8 @@ void Generation::compete() {
 
 
 //breeding stuff
-
+//If the maximum fitness of a species did not improve in 15 generations, the networks in the stagnant species were not allowed to reproduce
+//. The champion of each species with more than five networks was copied into the next generation unchanged.
 /*
 	//void Generation::step() {
 		//generate number of offspring based on sum of fitness values in species
@@ -148,7 +149,7 @@ void Generation::compete() {
 				}
 			}
 
-			if (not(sorted)) {
+			if (!sorted) {
 				std::vector<NNetwork*> newspecies;
 				newspecies.push_back(network);
 				network.push_back(newspecies);

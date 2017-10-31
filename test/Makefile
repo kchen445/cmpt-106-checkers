@@ -10,5 +10,8 @@ neteval: neteval.cpp
 gensave: gensave.cpp
 	$(CXX) $(CXX_FLAGS) -o gensave gensave.cpp ../lib/ailib.a ../lib/imlib.a
 
+netbreed: netbreed.cpp
+	$(CXX) $(CXX_FLAGS) -o netbreed netbreed.cpp ../lib/ailib.a ../lib/imlib.a
+	
 clean:
 	rm *.exe

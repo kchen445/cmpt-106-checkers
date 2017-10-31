@@ -79,6 +79,9 @@ namespace network {
         ~NNetwork();
 		
 	/* Network modification functions */
+		//recreates the node data structure to model the connection data structure
+		void precalc();
+		
 		//Add a (hidden) node to the neural network and returns its id
 		size_t addNode();
 		//Add a connection to the neural network
@@ -102,7 +105,11 @@ namespace network {
         // Formula from K. O. Stanley and R. Miikkulainen Neural Evolution
         // through Augmenting Topologies.
         double difference (const NNetwork &other);
-
+		
+	/* Breeding function */
+		//Breed this network with another network, assuming this network is more fit
+		NNetwork* breed(const NNetwork &other);
+		
     /* Mutation functions */
         void mutate(const Generation &parent);
 
