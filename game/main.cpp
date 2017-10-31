@@ -17,7 +17,7 @@ int main() {
 	bool stillPlay = true;
 	Display display;
 	Board board;
-	vector< *Player > listOfPlayers;
+	vector< Player* > listOfPlayers;
 	cout << "1. Human Vs Human" << endl;
 	cout << "2. Human Vs AI" << endl;
 	cout << "Input your choice:" << endl;
@@ -29,13 +29,13 @@ int main() {
 	if(gameMode == '1'){
 		Player* player1 = new HumanPlayer(PLAYER1);
 		Player* player2 = new HumanPlayer(PLAYER2);
-		listOfPlayers.push_back(&player1);
-		listOfPlayers.push_back(&player2);
+		listOfPlayers.push_back(player1);
+		listOfPlayers.push_back(player2);
 	}else{
 		Player* player1 = new HumanPlayer(PLAYER1);
 		Player* player2 = new AIPlayer(PLAYER2);
-		listOfPlayers.push_back(&player1);
-		listOfPlayers.push_back(&player2);
+		listOfPlayers.push_back(player1);
+		listOfPlayers.push_back(player2);
 	}
 	
 
@@ -58,7 +58,7 @@ int main() {
       cout << "Player's move" << endl;
       display.displayGame(board.gameBoard);
       listOfPlayers[0]->findMoves(board.gameBoard);
-      listOfPlayers[0]->getMove(board);
+      listOfPlayers[0]->getMove(board.gameBoard);
       board.update(listOfPlayers,0);
       cout << endl;
       if (listOfPlayers[0]->possibleMoves.size()) {
@@ -67,7 +67,7 @@ int main() {
       cout << "Computer's move" << endl;
       display.displayGame(board.gameBoard);
       listOfPlayers[1]->findMoves(board.gameBoard);
-      listOfPlayers[1]->getMove(board);
+      listOfPlayers[1]->getMove(board.gameBoard);
       board.update(listOfPlayers,1);
     }
     if(!listOfPlayers[1]->canMove){
