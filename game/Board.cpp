@@ -51,8 +51,6 @@ void Board::update(vector<Player*> listOfPlayers, int whichPlayer){
 	
 	vector< Point > chosenMove = (listOfPlayers.at(whichPlayer)->possibleMoves.at(listOfPlayers.at(whichPlayer)->indexOfMove));
 
-
-
 	int indexOfPieceToBeMoved;
 	for(int i = 0;i < listOfPlayers[whichPlayer]->pieces.size(); i++){
 		if(chosenMove.at(0) == listOfPlayers[whichPlayer]->pieces.at(i).position){

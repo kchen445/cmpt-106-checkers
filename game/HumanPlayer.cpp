@@ -12,42 +12,6 @@ HumanPlayer::HumanPlayer(int whichPlayer)
 
 }
 
-
-void HumanPlayer::findMoves(const vector< vector<Piece> > &gameBoard) {
-	possibleMoves.clear();
-	for (int i = 0; i < pieces.size(); i++) {
-		vector< vector< Point > > currPieceMoves;
-		if (pieces.at(i).player == 0) { continue; }
-		currPieceMoves = Piece::findMoves();
-		possibleMoves.pushback(currPieceMoves);
-	}
-}
-
-void HumanPlayer::movesToString() {
-	movesAsString.clear();
-	for (int i = 0; i < possibleMoves.size(); i++) {
-		string point_str = "";
-		for (int j = 0; j < possibleMoves[i].size(); j++) {
-			
-			if (point_str == "") {
-				point_str += to_string(possibleMoves[i][j].row) + to_string(possibleMoves[i][j].col);
-			}
-			else {
-				point_str += "-" + to_string(possibleMoves[i][j].row) + to_string(possibleMoves[i][j].col);
-			}
-		}
-		movesAsString.push_back(point_str);
-	}
-}
-
-void HumanPlayer::initializePlayer() {
-	indexOfMove = -1;
-	//canMove = ?;
-	pieces.clear();
-	possibleMoves.clear();
-	movesAsString.clear();
-}
-
 void HumanPlayer::getMove() {
 	int flag = 0;
 
