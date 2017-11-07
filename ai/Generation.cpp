@@ -1,4 +1,5 @@
 #include "Generation.hpp"
+#include "NNetwork.hpp"
 #include "Constants.hpp"
 
 #include <fstream>
@@ -16,6 +17,8 @@ inline double rand_double() {
 
 using namespace network;
 
+//https://stackoverflow.com/questions/12764645/good-hash-function-with-2-integer-for-a-special-key
+//https://stackoverflow.com/questions/17016175/c-unordered-map-using-a-custom-class-type-as-the-key
 Generation::Generation(NNetworkOutputType* outputDevice) : outputDevice(outputDevice) {
 	
 }
@@ -31,6 +34,7 @@ Generation::Generation(NNetworkOutputType* outputDevice, const std::string &dire
 		size_t innov, startid, endid;
 		file >> innov >> startid >> endid >> std::ws;
 		curgenes[{startid, endid}] = innov;
+		maxinnov = (maxinnov > innov) ? maxinnov : innov;
 	}
 	file.close();
 	
@@ -123,9 +127,14 @@ size_t Generation::getInnovNum(size_t startid, size_t endid) {
 	}
 }
 
-// void Generation::compete() {
-// 	//sorts networks descending by fitness value
-// }
+/*bool Generation::addGene(size_t startid, size_t endid, size_t innov) {
+	curgenes[{startid, endid}] = innov;
+}
+			void addGenes(NNetwork *net);*/
+			
+//void Generation::compete() {
+ 	//sorts networks descending by fitness value
+//}
 
 
 //breeding stuff

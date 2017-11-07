@@ -39,7 +39,7 @@
 #include <string>
 
 namespace network {
-	class Generation;	//forward declaration to resolve circular reference
+	class Generation;	//forward declaration -- circular dependence
 	
 	struct Edge {
 		size_t startid;
@@ -86,8 +86,11 @@ namespace network {
 		
 		//Add a (hidden) node to the neural network and returns its id
 		size_t addNode();
+		
 		//Add a connection to the neural network
 		void addConnection(size_t startid, size_t endid, size_t innov, double weight, bool enabled = true);
+		
+		void changeConnectionWeight(size_t idx, double weight);
 		
 		//Enable a connection, given its index within the [conns] list
 		void enableConnection(size_t idx);
@@ -113,13 +116,13 @@ namespace network {
 		NNetwork* breed(const NNetwork &other);
 		
     /* Mutation functions */
-        void mutate(const Generation &parent);
+        void mutate(Generation &parent);
 
         void mutateChangeWeightValue (size_t index);
 
-        void mutateAddNode (size_t index);
+        void mutateAddNode (Generation &parent, size_t index);
 
-        void mutateAddConn ();
+        bool mutateAddConn (Generation& parent, size_t startid, size_t endid);
 	};
 
 }

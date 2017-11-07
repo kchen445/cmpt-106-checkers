@@ -4,11 +4,14 @@
 #include "OutputNode.hpp"
 #include "SigmoidNode.hpp"
 
+#include "Generation.hpp"
 #include "Constants.hpp"
 
 #include <unordered_map>
 #include <fstream>
 #include <cstdlib>
+#include <queue>
+#include <algorithm>
 
 #include <assert.h>
 
@@ -96,6 +99,7 @@ void NNetwork::save(const std::string &filename) {
 		file << node->getType();*/
 	
 	// --- write connections ---
+	std::sort(conns.begin(), conns.end(), [](const Edge &a, const Edge &b) { return a.innov < b.innov; });
 	for (auto conn : conns) {
 		file << conn.startid << ' '
 		     << conn.endid 	 << ' '
@@ -133,7 +137,19 @@ void NNetwork::precalc() {
 
 size_t NNetwork::addNode() {
 	nodes.push_back(new SigmoidNode());
-	return ++numNodes;
+	return numNodes++;
+}
+
+void NNetwork::changeConnectionWeight(size_t idx, double weight) {
+	conns[idx].weight = weight;
+	NodeType* end   = nodes[conns[idx].endid];	//search for connection in node and remove it
+	NodeType* start = nodes[conns[idx].startid];
+	for(auto it = end->connections.begin(); it != end->connections.end(); ++it) {
+		if (it->node == start) {
+			it->weight = weight;
+			break;
+		}
+	}
 }
 
 void NNetwork::addConnection(size_t startid, size_t endid, size_t innov, double weight, bool enabled) {
@@ -148,14 +164,14 @@ void NNetwork::addConnection(size_t startid, size_t endid, size_t innov, double 
 }
 
 void NNetwork::enableConnection(size_t idx) {
-	Edge conn = conns.at(idx);
+	Edge &conn = conns.at(idx);
 	
 	conn.enabled = true;
 	nodes[conn.endid]->addConnection(nodes[conn.startid], conn.weight);
 }
 
 void NNetwork::disableConnection(size_t idx) {
-	Edge conn = conns.at(idx);
+	Edge &conn = conns.at(idx);
 	
 	conn.enabled = false;					//disable connection in list
 	NodeType* end   = nodes[conn.endid];	//search for connection in node and remove it
@@ -262,25 +278,34 @@ NNetwork* NNetwork::breed(const NNetwork &other) {
 	return off;
 }
 
-static double rand_double() {
-	return static_cast<double>(rand()) / static_cast<double>(RAND_MAX);
-}
-
-void NNetwork::mutate (const Generation& parent) {
+void NNetwork::mutate(Generation &parent) {	
 	for (size_t i = 0; i < conns.size(); ++i) {
-		
-		if (randomChance(CHANGE_WEIGHT_CHANCE)) {
+		if (randomChance(CHANGE_WEIGHT_CHANCE) && conns[i].enabled) {
 			mutateChangeWeightValue(i);
 		}
-
-		if (randomChance(ADD_NODE_CHANCE)) {
-			mutateAddNode(i);
-		}
-
 	}
-
-	precalc();
-
+	
+	if (randomChance(ADD_NODE_CHANCE)) {
+		mutateAddNode(parent, rand_int(0, conns.size()-1));
+	}
+	
+	if (randomChance(ADD_CONN_CHANCE)) {
+		for (unsigned int i=0; i<ADD_CONN_TRIES; i++) {
+			//pick a random start node (not an output)
+			//pick a random end node (not an input)
+			//if it's a valid connection: make it
+			//nodes order: inputs, outputs, internals
+			size_t startid = rand_int(0, numNodes-numOutputs-1);
+			if (startid >= numInputs) {		//skip over outputs in nodes
+				startid += numOutputs;
+			}
+			size_t endid = rand_int(numInputs, numNodes-1);
+			
+			if (mutateAddConn(parent, startid, endid)) {
+				break;
+			}
+		}
+	}
 }
 
 void NNetwork::mutateChangeWeightValue (size_t index) {
@@ -299,9 +324,53 @@ void NNetwork::mutateChangeWeightValue (size_t index) {
 		newValue = ((maxAdd - maxSub) * rand) + maxSub;
 	}
 
-	conns[index].weight = newValue;
+	changeConnectionWeight(index, newValue); //conns[index].weight = newValue;
 }
 
-void NNetwork::mutateAddNode (size_t index) {
-	//to be done
+void NNetwork::mutateAddNode (Generation &parent, size_t index) {
+	Edge conn = conns[index];
+	size_t nid = addNode();
+	
+	disableConnection(index);
+	addConnection(conn.startid, nid, parent.getInnovNum(conn.startid, nid), 1);
+	addConnection(nid, conn.endid, parent.getInnovNum(nid, conn.endid), conn.weight);
+}
+		
+
+bool NNetwork::mutateAddConn (Generation &parent, size_t startid, size_t endid) {
+	for (size_t i=0; i<conns.size(); i++) {
+		if (conns[i].startid == startid && conns[i].endid == endid) {
+			if (conns[i].enabled) {
+				return false;
+			} else {
+				enableConnection(i);
+				changeConnectionWeight(i, 2 * (rand_double() - 0.5));
+				return true;
+			}
+		}
+	}
+	/*
+	NodeType* end   = nodes[endid];	//search for connection in node and remove it
+	NodeType* start = nodes[startid];
+	for(auto it = end->connections.begin(); it != end->connections.end(); ++it) {
+		if (it->node == start) {
+			return false;
+		}
+	}*/
+	
+	//check that there is no path from endid to startid, or there'd be a recurrence
+	std::queue<NodeType*> queue;
+	queue.push(nodes[startid]);		//because node connections are backwards, we have to search from startid to endid
+	while (!queue.empty()) {
+		NodeType *curr = queue.front();
+		if (curr == nodes[endid])
+			return false;
+		queue.pop();
+		for (auto conn : curr->connections) {
+			queue.push(conn.node);
+		}
+	}
+	//add the connection
+	addConnection(startid, endid, parent.getInnovNum(startid, endid), 2 * (rand_double() - 0.5));
+	return true;
 }

@@ -7,10 +7,11 @@
 //#include <unordered_map>
 #include <map>
 
-#include "NNetwork.hpp"
 #include "NNetworkOutputType.hpp"
 
 namespace network {
+	class NNetwork;		//forward declaration -- circular dependence
+	
 	class Generation {
 		public:	
 			NNetworkOutputType* outputDevice;
@@ -40,7 +41,7 @@ namespace network {
 			void step();
 
 			//Sorts the species by fitness value, descending
-			void compete();
+			virtual void compete() {}
 			
 			/*
 				//Separate all networks found in [networks] into species
@@ -63,7 +64,8 @@ namespace network {
 			//	(to be called by NNetwork when mutating)
 			size_t getInnovNum(size_t startid, size_t endid);
 
-
+			//bool addGene(size_t startid, size_t endid, size_t innov);
+			//bool addGenes(NNetwork *net);
 			//breeding functions
 
 		

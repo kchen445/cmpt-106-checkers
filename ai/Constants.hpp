@@ -6,7 +6,7 @@ namespace network {
 	
 	
 	//Generation mutation-only evolution constants
-	const double KEEP_RATIO = 0.6;		//the top percentage of organisms to keep after evolution cutoff
+	const double KEEP_RATIO = 0.1;		//the top percentage of organisms to keep after evolution cutoff
 	
 	//Generation breeding evolution constants
 	const double DIFF_THRESHOLD = 3;	//the distance two networks have to be to be considered different species	(3)
@@ -21,11 +21,11 @@ namespace network {
 	//NNetwork mutate constants
 	const int CHANGE_WEIGHT_CHANCE = 80;	//chance a weight value will be modified		(80)
 	const int RANDOM_WEIGHT_CHANCE = 20;	//chance for completely random weight value		(10)
-	const double MAX_WEIGHT_DIFF = 0.5;		//maximum change in weights if not randomly assigned
+	const double MAX_WEIGHT_DIFF = 0.25;		//maximum change in weights if not randomly assigned
 	
-	const int ADD_NODE_CHANCE = 5;			//	(3)
-	const int ADD_CONN_CHANCE = 5;			//	(5, or 30)
-	
+	const int ADD_NODE_CHANCE = 30;			//	(3)
+	const int ADD_CONN_CHANCE = 30;			//	(5, or 30)
+	const int ADD_CONN_TRIES = 10;
 	//There was a 75% chance that an inherited gene was disabled if it was disabled in either parent.
 	//In each generation, 25% of offspring resulted from mutation without crossover.
 	//The interspecies mating rate was 0.001.

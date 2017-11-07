@@ -1,4 +1,5 @@
 #include "../ai/NNetworkPrintOutput.hpp"
+#include "../ai/NNetwork.hpp"
 #include "../ai/Generation.hpp"
 
 #include <vector>
@@ -8,16 +9,17 @@
 #include <cmath>
 using namespace network;
 
-bool network_compare(NNetwork *a, NNetwork *b) {
-	return (*a) < (*b);
-}
+class XORai : public Generation {
+	using Generation::Generation;
+	public:
+		void compete() override;
+};
 
 double XORfitness(NNetwork *network) {
 	double fitness = 0;
 	for (int a=0; a<2; a++) {
 		for (int b=0; b<2; b++) {	
 			std::vector<double> output = network->calculate({1, a, b});
-			//
 			fitness += fabs(output[0] - (a^b));
 
 			//std::cout << network << ": " << a << '^' << b << " = " << (a^b) << "(" << output[0] << ")" << std::endl;
@@ -27,14 +29,11 @@ double XORfitness(NNetwork *network) {
 	return fitness;
 }
 
-void Generation::compete() {
+void XORai::compete() {
 	for (auto network : networks[0]) {
 		network->fitnessValue = XORfitness(network);
 	}
-	std::sort(networks[0].begin(), networks[0].end(), network_compare);
-	/*for (auto network : networks[0]) {
-		std::cout << network << std::endl;
-	}*/
+	std::sort(networks[0].begin(), networks[0].end(), [](NNetwork *a, NNetwork *b) { return (*a) < (*b); });
 }
 
 
@@ -45,7 +44,12 @@ int main() {
 	//random generation
 
 	NNetworkPrintOutput po;
-	Generation gen(&po, std::string("networks/test"));
+	//XORai gen(&po, std::string("networks/test"));
+	/*NNetwork net(&po, "test_generation/network1.txt");
+	std::cout << XORfitness(&net) << std::endl;
+	return 0;
+	*/
+	XORai gen(&po, std::string("test_generation"));
 
 	/*for (auto network : gen.networks[0]) {
 		std::cout << XORfitness(network) << std::endl; 
@@ -73,14 +77,12 @@ int main() {
 	return 0;*/
 
 	unsigned int gennum = 0;
-	char pause;
-	double fitness;
-	while (gennum < 10000) {
+	while (gennum < 100) {
 		gen.step();
 		std::cout << "--- Generation " << gennum << "---" << std::endl;
 		std::cout << "Top fitness: " << gen.networks[0].front()->fitnessValue << std::endl;
 		
-		fitness = 0;
+		double fitness = 0;
 		for (auto network : gen.networks[0]) {
 			fitness += network->fitnessValue;
 		}
@@ -92,7 +94,8 @@ int main() {
 		gennum++;
 	}
 
-	gen.save("networks/test2");
+	//gen.save("networks/test2");
+	gen.save("test_generation2");
 
 	return 0;
 }

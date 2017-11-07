@@ -1,7 +1,7 @@
 CXX = g++
 CXX_FLAGS = -std=c++14 -Wall
 
-netdiff: netdiff.cpp
+netdiff: netdiff.cpp ../lib/ailib.a ../lib/imlib.a
 	$(CXX) $(CXX_FLAGS) -o netdiff netdiff.cpp ../lib/ailib.a ../lib/imlib.a
 	
 neteval: neteval.cpp
@@ -10,10 +10,17 @@ neteval: neteval.cpp
 gensave: gensave.cpp
 	$(CXX) $(CXX_FLAGS) -o gensave gensave.cpp ../lib/ailib.a ../lib/imlib.a
 
+genrand: genrand.cpp
+	$(CXX) $(CXX_FLAGS) -o genrand genrand.cpp ../lib/ailib.a ../lib/imlib.a
+	
 netbreed: netbreed.cpp
 	$(CXX) $(CXX_FLAGS) -o netbreed netbreed.cpp ../lib/ailib.a ../lib/imlib.a
 
 xortest: xortest.cpp
 	$(CXX) $(CXX_FLAGS) -o xortest xortest.cpp ../lib/ailib.a ../lib/imlib.a
+
+netmutate: netmutate.cpp ../lib/ailib.a ../lib/imlib.a
+	$(CXX) $(CXX_FLAGS) -o netmutate netmutate.cpp ../lib/ailib.a ../lib/imlib.a
+	
 clean:
 	rm *.exe
