@@ -9,10 +9,10 @@ namespace ml {
     class LearningEntity {
     public:
 
-        std::unique_ptr<NetworkType<In, Out>> network;
+        std::shared_ptr<NetworkType<In, Out>> network;
 
 
-        LearningEntity (std::unique_ptr<NetworkType<In, Out>> network)
+        LearningEntity (std::shared_ptr<NetworkType<In, Out>> network)
             : network(network)
         {}
 

@@ -5,6 +5,13 @@
 #include <memory>
 #include "LearningEntity.hpp"
 #include "Display.hpp"
+#include "Flags.hpp"
+
+
+// Training return values.
+#define TRAIN_DONE          0
+#define TRAIN_FORCE_QUIT    9
+#define TRAIN_GOAL_REACHED  1
 
 namespace ml {
 
@@ -30,7 +37,7 @@ namespace ml {
         // The set of entities in this learning set.
         // As the type is complex, in english:
         //      size N array of unique pointers to learning entities.
-        std::array<std::unique_ptr<LearningEntity<In, Out>>, N> entities;
+        std::array<std::shared_ptr<LearningEntity<In, Out>>, N> entities;
 
         // The id number of the thread that containes this learning set.
         // If not called from a LearningThread, then 0.
@@ -122,6 +129,35 @@ namespace ml {
             std::get<1>(lastStats) = average;
 
             return best;
+        }
+
+
+        // Trains this set by calling step() a given number of times.
+        int train (size_t rounds) {
+            for (size_t i = 0; i < rounds; ++i) {
+                step();
+
+                if (Flags::global->killThreadExecution) {
+                    return TRAIN_FORCE_QUIT;
+                }
+            }
+            return TRAIN_DONE;
+        }
+
+
+        // Trains this set until a given goal or a given number of rounds is reached.
+        // Returns TRAIN_GOAL_REACHED if training stopped becuase a goal was reached.
+        int train (size_t rounds, double goal, bool(*comparison)(double, double)) {
+            for (size_t i = 0; i < rounds; ++i) {
+                if (comparison(step(), goal)) {
+                    return TRAIN_GOAL_REACHED;
+                }
+
+                if (Flags::global->killThreadExecution) {
+                    return TRAIN_FORCE_QUIT;
+                }
+            }
+            return TRAIN_DONE;
         }
 
     };

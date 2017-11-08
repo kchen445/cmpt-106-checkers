@@ -4,14 +4,16 @@
 #include "LearningEntity.hpp"
 #include "LearningSet.hpp"
 #include "Display.hpp"
+#include "LearningThread.hpp"
+#include "LearningCore.hpp"
 
 namespace test {
-	void a () {
-		std::cout << __PRETTY_FUNCTION__ << ": hello" << std::endl;
-	}
+    void a () {
+        std::cout << __PRETTY_FUNCTION__ << ": hello" << std::endl;
+    }
 }
 
 int main () {
-	test::a();
-	std::cout << "OK!" << std::endl;
+    test::a();
+    std::cout << "OK!" << std::endl;
 }

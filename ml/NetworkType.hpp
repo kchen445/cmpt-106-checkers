@@ -3,6 +3,7 @@
 
 #include <array>
 #include <memory>
+#include <string>
 
 namespace ml {
 
@@ -26,7 +27,10 @@ namespace ml {
         // shares no pointers or anything with the base network.
         //
         // The network should be declared used the new operator.
-        virtual std::unique_ptr<NetworkType<In, Out>> clone () = 0;
+        virtual std::shared_ptr<NetworkType<In, Out>> clone () = 0;
+
+        // Saves this network.
+        virtual void save (std::string const &filename) = 0;
 
         virtual ~NetworkType () {}
 

@@ -43,14 +43,14 @@ namespace ml {
         //      " 0.123"
         //      "-0.123"
         std::string formatFloatingPoint (const char* format, double val) {
-            char* str;
+            char *str = nullptr;
             std::string prefix = val < 0 ? "-" : " ";
             sprintf(str, format, abs(val));
             return prefix + std::string{str};
         }
 
         std::string formatInteger (const char* format, int val) {
-            char* str;
+            char *str = nullptr;
             sprintf(str, format, val);
             return std::string{str};
         }
@@ -77,7 +77,7 @@ namespace ml {
         // Returns nullptr if unable to create a progress report.
         std::shared_ptr<std::string> getNextReport (bool force = false) {
 
-            if (!isReadyToPrint()) {
+            if (!isReadyToPrint() && !force) {
                 return nullptr;
             }
 
