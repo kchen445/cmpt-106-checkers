@@ -89,7 +89,7 @@ namespace ml {
                     }
 
                 } catch (...) {
-
+                    std::cout << "Unable to execute command." << std::endl;
                 }
             }
 

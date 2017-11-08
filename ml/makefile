@@ -58,7 +58,7 @@ EXCLUDE =
 # Compiled binary output directory
 #
 # The directory where compiled code will be placed.
-OUT_DIR = ./out/
+OUT_DIR = ./
 
 # Depencency script path
 #
@@ -110,30 +110,46 @@ MAIN_OBJ = $(addprefix $(OUT_DIR), $(MAIN:$(EXT)=$(OUT_EXT)))
 # defined above in the variable OUT_EXT
 clean:
 	$(info Cleaning...)
-	@rm -f $(wildcard $(OUT_DIR)*)
+	@rm -f $(wildcard *.gch)
 
 # Executable build target.
-exe: $(MAIN_OBJ) lib
+exe: $(MAIN_OBJ)
 	$(info Creating Executable...)
 	@$(CMPL) -o $(EXE) $(MAIN_OBJ) $(LIB) $(LIB_DEP)
 
 # Archive/library target.
-lib: $(OBJECTS)
-	$(info Archiving...)
-	@$(ARC) $(ARC_FLAGS) $(LIB) $(OBJECTS)
+# lib: $(OBJECTS)
+# 	$(info Archiving...)
+# 	@$(ARC) $(ARC_FLAGS) $(LIB) $(OBJECTS)
+
+gch: TargetedLearning.hpp.gch CompetitiveLearning.hpp.gch
 
 # Main source file target.
-$(MAIN_OBJ): $(MAIN)
-	$(CMPL) $(CMPL_FLAGS) -c $< -o $@
+$(MAIN_OBJ): $(MAIN) TargetedLearning.hpp.gch CompetitiveLearning.hpp.gch
+	$(info Compiling: $(MAIN)...)
+	@$(CMPL) $(CMPL_FLAGS) -c $< -o $@
 
 # Generic source file target.
-.SECONDEXPANSION:
-$(OUT_DIR)%$(OUT_EXT): %$(EXT) $$(shell $(DEP_SCRIPT) %$(EXT))
-	@ if [ ! -d $(OUT_DIR) ]; then mkdir $(OUT_DIR); fi 
-	$(CMPL) $(CMPL_FLAGS) -c $< -o $@;
+# .SECONDEXPANSION:
+# $(OUT_DIR)%$(OUT_EXT): %$(EXT) $$(shell $(DEP_SCRIPT) %$(EXT))
+# 	@ if [ ! -d $(OUT_DIR) ]; then mkdir $(OUT_DIR); fi 
+# 	$(CMPL) $(CMPL_FLAGS) -c $< -o $@;
 
 #########################
 # End of Implementation #
 #########################
 
 # Any custom targets may be defined below.
+
+# Precompiled header targets
+MLFramework.hpp.gch: $(filter-out $(wildcard *.hpp.gch), $(wildcard *.hpp))
+	$(info Compiling header: MLFramework.hpp...)
+	@$(CMPL) $(CMPL_FLAGS) MLFramework.hpp
+
+TargetedLearning.hpp.gch: $(filter-out $(wildcard tl/*.hpp.gch), $(wildcard tl/*.hpp)) MLFramework.hpp.gch
+	$(info Compiling header: TargetedLearning.hpp...)
+	@$(CMPL) $(CMPL_FLAGS) TargetedLearning.hpp
+
+CompetitiveLearning.hpp.gch: $(filter-out $(wildcard cl/*.hpp.gch), $(wildcard cl/*.hpp)) MLFramework.hpp.gch
+	$(info Compiling header: CompetitiveLearning.hpp...)
+	@$(CMPL) $(CMPL_FLAGS) CompetitiveLearning.hpp

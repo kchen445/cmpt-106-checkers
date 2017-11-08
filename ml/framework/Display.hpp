@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <vector>
 #include <string>
 #include <cmath>
 #include <cstdio>
@@ -23,7 +24,7 @@ namespace ml {
 
         long nextIndex = 0;
 
-        std::vector<std::vector<ProgressReport>> data;
+        std::vector<std::vector<ProgressReport>> data{};
 
         // Checks to see if each thread has given enough
         // data to print out the next report.

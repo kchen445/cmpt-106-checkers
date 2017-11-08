@@ -1,5 +1,4 @@
-#ifndef ML_NETWORK_TYPE
-#define ML_NETWORK_TYPE
+#pragma once
 
 #include <array>
 #include <memory>
@@ -46,5 +45,3 @@ namespace network {
 	using NetworkType = ml::NetworkType<In, Out>;
 
 }
-
-#endif

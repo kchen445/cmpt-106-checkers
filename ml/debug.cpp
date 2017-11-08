@@ -1,11 +1,7 @@
 #include <iostream>
-#include "util.hpp"
-#include "NeuralIOSet.hpp"
-#include "LearningEntity.hpp"
-#include "LearningSet.hpp"
-#include "Display.hpp"
-#include "LearningThread.hpp"
-#include "LearningCore.hpp"
+#include "MLFramework.hpp"
+#include "CompetitiveLearning.hpp"
+#include "TargetedLearning.hpp"
 
 namespace test {
     void a () {
