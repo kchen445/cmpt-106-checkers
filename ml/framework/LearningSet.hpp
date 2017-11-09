@@ -3,6 +3,7 @@
 #include <tuple>
 #include <algorithm>
 #include <memory>
+#include "NetworkType.hpp"
 #include "LearningEntity.hpp"
 #include "Display.hpp"
 #include "Flags.hpp"
@@ -17,7 +18,10 @@ namespace ml {
 
     // Abstract class that contains a set of learning entities.
     // Has training functions for training the entities.
-    template<size_t In, size_t Out, size_t N>
+    //
+    // template specifications:
+    //      Entity must conform to ml::LearningEntity<In, Out>
+    template<class Entity, size_t N>
     class LearningSet {
     protected:
 
@@ -37,7 +41,7 @@ namespace ml {
         // The set of entities in this learning set.
         // As the type is complex, in english:
         //      size N array of unique pointers to learning entities.
-        std::array<std::shared_ptr<LearningEntity<In, Out>>, N> entities;
+        std::array<std::shared_ptr<Entity>, N> entities;
 
         // The id number of the thread that containes this learning set.
         // If not called from a LearningThread, then 0.
@@ -51,9 +55,22 @@ namespace ml {
               callingThreadId(0)
         {}
 
-        virtual ~LearningSet () {}
+        template<size_t In, size_t Out>
+        LearningSet (std::shared_ptr<NetworkType<In, Out>> seed)
+            : stepId(-1),
+              lastStats(std::make_tuple(0.0, 0.0)),
+              entities(),
+              callingThreadId(0)
+        {
+            for (size_t i = 0; i < NUM_ENTITIES_PER_SET; ++i) {
+                std::shared_ptr<Entity> seedVarient = seed->clone();
+                seedVarient->tweakWeight(20, 0.2);
+                seedVarient->tweakBias(10, 0.1);
+                this->entities[i] = seedVarient;
+            }
+        }
 
-        // TODO: Write constructor from config and seed.
+        virtual ~LearningSet () {}
         
 
         // Evaluates the entity at a given index.

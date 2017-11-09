@@ -17,15 +17,12 @@
 
 namespace ml {
 
+    // For convienice
+    template<class Entity>
+    using LSetRef = std::shared_ptr<LearningSet<Entity, NUM_ENTITIES_PER_SET>>;
 
-    template<size_t In, size_t Out>
-    using LSetRef = std::shared_ptr<LearningSet<In, Out, NUM_ENTITIES_PER_SET>>;
-
-    template<size_t In, size_t Out>
-    using LEntityRef = std::shared_ptr<LearningEntity<In, Out>>;
-
-    template<size_t In, size_t Out>
-    using LThreadRef = std::shared_ptr<LearningThread<In, Out, NUM_ENTITIES_PER_SET>>;
+    template<class Entity>
+    using LThreadRef = std::shared_ptr<LearningThread<Entity, NUM_ENTITIES_PER_SET>>;
 
 
     // The object in charge of handling the learning threads which run
@@ -39,7 +36,7 @@ namespace ml {
     // This object is not meant to be use on its own. It is meant to be
     // a parent object for subclasses which deal with different types
     // of learning.
-    template<size_t In, size_t Out>
+    template<class Entity>
     class LearningCore {
     private:
 
@@ -54,7 +51,7 @@ namespace ml {
 
 
         // Allows the user to run commands duing thread convergence.
-        int pauseCommandInterface (LEntityRef<In, Out> bestEntity) {
+        int pauseCommandInterface (std::shared_ptr<Entity> bestEntity) {
             while (true) {
 
                 try {
@@ -101,7 +98,7 @@ namespace ml {
         std::shared_ptr<Config> cfg = Config::global;
 
         // May be overriden by subclasses for extra implementation during convergence.
-        virtual void onConvergence (LEntityRef<In, Out> bestEntity) {}
+        virtual void onConvergence (std::shared_ptr<Entity> bestEntity) {}
 
         // Used in picking the best thread.
         virtual bool threadStatsComparison (std::tuple<int, double> const &lhs, 
@@ -112,9 +109,9 @@ namespace ml {
 
     public:
 
-        std::array<LSetRef<In, Out>, NUM_THREADS> learningSets;
+        std::array<LSetRef<Entity>, NUM_THREADS> learningSets;
 
-        std::array<LThreadRef<In, Out>, NUM_THREADS> threads;
+        std::array<LThreadRef<Entity>, NUM_THREADS> threads;
 
 
         // Default contructor
@@ -134,10 +131,10 @@ namespace ml {
         // To define and use a goal, do so in the Config singleton.
         // If no goal is defined training will run until terminated
         // by the user.
-        std::shared_ptr<NetworkType<In, Out>> train () {
+        std::shared_ptr<Entity> train () {
 
             double bestValue = 0.0;
-            LEntityRef<In, Out> bestEntity = nullptr;
+            std::shared_ptr<Entity> bestEntity = nullptr;
             size_t convergenceCount = 0;
 
             Display::instance->setup(NUM_THREADS);
@@ -190,12 +187,12 @@ namespace ml {
                 bestValue = bestEntity->getValue();
 
                 // Clone the best network.
-                std::shared_ptr<NetworkType<In, Out>> bestClone = bestEntity->network->clone();
+                std::shared_ptr<Entity> bestClone = Entity{bestEntity->network->clone()};
                 // Tweak it slightly.
-                bestClone->tweakWeight(10, 0.1);
+                bestClone->network->tweakWeight(10, 0.1);
                 // Insert it into the worst network.
                 // Change the network of the worst entity to be the clone.
-                threads[worstThreadId]->learningSet.back()->network = bestClone;
+                threads[worstThreadId]->learningSet.back() = bestClone;
 
                 // Do any extra stuff implemented by subclasses.
                 onConvergence(bestEntity);
@@ -227,7 +224,7 @@ namespace ml {
                 if (cfg->pauseOnConvergence) {
                     std::cout << "Paused" << std::endl;
                     if (pauseCommandInterface(bestEntity) == KILLSYS) {
-                        return bestEntity->network;
+                        return bestEntity;
                     }
                 }
 
@@ -235,6 +232,8 @@ namespace ml {
                 ++convergenceCount;
 
             } while (!Flags::global->killThreadExecution);
+
+            return bestEntity;
 
         } // method train
 

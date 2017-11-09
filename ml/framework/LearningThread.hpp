@@ -11,13 +11,13 @@ namespace ml {
     namespace thread {
 
         // Prototype for function to be executed by the thread.
-        template<size_t In, size_t Out, size_t N>
+        template<class Entity, size_t N>
         void *threadExec (void *arg);
 
     }
 
 
-    template<size_t In, size_t Out, size_t N>
+    template<class Entity, size_t N>
     class LearningThread {
     private:
 
@@ -32,7 +32,7 @@ namespace ml {
         int id;
 
         // A pointer to the learning set used in this thread.
-        std::shared_ptr<LearningSet<In, Out, N>> learningSet;
+        std::shared_ptr<LearningSet<Entity, N>> learningSet;
 
         // Should training be done using a goal?
         bool useGoal = false;
@@ -44,7 +44,7 @@ namespace ml {
         size_t rounds;
 
 
-        LearningThread (std::shared_ptr<LearningSet<In, Out, N>> learningSet, int id, size_t rounds)
+        LearningThread (std::shared_ptr<LearningSet<Entity, N>> learningSet, int id, size_t rounds)
             : rounds(rounds),
               learningSet(learningSet),
               thread(nullptr),
@@ -66,7 +66,7 @@ namespace ml {
                 thread = nullptr;
             }
 
-            int rc = pthread_create(thread, NULL, thread::threadExec<In, Out, N>, (void *)this);
+            int rc = pthread_create(thread, NULL, thread::threadExec<Entity, N>, (void *)this);
             if (rc) {
                 throw std::runtime_error("LearningThread::start(): unable to create thread.");
             }
@@ -88,9 +88,9 @@ namespace ml {
 
         // Function to be executed by the thread.
         // arg should be a pointer to the calling LearningThread object.
-        template<size_t In, size_t Out, size_t N>
+        template<class Entity, size_t N>
         inline void *threadExec (void *arg) {
-            LearningThread<In, Out, N> *t_ptr = (LearningThread<In, Out, N> *)arg;
+            LearningThread<Entity, N> *t_ptr = (LearningThread<Entity, N> *)arg;
             t_ptr->active = true;
 
             if (t_ptr->useGoal) {

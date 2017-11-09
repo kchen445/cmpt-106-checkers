@@ -20,8 +20,10 @@ namespace ml {
 
 
         // Should return the fitness value for this entity.
-        virtual double getValue () = 0;
+        virtual double getValue () const = 0;
 
+        // Resets any internal values uesd to compute getValue();
+        virtual void reset () {}
 
         // Operator < which will be used to sort entities.
         // The default implimentation compares the restult of the getValue()

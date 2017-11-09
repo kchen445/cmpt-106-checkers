@@ -47,6 +47,9 @@ public:
     std::string savePathForBestEntity = "trn_net.txt";
     bool pauseOnConvergence = true;
 
+    // CLEntity settings
+    bool tiesCountAsWins = false;
+
 };
 
 // Out of line initalization for static variable Config::global.

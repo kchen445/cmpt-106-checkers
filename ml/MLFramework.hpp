@@ -1,5 +1,3 @@
-#pragma once
-
 // Precompiled header for the machine learning framework system.
 
 // Since the all code for the machine learning system is in
