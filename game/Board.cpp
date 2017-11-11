@@ -38,12 +38,6 @@ void Board::initializeBoard (){
 	}
 }
 
-bool Board::positionIsEmpty(const Point &point){
-	if(withinBounds(point.row,point.col)){
-		return gameBoard.at(point.row).at(point.col).isEmpty;
-	}
-}
-
 //function to take a player's move and apply it to the game board
 void Board::update(vector<Player*> listOfPlayers, int whichPlayer){
 	int otherPlayer;
@@ -91,7 +85,8 @@ void Board::update(vector<Player*> listOfPlayers, int whichPlayer){
 			gameBoard.at(otherPlayerPieceRow).at(otherPlayerPieceCol).isEmpty = true;
 			gameBoard.at(otherPlayerPieceRow).at(otherPlayerPieceCol).player = 0;
 			vector< Piece >* otherPlayerPieces = &(listOfPlayers[otherPlayer]->pieces);
-			otherPlayerPieces->at(i).player = 0;
+			otherPlayerPieces->at(indexOfOtherPlayerPiece).player = 0;
+			otherPlayerPieces->at(indexOfOtherPlayerPiece).isEmpty = true;
 			
 			//change the gameBoard according to a player's chosen move
 			gameBoard.at(endPosition.row).at(endPosition.col) = gameBoard.at(initialPosition.row).at(initialPosition.col);
@@ -114,6 +109,7 @@ void Board::update(vector<Player*> listOfPlayers, int whichPlayer){
 		whichPlayer == 0 ? rowToBeKinged = 0 : rowToBeKinged = 7;
 		if(endPosition.row == rowToBeKinged){
 			pieceToBeMoved->isKing = true;
+			gameBoard[endPosition.row][endPosition.col].isKing = true;
 		}
 	}
 }

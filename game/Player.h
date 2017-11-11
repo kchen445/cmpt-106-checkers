@@ -26,7 +26,10 @@ public:
 	//used to determine if a player can move on their turn
 	//if not then set canMove to false and the game will end
     bool canMove;
-	
+
+	Player(int whichPlayer);
+
+
 	//a vector of all pieces that a player controls
 	//call the findMoves function for each piece to find possible
 	//moves
@@ -44,6 +47,8 @@ public:
 	
 	//NON VIRTUAL FUNCTIONS CAN BE IMPLEMENTED INTO A PLAYER.CPP FILE
 	
+    int findLostPieces();
+
 	//call the findMoves function for each piece in the vector of pieces
 	//and push them to the possibleMoves vector
     void findMoves(const std::vector< std::vector<Piece> > &gameBoard);
@@ -55,7 +60,9 @@ public:
 	//set up the initial conditions for the player
 	//by resetting variables like pieces, canMove, etc
     void initializePlayer();
-	
+
+    void printMoveStringVector();
+
 	//use cin to take in player input and check to see if the
 	//input matches any of the strings in movesAsString
 	//may be helpful to list out the elements of movesAsStrings
@@ -69,7 +76,7 @@ public:
 	//Board parameter is for ai, not necessary for human
     virtual void getMove(const std::vector< std::vector<Piece> > &gameBoard) = 0;
 	
-    virtual~player() {}
+    virtual ~Player() {}
 };
 
 

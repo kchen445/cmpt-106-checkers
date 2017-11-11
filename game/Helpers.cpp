@@ -12,6 +12,7 @@ bool withinBounds(int baseX, int baseY, int changeX, int changeY) {
             (baseX + changeX) < 8 && (baseX + changeX) >= 0);
 }
 
+
 Point::Point(int x, int y)
         :row(x),col(y)
 {}
@@ -68,7 +69,7 @@ bool retry() {
 std::string findGameMode(){
     std::string gameMode;
     while (true) {
-        std::cin >> gameMode;
+        getline(std::cin,gameMode);
         if (gameMode.size() == 1) {
             if (gameMode.at(0) == '1') {
                 return gameMode;

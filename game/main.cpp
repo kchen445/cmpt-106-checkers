@@ -14,6 +14,7 @@ const int PLAYER1 = 1;
 const int PLAYER2 = 2;
 
 int main() {
+
 	bool stillPlay = true;
 	Display display;
 	Board board;
@@ -21,22 +22,22 @@ int main() {
 	cout << "1. Human Vs Human" << endl;
 	cout << "2. Human Vs AI" << endl;
 	cout << "Input your choice:" << endl;
-	char gameMode = findGameMode().at(0);
+	//char gameMode = findGameMode().at(0);
 	
 	//add players to a vector of player objects
 	//so it will be easier to change between a human vs human
 	//and human vs ai mode
-	if(gameMode == '1'){
+	//if(gameMode == '1'){
 		Player* player1 = new HumanPlayer(PLAYER1);
 		Player* player2 = new HumanPlayer(PLAYER2);
 		listOfPlayers.push_back(player1);
 		listOfPlayers.push_back(player2);
-	}else{
-		Player* player1 = new HumanPlayer(PLAYER1);
-		Player* player2 = new AIPlayer(PLAYER2);
-		listOfPlayers.push_back(player1);
-		listOfPlayers.push_back(player2);
-	}
+	//}else{
+	//	Player* player1 = new HumanPlayer(PLAYER1);
+	//	Player* player2 = new AIPlayer(PLAYER2);
+	//	listOfPlayers.push_back(player1);
+	//	listOfPlayers.push_back(player2);
+	//}
 	
 
   //this while loop creates the conditions necessary for a new game to be played
@@ -49,31 +50,31 @@ int main() {
 	int turns = 0;
     cout << "X is player1" << endl;
     cout << "O is player2" << endl;
-    cout << "Enter moves in the form of row,column-row,column i.e 6E-5F" << endl;
+    cout << "Enter moves in the form of row,column-row,column i.e 64-53" << endl;
     //actual game loop
     while (listOfPlayers[0]->canMove || listOfPlayers[1]->canMove) {
       
-      //display.displayGame(board.gameBoard);
+      display.displayGame(board.gameBoard);
       cout << "Player 1's move" << endl;
       listOfPlayers[0]->findMoves(board.gameBoard);
       
 	  //canMove is updated inside getMove
 	  listOfPlayers[0]->getMove(board.gameBoard);
-      if(!listOfPlayers[0]->canMove)(break;)
+      if(!listOfPlayers[0]->canMove){break;}
 	  board.update(listOfPlayers,0);
       cout << endl;
       
-	  cout << "Player 1 move: " << listOfPlayers[0]->movesToString.at(listOfPlayers[0]->indexOfMove) << endl;
+	  cout << "Player 1 move: " << listOfPlayers[0]->movesAsString.at(listOfPlayers[0]->indexOfMove) << endl;
       
-      //display.displayGame(board.gameBoard);
+      display.displayGame(board.gameBoard);
 	  cout << "Player 2's move" << endl;
       listOfPlayers[1]->findMoves(board.gameBoard);
       listOfPlayers[1]->getMove(board.gameBoard);
-      if(!listOfPlayers[1]->canMove)(break;)
+      if(!listOfPlayers[1]->canMove){break;}
 	  board.update(listOfPlayers,1);
       cout << endl;
 	  
-	  cout << "Player 2 move: " << listOfPlayers[1]->movesToString.at(listOfPlayers[1]->indexOfMove) << endl;
+	  cout << "Player 2 move: " << listOfPlayers[1]->movesAsString.at(listOfPlayers[1]->indexOfMove) << endl;
 	
 	
 	  turns++;
@@ -89,7 +90,13 @@ int main() {
     }else if (!listOfPlayers[0]->canMove){
         cout << endl << "Player 2 wins!" << endl << endl;
     }else{
-        cout << endl << "Over 80 turns passed! Stalemate!" << endl;
+        if(listOfPlayers[0]->findLostPieces() < listOfPlayers[1]->findLostPieces()){
+            listOfPlayers[1]->canMove = false;
+            cout << "Stalemate with Player 1 taking more pieces!";
+        }else{
+            listOfPlayers[0]->canMove = false;
+            cout << "Stalemate with Player 2 taking more pieces!";
+        }
     }
     stillPlay = retry();
   }

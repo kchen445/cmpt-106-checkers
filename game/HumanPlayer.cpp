@@ -6,31 +6,29 @@
 
 using namespace std;
 
-HumanPlayer::HumanPlayer(int whichPlayer)
-:player(whichPlayer),indexOfMove(0),canMove(true)
-{
+HumanPlayer::HumanPlayer(int whichPlayer) : Player(whichPlayer){}
 
-}
-
-void HumanPlayer::getMove() {
-	int flag = 0;
+void HumanPlayer::getMove(const std::vector< std::vector<Piece> > &gameBoard) {
+    movesToString();
+    int flag = 0;
 
 	while (flag != 1) {
 		string input = "";
-		cout << "Please enter your move";
+		cout << "Please enter your move: \n";
+        printMoveStringVector();
 		getline(cin, input);
 		cout << "You entered: " << input << endl << endl;
 
-		for (int i = 0; i < str_len; i++) {
-			if (input.compare(moves[i])) {
+		for (int i = 0; i < movesAsString.size(); i++) {
+			if (input.compare(movesAsString[i]) == 0) {
 				indexOfMove = i;
 				flag = 1;
+                break;
 			}
 		}
-	}
-
-	if (flag == 0) {
-		cout << "invalid move, try again" << endl;
+		if (flag == 0) {
+			cout << "Invalid move, please try again." << endl;
+		}
 	}
 
 }

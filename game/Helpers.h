@@ -18,6 +18,7 @@ struct Point{
     Point();
 };
 
+
 //all pieces are on square where the row and column add up to 
 //an odd number, this is a function to help make finding
 //whether a number is odd or not easier and more readable

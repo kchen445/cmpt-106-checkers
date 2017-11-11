@@ -23,7 +23,7 @@ public:
     //void findMoves(const Board &board);
 	//void movesToString();
     //void initializePlayer();
-    void getMove();
+    void getMove(const std::vector< std::vector<Piece> > &gameBoard);
 };
 
 
