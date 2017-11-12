@@ -41,7 +41,7 @@ OUT_EXT = .o
 # Must have a single file defined to create an executable.
 # As this file will be excluded from the library only the
 # int main function should be defined in this file.
-MAIN = debug.cpp
+MAIN = main.cpp
 
 # File to exclude from building
 #
@@ -122,10 +122,10 @@ exe: $(MAIN_OBJ)
 # 	$(info Archiving...)
 # 	@$(ARC) $(ARC_FLAGS) $(LIB) $(OBJECTS)
 
-gch: TargetedLearning.hpp.gch CompetitiveLearning.hpp.gch
+gch: sysml.hpp.gch systl.hpp.gch network.hpp.gch
 
 # Main source file target.
-$(MAIN_OBJ): $(MAIN) TargetedLearning.hpp.gch CompetitiveLearning.hpp.gch
+$(MAIN_OBJ): $(MAIN) network.hpp.gch systl.hpp.gch
 	$(info Compiling: $(MAIN)...)
 	@$(CMPL) $(CMPL_FLAGS) -c $< -o $@
 
@@ -142,14 +142,14 @@ $(MAIN_OBJ): $(MAIN) TargetedLearning.hpp.gch CompetitiveLearning.hpp.gch
 # Any custom targets may be defined below.
 
 # Precompiled header targets
-MLFramework.hpp.gch: $(filter-out $(wildcard *.hpp.gch), $(wildcard *.hpp))
-	$(info Compiling header: MLFramework.hpp...)
-	@$(CMPL) $(CMPL_FLAGS) MLFramework.hpp
+sysml.hpp.gch: sysml.hpp
+	$(info Compiling header: sysml.hpp...)
+	@$(CMPL) $(CMPL_FLAGS) sysml.hpp
 
-TargetedLearning.hpp.gch: $(filter-out $(wildcard tl/*.hpp.gch), $(wildcard tl/*.hpp)) MLFramework.hpp.gch
-	$(info Compiling header: TargetedLearning.hpp...)
-	@$(CMPL) $(CMPL_FLAGS) TargetedLearning.hpp
+systl.hpp.gch: systl.hpp sysml.hpp.gch
+	$(info Compiling header: systl.hpp...)
+	@$(CMPL) $(CMPL_FLAGS) systl.hpp
 
-CompetitiveLearning.hpp.gch: $(filter-out $(wildcard cl/*.hpp.gch), $(wildcard cl/*.hpp)) MLFramework.hpp.gch
-	$(info Compiling header: CompetitiveLearning.hpp...)
-	@$(CMPL) $(CMPL_FLAGS) CompetitiveLearning.hpp
+network.hpp.gch: network.hpp sysml.hpp.gch
+	$(info Compiling header: network.hpp...)
+	@$(CMPL) $(CMPL_FLAGS) network.hpp
