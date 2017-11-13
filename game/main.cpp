@@ -57,23 +57,22 @@ int main() {
       display.displayGame(board.gameBoard);
       cout << "Player 1's move" << endl;
       listOfPlayers[0]->findMoves(board.gameBoard);
-      
+
 	  //canMove is updated inside getMove
 	  listOfPlayers[0]->getMove(board.gameBoard);
       if(!listOfPlayers[0]->canMove){break;}
 	  board.update(listOfPlayers,0);
       cout << endl;
-      
+
 	  cout << "Player 1 move: " << listOfPlayers[0]->movesAsString.at(listOfPlayers[0]->indexOfMove) << endl;
-      
+
       display.displayGame(board.gameBoard);
 	  cout << "Player 2's move" << endl;
       listOfPlayers[1]->findMoves(board.gameBoard);
       listOfPlayers[1]->getMove(board.gameBoard);
       if(!listOfPlayers[1]->canMove){break;}
 	  board.update(listOfPlayers,1);
-      cout << endl;
-	  
+
 	  cout << "Player 2 move: " << listOfPlayers[1]->movesAsString.at(listOfPlayers[1]->indexOfMove) << endl;
 	
 	

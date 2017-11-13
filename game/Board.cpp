@@ -10,6 +10,13 @@ Board::Board()
 
 //set up the initial positions of checker pieces
 void Board::initializeBoard (){
+    for(int i = 0; i < 8; i++){
+        for(int j = 0; j < 8; j++){
+            Point position(i,j);
+            gameBoard[i][j] = Piece(position);
+        }
+    }
+
 	for(int i = 0; i < 3; i++){
 		for(int j = 0; j < 8; j++){
 			Point position(i,j);
@@ -18,12 +25,6 @@ void Board::initializeBoard (){
 			}else{
 				gameBoard.at(i).at(j) = Piece(position);
 			}
-		}
-	}
-	for(int i = 3; i < 5; i++){
-		for(int j = 3; j < 5; j++){
-			Point position(i,j);
-			gameBoard.at(i).at(j) = Piece(position);
 		}
 	}
 	for(int i = 5; i < 8; i++){
@@ -59,7 +60,6 @@ void Board::update(vector<Player*> listOfPlayers, int whichPlayer){
 	//a jump that takes a piece will result in a position difference of +-2 for row and column
 	//of initial Point and end Point
 	bool moveTakesPiece = (chosenMove.at(1).row - chosenMove.at(0).row)%2 == 0;
-	
 	for(int i = 0; i < chosenMove.size()-1; i++){
 		
 		Point initialPosition = chosenMove.at(i);
@@ -74,8 +74,8 @@ void Board::update(vector<Player*> listOfPlayers, int whichPlayer){
 			Point otherPlayerPiecePosition(otherPlayerPieceRow,otherPlayerPieceCol);
 			int indexOfOtherPlayerPiece;
 			for(int j = 0; j < listOfPlayers[whichPlayer]->pieces.size(); j++){
-				if(otherPlayerPiecePosition == listOfPlayers[otherPlayer]->pieces.at(i).position){
-					indexOfOtherPlayerPiece = i;
+				if(otherPlayerPiecePosition == listOfPlayers[otherPlayer]->pieces.at(j).position){
+					indexOfOtherPlayerPiece = j;
 					break;
 				}
 			}
@@ -85,8 +85,11 @@ void Board::update(vector<Player*> listOfPlayers, int whichPlayer){
 			gameBoard.at(otherPlayerPieceRow).at(otherPlayerPieceCol).isEmpty = true;
 			gameBoard.at(otherPlayerPieceRow).at(otherPlayerPieceCol).player = 0;
 			vector< Piece >* otherPlayerPieces = &(listOfPlayers[otherPlayer]->pieces);
-			otherPlayerPieces->at(indexOfOtherPlayerPiece).player = 0;
-			otherPlayerPieces->at(indexOfOtherPlayerPiece).isEmpty = true;
+			Piece* otherPlayerPiece = &(otherPlayerPieces->at(indexOfOtherPlayerPiece));
+			otherPlayerPiece->player = 0;
+			otherPlayerPiece->isEmpty = true;
+            otherPlayerPiece->position = Point(-1,-1);
+
 			
 			//change the gameBoard according to a player's chosen move
 			gameBoard.at(endPosition.row).at(endPosition.col) = gameBoard.at(initialPosition.row).at(initialPosition.col);

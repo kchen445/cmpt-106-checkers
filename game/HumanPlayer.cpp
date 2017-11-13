@@ -9,6 +9,10 @@ using namespace std;
 HumanPlayer::HumanPlayer(int whichPlayer) : Player(whichPlayer){}
 
 void HumanPlayer::getMove(const std::vector< std::vector<Piece> > &gameBoard) {
+    if(possibleMoves.size()==0){
+        canMove = false;
+        return;
+    }
     movesToString();
     int flag = 0;
 
