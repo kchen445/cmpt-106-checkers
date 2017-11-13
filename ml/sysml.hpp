@@ -222,6 +222,26 @@ namespace ml {
 
 
 
+    // Flag Singleton
+    struct flags {
+        static ptr<flags> global;
+
+        bool kill_thread_exec = false;
+
+        std::chrono::system_clock::time_point start_time{std::chrono::system_clock::now()};
+
+        size_t duration () {
+            auto current_time = std::chrono::system_clock::now();
+            auto dur = current_time - start_time;
+            return (size_t)dur.count() / 1000000000;
+        }
+    };
+
+    ptr<flags> flags::global{new flags{}};
+
+
+
+
     struct p_report {
         size_t thread_id;
         size_t round_num;
@@ -280,6 +300,7 @@ namespace ml {
 
             std::string title;
             title = format_i("Report %d", (int)next_index);
+            title += " - " + std::to_string(flags::global->duration()) + " seconds";
 
             std::string header = indent;
             std::string underline = indent;
@@ -324,18 +345,6 @@ namespace ml {
     }; // class display
 
     ptr<display> display::interface{new display{}};
-
-
-
-
-    // Flag Singleton
-    struct flags {
-        static ptr<flags> global;
-
-        bool kill_thread_exec = false;
-    };
-
-    ptr<flags> flags::global{new flags{}};
 
 
 
@@ -463,9 +472,6 @@ namespace ml {
             for (size_t i = 0; i < definitions.size(); ++i) {
                 diffs.push_back(ml::difference(definitions[i], ref.definitions[i]));
             }
-//            for (double d : diffs) {
-//                std::cout << d << std::endl;
-//            }
             double sum = 0;
             size_t max_idx = util::max_index(diffs);
             for (size_t i = 0; i < diffs.size(); ++i) {
@@ -595,8 +601,8 @@ namespace ml {
             for (size_t i = start_id; i < entities.size(); ++i) {
                 if (i > (entities.size() - 1 - config->clone_num)) {
                     entities[i]->network = entities[0]->network->clone();
-                    entities[i]->network->tweakWeight(20, 0.1);
-                    entities[i]->network->tweakBias(10, 0.1);
+                    entities[i]->network->tweakWeight(10, 0.05);
+                    entities[i]->network->tweakBias(5, 0.025);
                 } else if (i < config->tweak_num) {
                     entities[i]->network->tweakWeight(60, 0.3);
                     entities[i]->network->tweakBias(40, 0.2);
@@ -838,6 +844,7 @@ namespace ml {
 
             display::interface->setup();
             flags::global->kill_thread_exec = false;
+            flags::global->start_time = std::chrono::system_clock::now();
 
 
             // Training loop
@@ -859,8 +866,6 @@ namespace ml {
                 }
 
                 // -- all threads have stopped here -- //
-
-                std::cout << threads[0]->l_set->entities.size() << std::endl;
 
                 // Thread Convergence
 
