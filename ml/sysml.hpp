@@ -18,6 +18,7 @@
 #include <pthread.h>
 #include <chrono>
 #include <thread>
+#include <algorithm>
 
 // Config that can not be defined as variables.
 #define NUM_ENTITY_PER_SET  100
