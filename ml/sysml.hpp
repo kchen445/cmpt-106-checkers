@@ -57,6 +57,15 @@ using uptr = std::unique_ptr<T>;
 namespace util {
 
 
+    inline double abs (double a) {
+        return a < 0 ? -a : a;
+    }
+
+    inline int abs (int a) {
+        return a < 0 ? -a : a;
+    }
+
+
     namespace func {
 
         // Generic prefix style operator<
@@ -236,13 +245,13 @@ namespace ml {
         std::string format_f (const char *format, double val) {
             char str[32];
             std::string prefix = val < 0 ? "-" : " ";
-            sprintf(str, format, abs(val));
+            sprintf(str, format, util::abs(val));
             return prefix + std::string{str};
         }
 
         std::string format_i (const char *format, int val) {
             auto str = new char[32];
-            sprintf(str, format, abs(val));
+            sprintf(str, format, util::abs(val));
             return std::string{str};
         }
 
@@ -264,7 +273,7 @@ namespace ml {
         void print_report (bool force = false) {
 
             std::string indent = "          ";
-            std::string separator{2, ' '};
+            std::string separator = "  ";
 
             const char *numericalFormat = "%.5f";
             char EOL = '\n';
@@ -378,7 +387,7 @@ namespace ml {
     inline double difference (io_pair<In, Out> const &base, io_pair<In, Out> const &ref) {
         std::vector<double> diffs{};
         for (size_t i = 0; i < Out; ++i) {
-            diffs.push_back(abs(ref.output[i] - base.output[i]));
+            diffs.push_back(util::abs(ref.output[i] - base.output[i]));
         }
 
         size_t max_idx = util::max_index(diffs);
@@ -390,7 +399,6 @@ namespace ml {
                 sum += diffs[i] * cfg::global->diff_coefficient;
             }
         }
-
         return sum;
     } // inline double difference ()
 
@@ -451,10 +459,13 @@ namespace ml {
             if (definitions.size() != ref.definitions.size())
                 throw std::runtime_error("ml::io_set: miss matching set sizes");
 
-            std::vector<double> diffs;
+            std::vector<double> diffs{};
             for (size_t i = 0; i < definitions.size(); ++i) {
                 diffs.push_back(ml::difference(definitions[i], ref.definitions[i]));
             }
+//            for (double d : diffs) {
+//                std::cout << d << std::endl;
+//            }
             double sum = 0;
             size_t max_idx = util::max_index(diffs);
             for (size_t i = 0; i < diffs.size(); ++i) {
@@ -529,12 +540,12 @@ namespace ml {
 
         size_t calling_thread_id;
 
-        set_t ()
-                : step_count(-1),
-                  last_stats(std::make_tuple(0.0,0.0)),
-                  entities(),
-                  calling_thread_id(0)
-        {}
+//        set_t ()
+//                : step_count(-1),
+//                  last_stats(std::make_tuple(0.0,0.0)),
+//                  entities(),
+//                  calling_thread_id(0)
+//        {}
 
         explicit set_t (ptr<network_o> const &seed)
                 : step_count(-1),
@@ -542,7 +553,11 @@ namespace ml {
                   entities(),
                   calling_thread_id(0)
         {
-            populate(seed);
+            for (auto &entity : entities) {
+                auto seed_variant = seed->clone();
+                seed_variant->tweakWeight(10, 0.1);
+                entity = ptr<E>{new E{seed_variant}};
+            }
         }
 
         virtual ~set_t () = default;
@@ -844,6 +859,8 @@ namespace ml {
                 }
 
                 // -- all threads have stopped here -- //
+
+                std::cout << threads[0]->l_set->entities.size() << std::endl;
 
                 // Thread Convergence
 

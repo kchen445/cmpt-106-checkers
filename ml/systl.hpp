@@ -44,12 +44,12 @@ namespace tl {
 
         ptr<ml::io_set> target;
 
-        trainer (ptr<ml::network_o> const &seed, ptr<ml::io_set> target)
+        trainer (ptr<ml::network_o> const &seed, ptr<ml::io_set> const &target)
                 : ml::core_t<entity>(),
-                  target(std::move(target))
+                  target(target)
         {
             for (size_t i = 0; i < NUM_THREADS; ++i) {
-                this->l_sets[i] = ptr<set>{new set{seed, this->target}};
+                this->l_sets[i] = ptr<set>{new tl::set{seed, this->target}};
                 this->threads[i] = ptr<ml::l_thread<entity>>{
                     new ml::l_thread<entity>(this->l_sets[i], i, ml::cfg::global->convergence_interval)
                 };

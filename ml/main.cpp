@@ -3,6 +3,7 @@
 
 #define NEURAL_IN   2
 #define NEURAL_OUT  2
+#define NUM_THREADS 4
 
 #include "sysml.hpp"
 #include "network.hpp"

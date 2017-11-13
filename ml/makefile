@@ -115,7 +115,7 @@ clean:
 # Executable build target.
 exe: $(MAIN_OBJ)
 	$(info Creating Executable...)
-	@$(CMPL) -o $(EXE) $(MAIN_OBJ) $(LIB) $(LIB_DEP)
+	@$(CMPL) -pthread -o $(EXE) $(MAIN_OBJ)
 
 # Archive/library target.
 # lib: $(OBJECTS)
