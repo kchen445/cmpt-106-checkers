@@ -729,7 +729,7 @@ namespace ml {
     // The routine to be called once the thread starts.
     // arg should be a pointer to a l_thread<E> object.
     template<typename E>
-    void *t_exec (void *arg) {
+    inline void *t_exec (void *arg) {
         auto ptr = (l_thread<E> *)arg;
         ptr->active = true;
 
