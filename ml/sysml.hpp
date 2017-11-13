@@ -192,7 +192,7 @@ namespace ml {
         // learning core settings
         bool use_goal = true;
         double goal = 0.015;
-        std::chrono::milliseconds display_update_interval{250};
+        size_t display_update_time = 250; // in milliseconds
         size_t save_interval = 2;
         std::string save_path = "net.txt";
         bool pause_on_convergence = false;
@@ -233,16 +233,6 @@ namespace ml {
 
         std::vector<std::vector<p_report>> data{};
 
-        // Checks if each thread has given enough data to print out a report.
-        bool is_ready_to_print () {
-            for (size_t i = 0; i < data.size(); ++i) {
-                if (((long)data[i].size() - 1) < next_index) {
-                    return false;
-                }
-            }
-            return true;
-        }
-
         std::string format_f (const char *format, double val) {
             char str[32];
             std::string prefix = val < 0 ? "-" : " ";
@@ -272,9 +262,6 @@ namespace ml {
         }
 
         void print_report (bool force = false) {
-            if (!is_ready_to_print() && !force) {
-                return;
-            }
 
             std::string indent = "          ";
             std::string separator{2, ' '};
@@ -283,11 +270,7 @@ namespace ml {
             char EOL = '\n';
 
             std::string title;
-            if (!force) {
-                title = format_i("Report %d", (int)next_index);
-            } else {
-                title = "Report (forced)";
-            }
+            title = format_i("Report %d", (int)next_index);
 
             std::string header = indent;
             std::string underline = indent;
@@ -302,23 +285,16 @@ namespace ml {
             std::string rowDeltaA   = "Delta A : ";
 
             for (auto row : data) {
-                if (!force) {
-                    rowBest += format_f(numericalFormat, row[next_index].best) + separator;
-                    rowAverage += format_f(numericalFormat, row[next_index].average) + separator;
-                    rowDeltaB += format_f(numericalFormat, row[next_index].delta_best) + separator;
-                    rowDeltaA += format_f(numericalFormat, row[next_index].delta_average) + separator;
+                if (!row.empty()) {
+                    rowBest += format_f(numericalFormat, row.back().best) + separator;
+                    rowAverage += format_f(numericalFormat, row.back().average) + separator;
+                    rowDeltaB += format_f(numericalFormat, row.back().delta_best) + separator;
+                    rowDeltaA += format_f(numericalFormat, row.back().delta_average) + separator;
                 } else {
-                    if (!row.empty()) {
-                        rowBest += format_f(numericalFormat, row.back().best) + separator;
-                        rowAverage += format_f(numericalFormat, row.back().average) + separator;
-                        rowDeltaB += format_f(numericalFormat, row.back().delta_best) + separator;
-                        rowDeltaA += format_f(numericalFormat, row.back().delta_average) + separator;
-                    } else {
-                        rowBest += "********" + separator;
-                        rowAverage += "********" + separator;
-                        rowDeltaB += "********" + separator;
-                        rowDeltaA += "********" + separator;
-                    }
+                    rowBest += "********" + separator;
+                    rowAverage += "********" + separator;
+                    rowDeltaB += "********" + separator;
+                    rowDeltaA += "********" + separator;
                 }
             }
 
@@ -331,7 +307,7 @@ namespace ml {
                     + rowDeltaB + EOL
                     + rowDeltaA + EOL;
 
-            next_index += cfg::global->output_interval;
+            ++next_index;
 
             std::cout << masterString << std::endl;
         }
@@ -862,7 +838,8 @@ namespace ml {
                 while (!all_threads_finished()) {
                     // As to not be constantly querying display to print new data
                     // we'll put the main thread to sleep for a set amount of time.
-                    std::this_thread::sleep_for(cfg::global->display_update_interval);
+                    std::chrono::milliseconds sleep_time{cfg::global->display_update_time};
+                    std::this_thread::sleep_for(sleep_time);
                     display::interface->print_report();
                 }
 

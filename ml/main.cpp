@@ -53,12 +53,14 @@ int main() {
     srand((unsigned int)time(nullptr));
 
 
-    ml::cfg::global->pause_on_convergence = true;
+    ml::cfg::global->pause_on_convergence = false;
+    ml::cfg::global->convergence_interval = 1000;
+    ml::cfg::global->display_update_time = 500; // update time in milliseconds
     ml::cfg::global->use_goal = true;
-    ml::cfg::global->goal = 0.02;
+    ml::cfg::global->goal = 0.01;
 
 
-    auto n = ptr<ml::network_o >{new net<2,2>{5}};
+    auto n = ptr<ml::network_o>{new net<2,2>{5}};
 
     std::vector<std::array<double, 2>> inputs {
             {0,0}, {0,1}, {1,0}, {1,1}
