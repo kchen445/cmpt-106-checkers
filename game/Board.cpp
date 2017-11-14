@@ -53,6 +53,7 @@ void Board::update(vector<Player*> listOfPlayers, int whichPlayer){
 			break;
 		}
 	}
+
 	//when updating the board, it is also necessary to update the piece stored inside
 	//a player struct
 	Piece* pieceToBeMoved = &(listOfPlayers[whichPlayer]->pieces.at(indexOfPieceToBeMoved));
@@ -90,7 +91,6 @@ void Board::update(vector<Player*> listOfPlayers, int whichPlayer){
 			otherPlayerPiece->isEmpty = true;
             otherPlayerPiece->position = Point(-1,-1);
 
-			
 			//change the gameBoard according to a player's chosen move
 			gameBoard.at(endPosition.row).at(endPosition.col) = gameBoard.at(initialPosition.row).at(initialPosition.col);
 			gameBoard.at(endPosition.row).at(endPosition.col).position = endPosition;

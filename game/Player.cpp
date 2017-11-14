@@ -5,9 +5,7 @@ using namespace std;
 
 Player::Player(int whichPlayer)
 :player(whichPlayer),indexOfMove(0),canMove(true)
-{
-
-};
+{};
 
 void Player::findMoves(const std::vector<std::vector<Piece>> &gameBoard){
     possibleMoves.clear();
@@ -37,10 +35,11 @@ void Player::movesToString(){
 			
 			if (point_str == "") {
 				point_str += std::to_string(possibleMoves[i][j].row) + std::to_string(possibleMoves[i][j].col);
-			}
+            }
 			else {
 				point_str += "-" + std::to_string(possibleMoves[i][j].row) + std::to_string(possibleMoves[i][j].col);
-            }
+
+			}
 		}
 
 		movesAsString.push_back(point_str);
