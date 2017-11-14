@@ -19,6 +19,7 @@
 #include <chrono>
 #include <thread>
 #include <algorithm>
+#include "clock.hpp"
 
 // Config that can not be defined as variables.
 #define NUM_ENTITY_PER_SET  100
@@ -228,13 +229,8 @@ namespace ml {
 
         bool kill_thread_exec = false;
 
-        std::chrono::system_clock::time_point start_time{std::chrono::system_clock::now()};
+        util::clock clock{};
 
-        size_t duration () {
-            auto current_time = std::chrono::system_clock::now();
-            auto dur = current_time - start_time;
-            return (size_t)dur.count() / 1000000000;
-        }
     };
 
     ptr<flags> flags::global{new flags{}};
@@ -300,7 +296,7 @@ namespace ml {
 
             std::string title;
             title = format_i("Report %d", (int)next_index);
-            title += " - " + std::to_string(flags::global->duration()) + " seconds";
+            title += " - Elapsed Time: " + util::as_str(flags::global->clock.elapsed());
 
             std::string header = indent;
             std::string underline = indent;
@@ -844,7 +840,7 @@ namespace ml {
 
             display::interface->setup();
             flags::global->kill_thread_exec = false;
-            flags::global->start_time = std::chrono::system_clock::now();
+            flags::global->clock.set_start();
 
 
             // Training loop

@@ -12,7 +12,7 @@
 CMPL = g++
 
 # Compiler flags
-CMPL_FLAGS = -std=c++14 -Wall -Wnon-virtual-dtor
+CMPL_FLAGS = -std=c++14 -Wall
 
 # Archiver
 ARC = ar
