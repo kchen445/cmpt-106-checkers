@@ -103,6 +103,7 @@ int main() {
               cout << "Stalemate with Player 2 taking more pieces!" << endl;
           }
       }
+
     stillPlay = retry();
   }
 }

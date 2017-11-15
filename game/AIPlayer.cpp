@@ -3,6 +3,7 @@
 //
 
 #include "AIPlayer.h"
+
 AIPlayer::AIPlayer(int whichPlayer) : Player(whichPlayer)
 {}
 

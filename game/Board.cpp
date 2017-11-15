@@ -3,6 +3,7 @@
 //
 
 #include "Board.h"
+
 using namespace std;
 Board::Board()
 		:gameBoard(8,vector<Piece>(8,Piece(Point(0,0))))

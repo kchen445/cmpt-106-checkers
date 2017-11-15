@@ -44,7 +44,7 @@ public:
 	//convert the possibleMoves vector into strings that can
 	//be easily outputted onto the terminal and easy to compare
     std::vector< std::string > movesAsString;
-	
+
 	//NON VIRTUAL FUNCTIONS CAN BE IMPLEMENTED INTO A PLAYER.CPP FILE
 	
     int findLostPieces();
@@ -77,6 +77,7 @@ public:
     virtual void getMove(const std::vector< std::vector<Piece> > &gameBoard) = 0;
 	
     virtual ~Player() {}
+
 };
 
 

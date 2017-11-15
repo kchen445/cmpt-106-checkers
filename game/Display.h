@@ -11,6 +11,7 @@
 
 struct Display{
 public:
+
     std::vector < std::vector<std::string> > displayBoard;
 	
 
@@ -22,6 +23,7 @@ public:
 	
 	//actually display the board, along with the axis
     void displayGame(const std::vector<std::vector <Piece> > &gameBoard);
+
 };
 
 #endif //CMPT_106_CHECKERS_GAME_DISPLAY_H

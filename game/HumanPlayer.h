@@ -24,6 +24,7 @@ public:
 	//void movesToString();
     //void initializePlayer();
     void getMove(const std::vector< std::vector<Piece> > &gameBoard);
+
 };
 
 

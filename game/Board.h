@@ -25,6 +25,7 @@ public:
 
     //after a player's move is taken in, change the board to reflect that
     void update(std::vector<Player*> listOfPlayers, int whichPlayer);
+
 };
 
 
