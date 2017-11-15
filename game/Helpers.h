@@ -9,7 +9,6 @@ enum class Tile: char;
 //function to test whether a given change will go out of bounds for the game board
 bool withinBounds(int baseX, int baseY, int changeX = 0, int changeY = 0);
 
-
 struct Point{
     int row;
     int col;

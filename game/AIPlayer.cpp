@@ -11,4 +11,5 @@ void AIPlayer::getMove(const std::vector< std::vector<Piece> > &gameBoard){
 		canMove = false;
 		return;
 	}
+
 }

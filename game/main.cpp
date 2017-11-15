@@ -84,19 +84,25 @@ int main() {
 		  break;
 	  }
 	}
-    if(!listOfPlayers[1]->canMove){
-        cout << endl << "Player 1 wins!" << endl << endl;
-    }else if (!listOfPlayers[0]->canMove){
-        cout << endl << "Player 2 wins!" << endl << endl;
-    }else{
-        if(listOfPlayers[0]->findLostPieces() < listOfPlayers[1]->findLostPieces()){
-            listOfPlayers[1]->canMove = false;
-            cout << "Stalemate with Player 1 taking more pieces!";
-        }else{
-            listOfPlayers[0]->canMove = false;
-            cout << "Stalemate with Player 2 taking more pieces!";
-        }
-    }
+      int player1LostPieces = listOfPlayers[0]->findLostPieces();
+      int player2LostPieces = listOfPlayers[1]->findLostPieces();
+      if(!listOfPlayers[1]->canMove){
+          cout << endl << "Player 1 wins!" << endl << endl;
+      }else if (!listOfPlayers[0]->canMove){
+          cout << endl << "Player 2 wins!" << endl << endl;
+      }else{
+          if(player1LostPieces < player2LostPieces){
+              listOfPlayers[1]->canMove = false;
+              cout << "Stalemate with Player 1 taking more pieces!" << endl;
+          }else if(player1LostPieces == player2LostPieces){
+              listOfPlayers[0]->canMove = false;
+              listOfPlayers[1]->canMove = false;
+              cout << "Complete Tie" << endl;
+          }else{
+              listOfPlayers[0]->canMove = false;
+              cout << "Stalemate with Player 2 taking more pieces!" << endl;
+          }
+      }
     stillPlay = retry();
   }
 }

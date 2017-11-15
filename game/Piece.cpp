@@ -123,7 +123,7 @@ void Piece::getJumpsPiece (vector < Point > jumps, const vector< vector < Piece 
 					Point jumpDestination(row+(2*rowAddition),col+(2*colAddition));
 					jumps.push_back(jumpDestination);
                     getJumpsPiece(jumps,gameBoard);
-                    jumps.pop_back();
+                    //jumps.pop_back();
 				}
 			}
 		}
@@ -133,7 +133,7 @@ void Piece::getJumpsPiece (vector < Point > jumps, const vector< vector < Piece 
 	}
 }
  
-void Piece::getJumpsKing (vector < Point > jumps, const vector<vector<Piece>> &gameBoard, Point direction){
+void Piece::getJumpsKing (vector < Point > jumps, const vector<vector<Piece>> &gameBoard,const Point &direction){
 	bool hasJumped = false;
 	int row = jumps.back().row;
 	int col = jumps.back().col;

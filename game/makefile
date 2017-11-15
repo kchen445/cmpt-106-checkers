@@ -41,7 +41,7 @@ OUT_EXT = .o
 # Must have a single file defined to create an executable.
 # As this file will be excluded from the library only the
 # int main function should be defined in this file.
-MAIN = main.cpp
+MAIN = main2.cpp
 
 # File to exclude from building
 #

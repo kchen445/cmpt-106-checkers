@@ -24,7 +24,7 @@ struct Piece {
 	bool canJumpPiece(const std::vector<std::vector<Piece>> &gameBoard);
 	bool canJumpKing (const std::vector<std::vector<Piece>> &gameBoard);
     void getJumpsPiece (std::vector < Point > jumps, const std::vector< std::vector < Piece > > &gameBoard);
-	void getJumpsKing  (std::vector < Point > jumps, const std::vector<std::vector<Piece>> &gameBoard, Point direction);
+	void getJumpsKing  (std::vector < Point > jumps, const std::vector<std::vector<Piece>> &gameBoard,const Point &direction);
 	void getJumpsToEmptyPiece (const std::vector<std::vector<Piece>> &gameBoard);
 	void getJumpsToEmptyKing  (const std::vector<std::vector<Piece>> &gameBoard);
     std::vector< std::vector<Point> > findMoves (const std::vector< std::vector < Piece > > &gameBoard);
