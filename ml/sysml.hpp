@@ -210,6 +210,7 @@ namespace ml {
 
         // cl settings
         bool ties_count_as_wins = false;
+        size_t num_games = 5; // will end up playing 4x this number
 
         // comparator functions
         bool(*fit_val_comp)(double, double) = [](double e1, double e2) -> bool {
@@ -274,6 +275,8 @@ namespace ml {
     public:
         static ptr<display> interface;
 
+        bool locked = false;
+
         // Setup the rows for the data matrix.
         void setup () {
             for (size_t i = 0; i < NUM_THREADS; ++i) {
@@ -286,7 +289,10 @@ namespace ml {
             data.at(report.thread_id).push_back(report);
         }
 
-        void print_report (bool force = false) {
+        void print_report () {
+
+            locked = true;
+            std::this_thread::sleep_for(std::chrono::milliseconds{1});
 
             std::string indent = "          ";
             std::string separator = "  ";
@@ -323,6 +329,11 @@ namespace ml {
                     rowDeltaA += "********" + separator;
                 }
             }
+
+            for (auto d : data) {
+                d.clear();
+            }
+            locked = false;
 
             std::string masterString =
                     title + EOL
@@ -426,7 +437,7 @@ namespace ml {
         {
             assert(in.size() == out.size());
             for (size_t i = 0; i < in.size(); ++i) {
-                definitions.emplace_back(io_pair<In, Out>{in[i], out[i]});
+                definitions.push_back(io_pair<In, Out>{in[i], out[i]});
             }
         }
 
@@ -435,7 +446,7 @@ namespace ml {
                 : definitions()
         {
             for (size_t i = 0; i < inputs.size(); ++i) {
-                definitions.emplace_back(io_pair<In, Out>{inputs[i], network->solve(inputs[i])});
+                definitions.push_back(io_pair<In, Out>{inputs[i], network->solve(inputs[i])});
             }
         }
 
@@ -493,6 +504,10 @@ namespace ml {
 
         ptr<network_o> network;
 
+        entity_t ()
+                : network()
+        {}
+
         explicit entity_t (ptr<network_o> n)
                 : network(std::move(n))
         {}
@@ -542,12 +557,12 @@ namespace ml {
 
         size_t calling_thread_id;
 
-//        set_t ()
-//                : step_count(-1),
-//                  last_stats(std::make_tuple(0.0,0.0)),
-//                  entities(),
-//                  calling_thread_id(0)
-//        {}
+        set_t ()
+                : step_count(-1),
+                  last_stats(std::make_tuple(0.0,0.0)),
+                  entities(),
+                  calling_thread_id(0)
+        {}
 
         explicit set_t (ptr<network_o> const &seed)
                 : step_count(-1),
@@ -555,7 +570,7 @@ namespace ml {
                   entities(),
                   calling_thread_id(0)
         {
-            for (auto &entity : entities) {
+            for (auto &entity : this->entities) {
                 auto seed_variant = seed->clone();
                 seed_variant->tweakWeight(10, 0.1);
                 entity = ptr<E>{new E{seed_variant}};
@@ -567,9 +582,9 @@ namespace ml {
         // Populates this set with entities based off of a given seed.
         // This set should be empty before calling this method.
         //
-        // Alternativly the seed constructor may be used.
+        // Alternatively, the seed constructor may be used.
         void populate (ptr<network_o> seed) {
-            for (auto &entity : entities) {
+            for (auto &entity : this->entities) {
                 auto seed_variant = seed->clone();
                 seed_variant->tweakWeight(10, 0.1);
                 entity = ptr<E>{new E{seed_variant}};
@@ -578,14 +593,17 @@ namespace ml {
 
         // Evaluates the entity at a given index.
         // The results of this evaluation should be stored in the entity.
-        virtual void evaluate (ptr<E> const &e) = 0;
+        virtual void evaluate (size_t idx) = 0;
 
         // Called before evaluating the entities.
         virtual void before_exec () {}
 
         // Sort the entities usiing the operator < overload in the entity_t class.
         virtual void sort_entities () {
-            std::sort(entities.begin(), entities.end(), [](ptr<E> const &e1, ptr<E> const &e2) -> bool {
+            std::sort(this->entities.begin(), this->entities.end(), [](ptr<E> e1, ptr<E> e2) -> bool {
+                if (e1 == nullptr || e2 == nullptr) {
+                    throw std::runtime_error{"bad sort"};
+                }
                 return e1->get_value() < e2->get_value();
             });
         }
@@ -594,53 +612,70 @@ namespace ml {
         // The entities array should be sorted before this method is called.
         void mutate () {
             size_t start_id = config->mutate_best_network ? 0 : 1;
-            for (size_t i = start_id; i < entities.size(); ++i) {
+            for (size_t i = start_id; i < this->entities.size(); ++i) {
                 if (i > (entities.size() - 1 - config->clone_num)) {
-                    entities[i]->network = entities[0]->network->clone();
-                    entities[i]->network->tweakWeight(10, 0.05);
-                    entities[i]->network->tweakBias(5, 0.025);
+                    this->entities[i]->network = entities[0]->network->clone();
+                    this->entities[i]->network->tweakWeight(10, 0.05);
+                    this->entities[i]->network->tweakBias(5, 0.025);
                 } else if (i < config->tweak_num) {
-                    entities[i]->network->tweakWeight(60, 0.3);
-                    entities[i]->network->tweakBias(40, 0.2);
+                    this->entities[i]->network->tweakWeight(60, 0.3);
+                    this->entities[i]->network->tweakBias(40, 0.2);
                 } else {
-                    entities[i]->network->randomizeWeight(100);
-                    entities[i]->network->randomizeBias(100);
+                    this->entities[i]->network->randomizeWeight(100);
+                    this->entities[i]->network->randomizeBias(100);
                 }
             }
         }
 
 
-        double step () {
+        virtual double step () {
             ++step_count;
 
             if (step_count != 0) {
                 mutate();
             }
 
-            for (auto const &e : entities) {
-                evaluate(e);
+            for (size_t i = 0; i < this->entities.size(); ++i) {
+                evaluate(i);
             }
 
+            before_exec();
+
             // Sort the entity array after evaluating
-            sort_entities();
+            size_t count = 0;
+            while (true) {
+                try {
+                    sort_entities();
+                    break;
+                } catch (std::runtime_error const &e) {
+                    std::cout << "Caught: " << e.what() << std::endl;
+                    ++count;
+                    if (count > 10) {
+                        std::cout << "could not recover" << std::endl;
+                        exit(101);
+                    }
+                }
+            }
 
             // Send a progress report to display
             double average = 0;
-            for (auto entity : entities) {
+            for (auto entity : this->entities) {
                 average += entity->get_value();
             }
             average = average / entities.size();
 
-            double best = entities[0]->get_value();
-            p_report report {
-                    calling_thread_id,
-                    (size_t)step_count,
-                    best,
-                    average,
-                    best - std::get<0>(last_stats),
-                    average - std::get<1>(last_stats)
-            };
-            display::interface->add(report);
+            double best = this->entities[0]->get_value();
+            if (!display::interface->locked) {
+                p_report report {
+                        calling_thread_id,
+                        (size_t)step_count,
+                        best,
+                        average,
+                        best - std::get<0>(last_stats),
+                        average - std::get<1>(last_stats)
+                };
+                display::interface->add(report);
+            }
 
             std::get<0>(last_stats) = best;
             std::get<1>(last_stats) = average;
@@ -682,12 +717,11 @@ namespace ml {
 
     template<typename E>
     class l_thread {
-    private:
+    public:
 
         // The thread object.
         pthread_t thread;
 
-    public:
         // The current state of this thread.
         bool active = false;
 
@@ -851,15 +885,17 @@ namespace ml {
                     t->start();
                 }
 
+                pthread_join(threads[0]->thread, NULL);
+
                 // Wait till the threads have finished.
                 // Periodically print out reports from display.
-                while (!all_threads_finished()) {
-                    // As to not be constantly querying display to print new data
-                    // we'll put the main thread to sleep for a set amount of time.
-                    std::chrono::milliseconds sleep_time{cfg::global->display_update_time};
-                    std::this_thread::sleep_for(sleep_time);
-                    display::interface->print_report();
-                }
+//                while (!all_threads_finished()) {
+//                    // As to not be constantly querying display to print new data
+//                    // we'll put the main thread to sleep for a set amount of time.
+//                    std::chrono::milliseconds sleep_time{cfg::global->display_update_time};
+//                    std::this_thread::sleep_for(sleep_time);
+//                    display::interface->print_report();
+//                }
 
                 // -- all threads have stopped here -- //
 
@@ -901,7 +937,7 @@ namespace ml {
 
                 // Display convergence info and pause interface
                 std::cout << " -- Convergence - " << convergence_count << " -- " << std::endl << std::endl;
-                display::interface->print_report(true);
+                display::interface->print_report();
 
                 // Print out the goal if there is one
                 if (cfg::global->use_goal) {

@@ -32,9 +32,9 @@ namespace tl {
                   target(std::move(target))
         {}
 
-        void evaluate (ptr<entity> const &e) override {
-            ml::io_set io{e->network, target->inputs()};
-            e->fit_val = io.difference(*target);
+        void evaluate (size_t idx) override {
+            ml::io_set io{entities[idx]->network, target->inputs()};
+            this->entities[idx]->fit_val = io.difference(*target);
         }
     };
 
@@ -44,12 +44,16 @@ namespace tl {
 
         ptr<ml::io_set> target;
 
-        trainer (ptr<ml::network_o> const &seed, ptr<ml::io_set> const &target)
+        trainer (ptr<ml::network_o> const &seed, ptr<ml::io_set> target)
                 : ml::core_t<entity>(),
-                  target(target)
+                  target(std::move(target))
         {
             for (size_t i = 0; i < NUM_THREADS; ++i) {
-                this->l_sets[i] = ptr<set>{new tl::set{seed, this->target}};
+                auto seed_varient = seed->clone();
+                if (i != 0) {
+                    seed_varient->tweakWeight(10, 0.1);
+                }
+                this->l_sets[i] = ptr<set>{new tl::set{seed_varient, this->target}};
                 this->threads[i] = ptr<ml::l_thread<entity>>{
                     new ml::l_thread<entity>(this->l_sets[i], i, ml::cfg::global->convergence_interval)
                 };

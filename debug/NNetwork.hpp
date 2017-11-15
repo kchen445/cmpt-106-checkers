@@ -57,32 +57,43 @@ namespace network {
 	template<size_t In, size_t Out>
 	class NNetwork : public NetworkType<In, Out> {	
     public:
-		//conns[i] guaranteed to be non-empty
-		std::forward_list<std::vector<Edge>> conns;
-		std::vector<double> biases;
-		//to-do: remove input nodes from biases
+		//sigmoid function to be used in the network
+		double sigmoid(double value);
 		
-		size_t connsize;	// = conns.size()
-		size_t numNodes;	// = biases.size()
+		std::forward_list<std::vector<Edge>> conns;
+		std::vector<double> biases;		//to-do: remove input nodes from biases
+		
+		size_t connsize;
+		size_t numNodes;
 		
 	/* saving, loading, constructors, destructors */
-        //Construct an empty neural network
-        //NNetwork();
-		NNetwork(const NNetwork &other);
-        //Load a neural network from a file
-        NNetwork(const std::string &filename);
-        //Save the neural network to a file
-        void save(const std::string &filename);
+        //Construct a fully connected neural network with a number of nodes between each layer
+		NNetwork(std::vector<size_t> layers);
 		
-		std::shared_ptr<NetworkType<In, Out>> clone();
+		//Copy constructor
+		NNetwork(const NNetwork &other);
+        
+		//Load a neural network from a file
+        NNetwork(const std::string &filename);
+        
+		//Save the neural network to a file
+        void save(const std::string &filename);
 		
 		//Destructor
         ~NNetwork();
 		
-		double sigmoid(double value);
+		
+        // Should return a network with the same configuration.
+        // The returned network should be an isolated entity that
+        // shares no pointers or anything with the base network.
+        //
+        // The network should be declared used the new operator.
+		std::shared_ptr<NetworkType<In, Out>> clone();
+		
+		
 	/* Network modification functions */		
 		//Add a connection to the neural network
-		void addConnection(std::forward_list<std::vector<Edge>>::iterator it, size_t endid, double weight);
+		//void addConnection(std::forward_list<std::vector<Edge>>::iterator it, size_t endid, double weight);
 
 	/* Calculation functions */
         std::array<double, Out> solve (std::array<double, In> const &input);

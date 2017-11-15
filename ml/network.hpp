@@ -34,7 +34,7 @@ struct neuron {
         }
 
         double feed_forward () {
-            return weight * target->get_value();
+            return this->weight * this->target->get_value();
         }
     };
 
@@ -52,12 +52,12 @@ struct neuron {
     }
 
     virtual double get_value () {
-        value = bias;
+        this->value = bias;
         for (auto const &conn : conns) {
-            value += conn->feed_forward();
+            this->value += conn->feed_forward();
         }
-        value = act_f(value);
-        return value;
+        this->value = act_f(value);
+        return this->value;
     }
 };
 
@@ -73,11 +73,11 @@ struct in_neuron : public neuron {
     {}
 
     double get_value () override {
-        return value;
+        return this->value;
     }
 
     void set_value (double x) {
-        value = x;
+        this->value = x;
     }
 
 };
@@ -160,7 +160,7 @@ struct net : public ml::NetworkType<In, Out> {
 
 
     void tweakWeight (int chance, double range) override {
-        for (const ptr<conn> &c : cset) {
+        for (const ptr<conn> &c : this->cset) {
             if (util::random_chance(chance)) {
                 c->weight = util::random_crange(c->weight, range);
             }
@@ -168,7 +168,7 @@ struct net : public ml::NetworkType<In, Out> {
     }
 
     void randomizeWeight (int chance) override {
-        for (const ptr<conn> &c : cset) {
+        for (const ptr<conn> &c : this->cset) {
             if (util::random_chance(chance)) {
                 c->weight = util::random_range(-1, 1);
             }
@@ -176,7 +176,7 @@ struct net : public ml::NetworkType<In, Out> {
     }
 
     void tweakBias (int chance, double range) override {
-        for (const ptr<neuron> &n : nset) {
+        for (const ptr<neuron> &n : this->nset) {
             if (util::random_chance(chance)) {
                 n->bias = util::random_crange(n->bias, range);
             }
@@ -184,7 +184,7 @@ struct net : public ml::NetworkType<In, Out> {
     }
 
     void randomizeBias (int chance) override {
-        for (const ptr<neuron> &n : nset) {
+        for (const ptr<neuron> &n : this->nset) {
             if (util::random_chance(chance)) {
                 n->bias = util::random_range(-1, 1);
             }
