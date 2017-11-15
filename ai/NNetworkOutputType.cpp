@@ -9,6 +9,7 @@ using namespace network;
 NNetworkOutputType::NNetworkOutputType()
         : im::Listener(),
           numberOfNodesLeftToReceive(0),
+          totalNumberOfNodes(0),
           outputValues()
 {
     subscribeTo(im::Channel::neuralOutputNode);
@@ -34,6 +35,7 @@ void NNetworkOutputType::onMessageReceived(im::Channel const &chan, im::Message 
         case im::Channel::neuralOutputNodeCreated: {
             id = lang::as<size_t>(msg[0]);
             numberOfNodesLeftToReceive++;
+            totalNumberOfNodes++;
             addValue(id, 0);
             break;
         }
@@ -48,6 +50,7 @@ void NNetworkOutputType::onMessageReceived(im::Channel const &chan, im::Message 
             // Check if that was the last message that it was waiting for.
             if (numberOfNodesLeftToReceive == 0) {
                 onReceivedAllOutputs();
+                numberOfNodesLeftToReceive = totalNumberOfNodes;
             }
             break;
         }

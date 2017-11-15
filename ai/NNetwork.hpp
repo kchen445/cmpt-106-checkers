@@ -33,36 +33,30 @@
 #ifndef NNETWORK_NNETWORK_HPP
 #define NNETWORK_NNETWORK_HPP
 
-#include "NodeTypeEx.hpp"
-#include "ThresholdNode.hpp"
-#include "InputNode.hpp"
-#include "OutputNode.hpp"
+#include "NodeType.hpp"
 #include "NNetworkOutputType.hpp"
 #include <vector>
+#include <string>
 
 namespace network {
+	class Generation;	//forward declaration -- circular dependence
 	
 	struct Edge {
-		size_t endid;
 		size_t startid;
-		double weight;
+		size_t endid;
+		size_t innov;
 		
-		unsigned int innov;
+		double weight;
 		bool enabled;
 	};
-	
-    //using Connection = ConnectionType<double, NodeTypeEx<double>>;
 
-	class NNetwork {
-	private:
-		//fetch a node from within the vectors given its id
-		NodeTypeEx<double>* getNode(size_t id);
-	
+	class NNetwork {	
     public:
         // Nodes
-        std::vector<InputNode*> inputs;
-        std::vector<OutputNode*> outputs;
-		std::vector<NodeTypeEx<double>*> internals;
+		std::vector<NodeType*> nodes;
+		
+		size_t numInputs;
+		size_t numOutputs;
 		size_t numNodes;
 		
 		std::vector<Edge> conns;
@@ -70,34 +64,72 @@ namespace network {
         // Output Device
         NNetworkOutputType* outputDevice;
 
+        double fitnessValue = 0.0;
+		
+	/* saving, loading, constructors, destructors */
         //Construct an empty neural network
-        NNetwork(NNetworkOutputType* outputDevice);
+        NNetwork(NNetworkOutputType* outputDevice, size_t numInputs, size_t numOutputs, size_t numHidden = 0);
+		//Copy constructor
+		NNetwork(const NNetwork &other);
 
         //Load a neural network from a file
-        NNetwork(NNetworkOutputType* outputDevice, const char *filename);
-
+        NNetwork(NNetworkOutputType* outputDevice, const std::string &filename);
+        //Save the neural network to a file
+        void save(const std::string &filename);
+		
+		//Destructor
         ~NNetwork();
+		
+	/* Network modification functions */
+		//recreates the node data structure to model the connection data structure
+		void precalc();
 		
 		//Add a (hidden) node to the neural network and returns its id
 		size_t addNode();
-		//size_t addNode(connections)?
-		
-		//deleting nodes is pretty hairy cause you have to repair the connections -- not gonna get into that rn
 		
 		//Add a connection to the neural network
-		void addConnection(size_t endid, size_t startid, double weight, unsigned int innov, bool enabled = true);
+		void addConnection(size_t startid, size_t endid, size_t innov, double weight, bool enabled = true);
+		
+		void changeConnectionWeight(size_t idx, double weight);
 		
 		//Enable a connection, given its index within the [conns] list
 		void enableConnection(size_t idx);
-		//Disable a connection, given its index within the [conns] list
+		//Disable a connection, given its index within the [conns] list (note -- not very efficient)
 		void disableConnection(size_t idx);
 
-        //Return the value of the output nodes, given some inputs
+	/* Calculation functions */
+        //Given some inputs, return the value of the output nodes
         std::vector<double> calculate(std::vector<double> const &inputValues);
 
-        //Save the neural network to a file
-        void save(const char *filename);
+	/* Difference functions */
+        // Returns a value which coresonds the similarity between two networks.
+        // Larger values mean a larger difference and so on.
+        //
+        //  d = (c1 * E)/N + (c2 * D)/N + (c3 * W)
+        //
+        // Formula from K. O. Stanley and R. Miikkulainen Neural Evolution
+        // through Augmenting Topologies.
+        double difference (const NNetwork &other);
+		
+	/* Breeding function */
+		//Breed this network with another network, assuming this network is more fit
+		NNetwork* breed(const NNetwork &other);
+		
+    /* Mutation functions */
+        void mutate(Generation &parent);
+
+        void mutateChangeWeightValue (size_t index);
+
+        void mutateAddNode (Generation &parent, size_t index);
+
+        bool mutateAddConn (Generation& parent, size_t startid, size_t endid);
 	};
 
 }
+
+// Compare networks based on fitness values.
+inline bool operator< (network::NNetwork const & lhs, network::NNetwork const &rhs) {
+    return lhs.fitnessValue < rhs.fitnessValue;
+}
+
 #endif

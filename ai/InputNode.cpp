@@ -7,21 +7,17 @@
 using namespace network;
 
 InputNode::InputNode(double const &value)
-        : NodeTypeEx<double>(value)
+        : NodeType('I', value)
 {}
 		
 InputNode::InputNode()
-        : NodeTypeEx<double>()
+        : NodeType('I')
 {}
 
-double InputNode::activationFunction(double const &in) {
+double InputNode::activationFunction(double in) {
     return in;
 }
 
 double InputNode::calculate() {
     return rawValue;
-}
-
-char InputNode::getType() const {
-    return 'I';
 }

@@ -14,24 +14,25 @@
 #ifndef NNETWORK_INPUTNODE_HPP
 #define NNETWORK_INPUTNODE_HPP
 
-#include "NodeTypeEx.hpp"
+#include "NodeType.hpp"
 
 namespace network {
 
-    class InputNode : public NodeTypeEx<double> {
+    class InputNode : public NodeType {
     public:
 
         // Default constructor
         InputNode(double const &value);
+
 		InputNode();
 
         // Bypass activation function.
-        double activationFunction (double const &in);
+        double activationFunction (double in) override;
 
-        double calculate ();
-
-        // 'I'
-        char getType () const;
+        // Override of NodeType::calculate.
+        // This is the base case for the recursive algorithm
+        // which solves the network.
+        double calculate () override;
 
     };
 
