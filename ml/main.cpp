@@ -3,11 +3,12 @@
 
 #define NEURAL_IN   3
 #define NEURAL_OUT  3
-#define NUM_THREADS 4
+#define NUM_THREADS 2
 
 #include "sysml.hpp"
 #include "network.hpp"
 #include "systl.hpp"
+#include "../debug/NNetwork.hpp"
 
 template<typename T>
 std::string as_str (std::vector<T> const &v) {
@@ -58,10 +59,14 @@ int main() {
     ml::cfg::global->convergence_interval = 1000;
     ml::cfg::global->display_update_time = 500; // update time in milliseconds
     ml::cfg::global->use_goal = true;
-    ml::cfg::global->goal = 0.025;
+    ml::cfg::global->goal = 0.01;
 
 
-    auto n = ptr<ml::network_o>{new net<NEURAL_IN,NEURAL_OUT>{10}};
+//    auto n = ptr<ml::network_o>{new network::NNetwork<NEURAL_IN, NEURAL_OUT>{
+//            "/Users/Jeremy/Desktop/C++/cmpt-106-checkers/scripts/net.txt"
+//    }};
+
+    auto n = ptr<ml::network_o>{new net<NEURAL_IN, NEURAL_OUT>{5}};
 
     std::vector<std::array<double, NEURAL_IN>> inputs {
             {0,0,0}, 
