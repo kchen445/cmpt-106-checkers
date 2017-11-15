@@ -3,3 +3,14 @@
 //
 
 #include "AIPlayer.h"
+
+AIPlayer::AIPlayer(int whichPlayer) : Player(whichPlayer)
+{}
+
+void AIPlayer::getMove(const std::vector< std::vector<Piece> > &gameBoard){
+	if(possibleMoves.size() == 0){
+		canMove = false;
+		return;
+	}
+
+}

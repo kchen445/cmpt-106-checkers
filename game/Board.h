@@ -17,14 +17,15 @@ public:
     Board();
 	
 	//test whether a piece has its 'isEmpty' variable as true
-    bool positionIsEmpty(point point) const;
+    bool positionIsEmpty(const Point &point);
 
     //function to create the starting conditions for checkers in case
     //player decides to have multiple games in one build
     void initializeBoard();
 
     //after a player's move is taken in, change the board to reflect that
-    void update(Player player);
+    void update(std::vector<Player*> listOfPlayers, int whichPlayer);
+
 };
 
 
