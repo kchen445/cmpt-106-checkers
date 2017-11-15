@@ -4,6 +4,7 @@
 
 #include <fstream>
 #include <cstdlib>
+#include <cmath>
 #include <algorithm>
 
 using namespace network;
@@ -16,7 +17,8 @@ NNetwork<In,Out>::NNetwork() : numNodes(In+Out), biases(In+Out, 0)
 
 template<size_t In, size_t Out>
 double NNetwork<In,Out>::sigmoid(double value) {
-	return value;
+    return tanh(value * 2);
+//    return value;
 }
 
 template<size_t In, size_t Out>
@@ -172,8 +174,8 @@ void NNetwork<In,Out>::tweakWeight(int chance, double range) {
 		for (auto &conn : group) {
 			if (randChance(chance)) {
 				conn.weight += randDouble(-range, range);
-				if (conn.weight >= 1) conn.weight = 1;
-				else if (conn.weight < -1) conn.weight = -1;
+//                if (conn.weight >= 1) conn.weight = 1;
+//                else if (conn.weight < -1) conn.weight = -1;
 			}
 		}
 	}
@@ -234,6 +236,8 @@ void NNetwork<In,Out>::mutateNode(int chance) {
 		
 		biases.push_back(0);
 		numNodes++;
+
+		std::cout << "mutate node" << std::endl;
 	}
 }
 
@@ -283,5 +287,6 @@ void NNetwork<In,Out>::mutateConnection(int chance, int retries) {
 				break;
 			}
 		}
+		std::cout << "mutate connection" << std::endl;
 	}
 }
