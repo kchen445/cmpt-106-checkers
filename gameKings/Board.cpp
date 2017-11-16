@@ -22,6 +22,7 @@ void Board::initializeBoard (){
 			Point position(i,j);
 			if(isOdd(i+j)){
 				gameBoard.at(i).at(j) = Piece(position,2);
+                gameBoard.at(i).at(j).isKing = true;
 			}else{
 				gameBoard.at(i).at(j) = Piece(position);
 			}
@@ -32,6 +33,7 @@ void Board::initializeBoard (){
 			Point position(i,j);
 			if(isOdd(i+j)){
 				gameBoard.at(i).at(j) = Piece(position,1);
+                gameBoard.at(i).at(j).isKing = true;
             }else{
 				gameBoard.at(i).at(j) = Piece(position);
 			}

@@ -59,6 +59,7 @@ void Player::initializePlayer(){
 		for (int col = 0; col < 8; col++){
 			if(isOdd(row+col)){
 				Piece playerPiece(Point(row,col),player);
+                playerPiece.isKing = true;
 				pieces.push_back(playerPiece);
 			}
 		}
