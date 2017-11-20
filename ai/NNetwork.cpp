@@ -199,7 +199,7 @@ std::array<double, Out> NNetwork<In,Out>::solve(std::array<double, In> const &in
 		
 		for (auto &conn : group) {			//push value to connected nodes
 			if (conn.enabled)
-				values[conn.endid] += values[conn.startid] * conn.weight;
+				values.at(conn.endid) += values.at(conn.startid) * conn.weight;
 		}
 	}
 	

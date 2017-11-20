@@ -3,12 +3,12 @@
 
 #define NEURAL_IN   3
 #define NEURAL_OUT  3
-#define NUM_THREADS 2
+#define NUM_THREADS 4
 
 #include "sysml.hpp"
 #include "network.hpp"
 #include "systl.hpp"
-#include "../debug/NNetwork.hpp"
+#include "../ai/NNetwork.hpp"
 
 template<typename T>
 std::string as_str (std::vector<T> const &v) {
@@ -66,7 +66,7 @@ int main() {
 //            "/Users/Jeremy/Desktop/C++/cmpt-106-checkers/scripts/net.txt"
 //    }};
 
-    auto n = ptr<ml::network_o>{new net<NEURAL_IN, NEURAL_OUT>{5}};
+    auto n = ptr<ml::network_o>{new network::NNetwork<NEURAL_IN, NEURAL_OUT>{std::vector<size_t>{7}}};
 
     std::vector<std::array<double, NEURAL_IN>> inputs {
             {0,0,0}, 
@@ -91,7 +91,7 @@ int main() {
     };
 
     ptr<ml::io_set> tp{new ml::io_set{inputs, outputs}};
-
+    std::cout << "Starting..." << std::endl;
     tl::trainer trainer{n, tp};
     auto best = trainer.train();
 

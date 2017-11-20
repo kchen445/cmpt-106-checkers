@@ -206,7 +206,7 @@ namespace lang {
         // Unsafe raw access to the underlying pointer.
         // It is safe to use this if only one thread is executing.
         T *unsafe_raw () {
-            return __p::__mem::__instance->unsafe_raw_access(mem_idx);
+            return (T *)__p::__mem::__instance->unsafe_raw_access(mem_idx);
         }
         
     }; // class tsafe_ptr<T>
