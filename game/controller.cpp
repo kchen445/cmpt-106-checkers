@@ -101,28 +101,37 @@ struct CheckerController : public cl::game_template<AIPlayer> {
         player1LostPieces = listOfPlayers[0]->findLostPieces();
         player2LostPieces = listOfPlayers[1]->findLostPieces();
         
-#ifndef DISABLE_DISPLAY
+
         if(!listOfPlayers[1]->canMove){
+#ifndef DISABLE_DISPLAY
             cout << endl << "Player 1 wins!" << endl << endl;
+#endif
         }else if (!listOfPlayers[0]->canMove){
+#ifndef DISABLE_DISPLAY
             cout << endl << "Player 2 wins!" << endl << endl;
+#endif
         }else{
             tie = true;
             if(player1LostPieces < player2LostPieces){
                 listOfPlayers[1]->canMove = false;
                 player2Loss = true;
+#ifdef DISABLE_DISPLAY
                 cout << "Stalemate with Player 1 taking more pieces!" << endl;
+#endif
             }else if(player1LostPieces == player2LostPieces){
                 listOfPlayers[0]->canMove = false;
                 listOfPlayers[1]->canMove = false;
+#ifndef DISABLE_DISPLAY
                 cout << "Complete Tie" << endl;
+#endif
             }else{
                 listOfPlayers[0]->canMove = false;
                 player1Loss = true;
+#ifndef DISABLE_DISPLAY
                 cout << "Stalemate with Player 2 taking more pieces!" << endl;
+#endif
             }
         }
-#endif
 
         Data dataPlayer1(turns,listOfPlayers[0]->canMove,player1Loss,tie,player1LostPieces);
         Data dataPlayer2(turns,listOfPlayers[1]->canMove,player2Loss,tie,player2LostPieces);
