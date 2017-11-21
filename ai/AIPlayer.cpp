@@ -4,7 +4,7 @@
 
 #include "AIPlayer.h"
 #include <array>
-AIPlayer::AIPlayer(int whichPlayer, ptr<ml::network_o> network) : Player(whichPlayer), network(network)
+AIPlayer::AIPlayer(int whichPlayer, ptr<ml::network_o> network, double rating) : Player(whichPlayer), network(network), rating(rating)
 {}
 
 AIPlayer::AIPlayer(int whichPlayer, const std::string &filename) : Player(whichPlayer)
@@ -18,6 +18,12 @@ inline unsigned int index(int row, int col) {
 }
 
 void AIPlayer::getMove(const std::vector< std::vector<Piece> > &gameBoard){
+	if (possibleMoves.size() == 0) {
+		canMove = false;
+		return;
+	}
+    movesToString();
+	
 	//format inputs for neural network
 	std::array<double,64> inputs{};
 	for (int row=0; row<8; row++) {

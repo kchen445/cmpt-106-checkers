@@ -1,11 +1,4 @@
-#include <iostream>
-#include <vector>
-#include <array>
-#include "HumanPlayer.h"
-#include "AIPlayer.h"
-#include "Display.h"
-
-#include "../ml/syscl.hpp" // for machine learning system
+#include "controller.hpp"
 
 // #define DISABLE_DISPLAY before including this file for training system
 
@@ -25,11 +18,10 @@ using namespace std;
 using Data = cl::player_data;
 
 
-struct CheckerController : public cl::game_template<AIPlayer> {
-	//order of player parameters matter
-	//board will treat the first player passed in as player 1
-	//and have their pieces at the bottom
-    array<Data,2> gameLoop(Player* player1, Player* player2){
+//order of player parameters matter
+//board will treat the first player passed in as player 1
+//and have their pieces at the bottom
+array<Data,2> CheckerController::gameLoop(Player* player1, Player* player2){
 #ifndef DISABLE_DISPLAY
         Display display;
 #endif
@@ -96,6 +88,9 @@ struct CheckerController : public cl::game_template<AIPlayer> {
             if(turns == 75){
                 break;
             }
+			
+			char c;
+			cin >> c;
         }
 
         player1LostPieces = listOfPlayers[0]->findLostPieces();
@@ -133,16 +128,16 @@ struct CheckerController : public cl::game_template<AIPlayer> {
             }
         }
 
-        Data dataPlayer1(turns,listOfPlayers[0]->canMove,player1Loss,tie,player1LostPieces);
-        Data dataPlayer2(turns,listOfPlayers[1]->canMove,player2Loss,tie,player2LostPieces);
+        Data dataPlayer1{turns,listOfPlayers[0]->canMove,player1Loss,tie,player1LostPieces};
+        Data dataPlayer2{turns,listOfPlayers[1]->canMove,player2Loss,tie,player2LostPieces};
         array<Data,2> arr = {dataPlayer1,dataPlayer2};
         return arr;
-    }
+}
     
     
-    // Override from cl::game_template<AIPlayer>c
-    array<Data, 2> compete (AIPlayer const &e1, AIPlayer const &e2) override {
-        return gameLoop(&e1, &e2);
-    }
-    
-}; // struct CheckersController
+// Override from cl::game_template<AIPlayer>c
+array<Data, 2> CheckerController::compete (AIPlayer &e1, AIPlayer &e2) {
+	e1.player = 1;
+	e2.player = 2;
+	return gameLoop(&e1, &e2);
+}

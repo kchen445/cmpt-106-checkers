@@ -1,8 +1,14 @@
 #pragma once
 
+#include "../ai/elo.hpp"
+
 #include "../ai/AIPlayer.h"
 #include "sysml.hpp"
 #include "syscl.hpp"
+
+#include <algorithm>
+#include <array>
+#include <fstream>
 
 namespace cl {
 
@@ -17,7 +23,8 @@ namespace cl {
          * std::array<std::shared_ptr<AIPlayer>, NUM_ENTITIES_PER_SET> entities;
          * size_t calling_thread_id;                // for multithreading
          */
-
+		const size_t TOURNEY_SIZE = 5;
+		
         typedef AIPlayer entity_t;
 
         // game->compete(AIPlayer const &e1, AIPlayer const &e2) is used to play a game
@@ -25,18 +32,24 @@ namespace cl {
         // see syscl.hpp for player_data struct definition
         ptr<game_template<entity_t>> game; // the game object using to evaluate the entities
 
-
+		std::fstream evolstats;
+		
         // Populate this set via a seed network.
         // Calls explicit network constructor for entity type.
         tournament_set (ptr<ml::network_o> const &seed, ptr<game_template> game)
                 : ml::set_t<AIPlayer>(seed),
                   game(std::move(game))
-        {}
+        {
+			evolstats("evolution_data.txt", std::fstream::app);
+		}
+		
+		~tournament_set() {
+			evolstats.close();
+		}
 
-
-        // Function to sort the entities using whatever method.
+        // Function to sort the entities in order of descending rating.
         void sort_entities () override {
-
+			std::sort(entities.begin(), entities.end(), [](const AIPlayer &p1, const AIPlayer &p2) { return p1.elo > p2.elo; });
         }
 
 
@@ -67,8 +80,72 @@ namespace cl {
         // reached.
         //
         // If a target is not used then 0 may be returned.
-        double step () override {
-
+        double step () override {			
+			std::random_shuffle(entities.begin(), entities.end());
+			
+			//have each group of TOURNEY_SIZE entities play a full round-robin tournament
+			for (size_t i=0; i<entities.size(); i+=TOURNEY_SIZE)
+			{
+				std::array<double, TOURNEY_SIZE> expected{0};	//what score each player is expected to get
+				std::array<double, TOURNEY_SIZE> scores{0};		//what score each player actually gets
+				for (size_t p1=i; p1<i+TOURNEY_SIZE; p1++) {
+					for (size_t p2=i; p2<i+TOURNEY_SIZE; p2++) {
+						if (p1==p2) continue;
+						
+						//play the game
+						std::array<player_data, 2> results = game->compete(p1, p2);
+						//	assume result = 1   if win
+						//		   result = 0.5 if tie
+						//	       result = 0   if loss
+						
+						//expected probabilities always add up to 1
+						expected[p1-i] += elo::expected(entities[p1].elo, entities[p2].elo);
+						expected[p2-i] += 1-expected[p1-i];
+						scores[p1-i] += results[0].win + results[0].tie * 0.5;
+						scores[p2-i] += results[1].win + results[1].tie * 0.5;
+					}
+				}
+				
+				//using the results of the tournament, update the elo rating
+				for (size_t j=0; j<TOURNEY_SIZE; j++) {
+					entities[i+j].rating = elo::update_raw(entities[i+j].rating, expected[j], scores[j]);
+				}
+				
+			}
+			
+			//sort for mutation
+			sort_entities();
+			
+			//write evolution data
+			evolstats << step_count << ' ';
+			for (auto e : entities) {
+				evolstats << e.rating << ' ';
+			}
+			evolstats << std::endl;		//should flush stream
+			
+			//kill and mutate
+			//ripped from https://www.youtube.com/watch?v=GOFws_hhZs8
+			for (size_t i=0; i<entities.size()/2; i++) {
+				double thresh = (double)i / entities.size();
+				double rand = (std::pow(randDouble(-1,1),3)+1)/2;
+				bool chance = (thresh <= rand);
+				
+				size_t survivor,unlucky;
+				if (chance) {
+					survivor = i;
+					unlucky = entities.size()-1-i;
+				} else {
+					survivor = entities.size()-1-i;
+					unlucky = i;
+				}
+				
+				entities[unlucky]->network = entities[survivor]->network->clone();
+				entities[unlucky]->network->tweakWeight(80, 0.1);
+				entities[unlucky]->network->tweakBias(80, 0.1);
+				entities[unlucky]->network->mutateNode(3);
+				entities[unlucky]->network->mutateConnection(5);
+			}
+			
             return 0;
         }
 

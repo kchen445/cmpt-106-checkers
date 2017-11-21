@@ -49,7 +49,8 @@ namespace ml {
         bool mutate_best_network = false;
         size_t clone_num = 10;
         size_t tweak_num = 30;
-
+		
+		
         // display settings
         size_t output_interval = 1;
 

@@ -20,6 +20,9 @@ namespace ml {
         virtual void tweakBias (int chance, double range) = 0;
         virtual void randomizeBias (int chance) = 0;
 
+		virtual void mutateNode(int chance) = 0;
+        virtual void mutateConnection(int chance, int retries) = 0;
+		
         // Should return a network with the same configuration.
         // The returned network should be an isolated entity that
         // shares no pointers or anything with the base network.

@@ -14,6 +14,10 @@ namespace elo {
 		return player + k_factor(player) * (score - expected(player, opponent));
 	}
 	
+	double update_raw(double player, double expected, double score) {
+		return player + k_factor(player) * (score - expected);
+	}
+	
 	//Elo calculation function, which directly updates the values of player/opponent ratings in memory.
 	//Input:
 	//	double *player		-- a pointer to the player's rating

@@ -23,7 +23,7 @@ namespace cl {
     class game_template {
     public:
 
-        virtual std::array<player_data, 2> compete (entity_t const &e1, entity_t const &e2) = 0;
+        virtual std::array<player_data, 2> compete (entity_t &e1, entity_t &e2) = 0;
 
     };
 
