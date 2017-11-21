@@ -52,7 +52,7 @@ namespace cl {
 			evolstats.open("evolution_data.txt", std::fstream::app);
 		}*/
 		
-		~tournament_set() {
+		~tournament_set() override {
 			evolstats.close();
 		}
 
@@ -82,8 +82,11 @@ namespace cl {
             entities[0]->network->save(config->save_path);
         }
 
-		void evaluate(size_t idx) 
-		{}
+        std::string get_time () {
+            return util::as_str(ml::flags::global->clock.elapsed());
+        }
+
+		void evaluate(size_t idx) override {}
 		
         // Run through a single tournament.
         // Should return the best fitness value from the set.
@@ -212,6 +215,7 @@ namespace cl {
         void run_training (size_t num_rounds, size_t save_interval = 10) {
 
             ml::display::interface.unsafe_raw()->setup();
+            ml::flags::global->clock.set_start();
 
             for (size_t i = 0; i < num_rounds; ++i) {
                 // Autosave in case of crash
