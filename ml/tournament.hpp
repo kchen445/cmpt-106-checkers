@@ -115,7 +115,7 @@ namespace cl {
 						//play the game
 						std::array<player_data, 2> results = game->compete(*(entities[p1]), *(entities[p2]));
 						
-						std::cout << "Entity " << p1 << " vs. Entity " << p2 << std::endl;
+						/*std::cout << "Entity " << p1 << " vs. Entity " << p2 << std::endl;
 						std::cout << results[0].turns << ' '
 							 << results[0].win   << ' '
 							 << results[0].loss  << ' '
@@ -125,7 +125,7 @@ namespace cl {
 							 << results[1].win   << ' '
 							 << results[1].loss  << ' '
 							 << results[1].tie   << ' '
-							 << results[1].piecesLost << std::endl;
+							 << results[1].piecesLost << std::endl;*/
 						//	assume result = 1   if win
 						//		   result = 0.5 if tie
 						//	       result = 0   if loss
@@ -142,13 +142,13 @@ namespace cl {
 				//using the results of the tournament, update the elo rating
 				for (size_t j=0; j<TOURNEY_SIZE; j++) {
 					//std::cout << i+j << ':' << expected[j] << ' ' << scores[j] << std::endl;
-					std::cout << "Entity " << i << ": " << entities[i+j]->rating;
+					std::cout << "Entity " << i+j << ": " << entities[i+j]->rating;
 					entities[i+j]->rating = elo::update_raw(entities[i+j]->rating, expected[j], scores[j]);
 					std::cout << " -> " << entities[i+j]->rating << std::endl;
 				}
 				
-				char c;
-				std::cin >> c;
+				/*char c;
+				std::cin >> c;*/
 				
 			}
 			
@@ -179,6 +179,7 @@ namespace cl {
 				}
 				//std::cout << "deleting" << unlucky << std::endl;
 				entities[unlucky]->network = entities[survivor]->network->clone();
+				entities[unlucky]->rating = entities[survivor]->rating;
 				entities[unlucky]->network->tweakWeight(80, 0.1);
 				entities[unlucky]->network->tweakBias(80, 0.1);
 				entities[unlucky]->network->mutateNode(3);
@@ -199,6 +200,9 @@ namespace cl {
 
                 step();
                 step_count++;
+				
+				char c;
+				std::cin >> c;
             }
         }
 

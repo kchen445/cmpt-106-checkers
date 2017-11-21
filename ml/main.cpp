@@ -9,7 +9,7 @@
 #include "tournament.hpp"
 
 #define DISABLE_DISPLAY
-#include "../game/controller.cpp"
+#include "../game/controller.hpp"
 
 int main() {
     srand((unsigned int)time(nullptr));
@@ -21,7 +21,7 @@ int main() {
 
     cl::tournament_set training_set{seed_net, game};
 
-    training_set.run_training(1); // run 1000 generations
+    training_set.run_training(5); // run 1000 generations
     training_set.save(); // save the final resultptr<cl::game_template<AIPlayer>> game{new CheckerController{}};
 
     // Load network from save path, or define a brand new one.

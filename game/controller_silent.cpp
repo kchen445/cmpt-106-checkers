@@ -22,9 +22,6 @@ using Data = cl::player_data;
 //board will treat the first player passed in as player 1
 //and have their pieces at the bottom
 array<Data,2> CheckerController::gameLoop(Player* player1, Player* player2){
-#ifndef DISABLE_DISPLAY
-        Display display;
-#endif
         Board board;
 
         bool tie = false;
@@ -46,40 +43,16 @@ array<Data,2> CheckerController::gameLoop(Player* player1, Player* player2){
 
         //actual game loop
         while (listOfPlayers[0]->canMove || listOfPlayers[1]->canMove) {
-
-#ifndef DISABLE_DISPLAY
-            display.displayGame(board.gameBoard);
-#endif
-            
-#ifndef DISABLE_DISPLAY
-            cout << "Player 1's move" << endl;
-#endif
             listOfPlayers[0]->findMoves(board.gameBoard);
-
             //canMove is updated inside getMove
             listOfPlayers[0]->getMove(board.gameBoard);
             if(!listOfPlayers[0]->canMove){break;}
             board.update(listOfPlayers,0);
-            
-#ifndef DISABLE_DISPLAY
-            cout << "Player 1 move: " << listOfPlayers[0]->movesAsString.at(listOfPlayers[0]->indexOfMove) << endl;
-#endif
 
-#ifndef DISABLE_DISPLAY
-            display.displayGame(board.gameBoard);
-#endif
-            
-#ifndef DISABLE_DISPLAY
-            cout << "Player 2's move" << endl;
-#endif
             listOfPlayers[1]->findMoves(board.gameBoard);
             listOfPlayers[1]->getMove(board.gameBoard);
             if(!listOfPlayers[1]->canMove){break;}
             board.update(listOfPlayers,1);
-            
-#ifndef DISABLE_DISPLAY
-            cout << "Player 2 move: " << listOfPlayers[1]->movesAsString.at(listOfPlayers[1]->indexOfMove) << endl;
-#endif
 
             turns++;
             //https://boardgames.stackexchange.com/questions/34659/how-many-turns-does-an-average-game-of-checkers-draughts-go-for
@@ -95,33 +68,20 @@ array<Data,2> CheckerController::gameLoop(Player* player1, Player* player2){
         
 
         if(!listOfPlayers[1]->canMove){
-#ifndef DISABLE_DISPLAY
-            cout << endl << "Player 1 wins!" << endl << endl;
-#endif
+
         }else if (!listOfPlayers[0]->canMove){
-#ifndef DISABLE_DISPLAY
-            cout << endl << "Player 2 wins!" << endl << endl;
-#endif
+			
         }else{
             if(player1LostPieces < player2LostPieces){
                 listOfPlayers[1]->canMove = false;
                 player2Loss = true;
-#ifndef DISABLE_DISPLAY
-                cout << "Stalemate with Player 1 taking more pieces!" << endl;
-#endif
             }else if(player1LostPieces == player2LostPieces){
                 listOfPlayers[0]->canMove = false;
                 listOfPlayers[1]->canMove = false;
 				tie = true;
-#ifndef DISABLE_DISPLAY
-                cout << "Complete Tie" << endl;
-#endif
             }else{
                 listOfPlayers[0]->canMove = false;
                 player1Loss = true;
-#ifndef DISABLE_DISPLAY
-                cout << "Stalemate with Player 2 taking more pieces!" << endl;
-#endif
             }
         }
 		

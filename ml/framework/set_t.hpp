@@ -28,14 +28,14 @@ namespace ml {
         size_t calling_thread_id;
 
         set_t ()
-                : step_count(-1),
+                : step_count(0),
                   last_stats(std::make_tuple(0.0,0.0)),
                   entities(),
                   calling_thread_id(0)
         {}
 
         explicit set_t (ptr<network_o> const &seed)
-                : step_count(-1),
+                : step_count(0),
                   last_stats(std::make_tuple(0.0, 0.0)),
                   entities(),
                   calling_thread_id(0)
