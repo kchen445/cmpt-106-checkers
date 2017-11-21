@@ -5,6 +5,7 @@
 
 #define NEURAL_IN   64
 #define NEURAL_OUT  32
+#define NUM_THREADS 1
 
 #include "tournament.hpp"
 
@@ -21,7 +22,7 @@ int main() {
 
     cl::tournament_set training_set{seed_net, game};
 
-    training_set.run_training(5); // run 1000 generations
+    training_set.run_training(1000); // run 1000 generations
     training_set.save(); // save the final resultptr<cl::game_template<AIPlayer>> game{new CheckerController{}};
 
     // Load network from save path, or define a brand new one.

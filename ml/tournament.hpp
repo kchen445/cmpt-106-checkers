@@ -142,9 +142,9 @@ namespace cl {
 				//using the results of the tournament, update the elo rating
 				for (size_t j=0; j<TOURNEY_SIZE; j++) {
 					//std::cout << i+j << ':' << expected[j] << ' ' << scores[j] << std::endl;
-					std::cout << "Entity " << i+j << ": " << entities[i+j]->rating;
+//					std::cout << "Entity " << i+j << ": " << entities[i+j]->rating;
 					entities[i+j]->rating = elo::update_raw(entities[i+j]->rating, expected[j], scores[j]);
-					std::cout << " -> " << entities[i+j]->rating << std::endl;
+//					std::cout << " -> " << entities[i+j]->rating << std::endl;
 				}
 				
 				/*char c;
@@ -185,6 +185,24 @@ namespace cl {
 				entities[unlucky]->network->mutateNode(3);
 				entities[unlucky]->network->mutateConnection(5);
 			}
+
+            double average = 0;
+            for (auto const &entity : entities) {
+                average += entity->get_value();
+            }
+            average = average / double(entities.size());
+
+			ml::p_report report{
+                    0,
+                    (size_t)step_count,
+                    entities[0]->get_value(),
+                    average,
+                    0,
+                    0
+            };
+
+            send_report_to_display(report);
+            print_display();
 			
             return 0;
         }
@@ -192,6 +210,9 @@ namespace cl {
 
         // The main training function.
         void run_training (size_t num_rounds, size_t save_interval = 10) {
+
+            ml::display::interface.unsafe_raw()->setup();
+
             for (size_t i = 0; i < num_rounds; ++i) {
                 // Autosave in case of crash
                 if (num_rounds % save_interval == 0) {
@@ -201,8 +222,8 @@ namespace cl {
                 step();
                 step_count++;
 				
-				char c;
-				std::cin >> c;
+//				char c;
+//				std::cin >> c;
             }
         }
 

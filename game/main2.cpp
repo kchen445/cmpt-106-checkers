@@ -5,9 +5,9 @@ using namespace std;
 int main(){
     CheckerController controller;
     //Player* player1 = new AIPlayer(1);
-    Player* player1 = new AIPlayer(1, "random_network.txt");
+    Player* player1 = new HumanPlayer(1);
     //Player* player2 = new HumanPlayer(2);
-    Player* player2 = new AIPlayer(2, "random_network.txt");
+    Player* player2 = new AIPlayer(2, "../ml/net.txt");
     auto results = controller.gameLoop(player1,player2);
 	
     cout << results[0].turns << ' '
