@@ -1,4 +1,5 @@
 #include "sysml.hpp"
+#include "tsafe_ptr.hpp"
 #include "__mem.hpp"
 
 lang::__p::__mem *lang::__p::__mem::__instance = new lang::__p::__mem{};
