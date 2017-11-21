@@ -30,6 +30,8 @@ namespace network {
 		size_t numNodes;
 		
 	/* saving, loading, constructors, destructors */
+		NNetwork();
+		
         //Construct a fully connected neural network with a number of nodes between each layer
 		NNetwork(std::vector<size_t> layers);
 		

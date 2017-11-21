@@ -44,7 +44,6 @@ void Player::movesToString(){
 
 		movesAsString.push_back(point_str);
 	}
-    std::cout << std::endl;
 }
 
 void Player::initializePlayer(){

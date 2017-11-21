@@ -2,14 +2,17 @@
 
 #include "../ai/elo.hpp"
 
-#include "../ai/AIPlayer.h"
+#include "../game/AIPlayer.h"
 #include "sysml.hpp"
 #include "syscl.hpp"
 
 #include <algorithm>
 #include <array>
 #include <fstream>
+#include <iostream>
 
+#define TOURNEY_SIZE 5
+		
 namespace cl {
 
     class tournament_set : protected ml::set_t<AIPlayer> {
@@ -23,7 +26,6 @@ namespace cl {
          * std::array<std::shared_ptr<AIPlayer>, NUM_ENTITIES_PER_SET> entities;
          * size_t calling_thread_id;                // for multithreading
          */
-		const size_t TOURNEY_SIZE = 5;
 		
         typedef AIPlayer entity_t;
 
@@ -36,12 +38,19 @@ namespace cl {
 		
         // Populate this set via a seed network.
         // Calls explicit network constructor for entity type.
-        tournament_set (ptr<ml::network_o> const &seed, ptr<game_template> game)
+        tournament_set (ptr<ml::network_o> const &seed, ptr<game_template<entity_t>> game)
                 : ml::set_t<AIPlayer>(seed),
                   game(std::move(game))
         {
-			evolstats("evolution_data.txt", std::fstream::app);
+			evolstats.open("evolution_data.txt", std::fstream::app);
 		}
+		
+		
+		/*tournament_set (ptr<ml::network_o> const &seed)
+                : ml::set_t<AIPlayer>(seed)
+        {
+			evolstats.open("evolution_data.txt", std::fstream::app);
+		}*/
 		
 		~tournament_set() {
 			evolstats.close();
@@ -49,7 +58,7 @@ namespace cl {
 
         // Function to sort the entities in order of descending rating.
         void sort_entities () override {
-			std::sort(entities.begin(), entities.end(), [](const AIPlayer &p1, const AIPlayer &p2) { return p1.elo > p2.elo; });
+			std::sort(entities.begin(), entities.end(), [](std::shared_ptr<AIPlayer> p1, std::shared_ptr<AIPlayer> p2) { return p1->rating > p2->rating; });
         }
 
 
@@ -73,7 +82,9 @@ namespace cl {
             entities[0]->network->save(config->save_path);
         }
 
-
+		void evaluate(size_t idx) 
+		{}
+		
         // Run through a single tournament.
         // Should return the best fitness value from the set.
         // This is used for determining with the target is
@@ -82,6 +93,15 @@ namespace cl {
         // If a target is not used then 0 may be returned.
         double step () override {			
 			std::random_shuffle(entities.begin(), entities.end());
+			
+			
+			
+			//write evolution data
+			evolstats << step_count << ' ';
+			for (auto e : entities) {
+				evolstats << e->rating << ' ';
+			}
+			evolstats << std::endl;		//should flush stream
 			
 			//have each group of TOURNEY_SIZE entities play a full round-robin tournament
 			for (size_t i=0; i<entities.size(); i+=TOURNEY_SIZE)
@@ -93,14 +113,27 @@ namespace cl {
 						if (p1==p2) continue;
 						
 						//play the game
-						std::array<player_data, 2> results = game->compete(p1, p2);
+						std::array<player_data, 2> results = game->compete(*(entities[p1]), *(entities[p2]));
+						
+						std::cout << "Entity " << p1 << " vs. Entity " << p2 << std::endl;
+						std::cout << results[0].turns << ' '
+							 << results[0].win   << ' '
+							 << results[0].loss  << ' '
+							 << results[0].tie   << ' '
+							 << results[0].piecesLost << std::endl;
+							std::cout << results[1].turns << ' '
+							 << results[1].win   << ' '
+							 << results[1].loss  << ' '
+							 << results[1].tie   << ' '
+							 << results[1].piecesLost << std::endl;
 						//	assume result = 1   if win
 						//		   result = 0.5 if tie
 						//	       result = 0   if loss
 						
 						//expected probabilities always add up to 1
-						expected[p1-i] += elo::expected(entities[p1].elo, entities[p2].elo);
-						expected[p2-i] += 1-expected[p1-i];
+						double e = elo::expected(entities[p1]->rating, entities[p2]->rating);
+						expected[p1-i] += e;
+						expected[p2-i] += 1-e;
 						scores[p1-i] += results[0].win + results[0].tie * 0.5;
 						scores[p2-i] += results[1].win + results[1].tie * 0.5;
 					}
@@ -108,8 +141,14 @@ namespace cl {
 				
 				//using the results of the tournament, update the elo rating
 				for (size_t j=0; j<TOURNEY_SIZE; j++) {
-					entities[i+j].rating = elo::update_raw(entities[i+j].rating, expected[j], scores[j]);
+					//std::cout << i+j << ':' << expected[j] << ' ' << scores[j] << std::endl;
+					std::cout << "Entity " << i << ": " << entities[i+j]->rating;
+					entities[i+j]->rating = elo::update_raw(entities[i+j]->rating, expected[j], scores[j]);
+					std::cout << " -> " << entities[i+j]->rating << std::endl;
 				}
+				
+				char c;
+				std::cin >> c;
 				
 			}
 			
@@ -119,7 +158,7 @@ namespace cl {
 			//write evolution data
 			evolstats << step_count << ' ';
 			for (auto e : entities) {
-				evolstats << e.rating << ' ';
+				evolstats << e->rating << ' ';
 			}
 			evolstats << std::endl;		//should flush stream
 			
@@ -138,7 +177,7 @@ namespace cl {
 					survivor = entities.size()-1-i;
 					unlucky = i;
 				}
-				
+				//std::cout << "deleting" << unlucky << std::endl;
 				entities[unlucky]->network = entities[survivor]->network->clone();
 				entities[unlucky]->network->tweakWeight(80, 0.1);
 				entities[unlucky]->network->tweakBias(80, 0.1);

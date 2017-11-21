@@ -115,7 +115,7 @@ clean:
 # Executable build target.
 exe: $(MAIN_OBJ)
 	$(info Creating Executable...)
-	@$(CMPL) -pthread -o $(EXE) $(MAIN_OBJ)
+	@$(CMPL) -pthread -o $(EXE) $(MAIN_OBJ) singleton_def.cpp ../game/Display.cpp ../game/Board.cpp ../game/Player.cpp ../game/Piece.cpp ../game/Helpers.cpp ../game/AIPlayer.cpp
 
 # Archive/library target.
 # lib: $(OBJECTS)

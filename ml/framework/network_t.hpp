@@ -21,7 +21,7 @@ namespace ml {
         virtual void randomizeBias (int chance) = 0;
 
 		virtual void mutateNode(int chance) = 0;
-        virtual void mutateConnection(int chance, int retries) = 0;
+        virtual void mutateConnection(int chance, int retries=10) = 0;
 		
         // Should return a network with the same configuration.
         // The returned network should be an isolated entity that

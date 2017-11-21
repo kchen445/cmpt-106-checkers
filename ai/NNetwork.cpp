@@ -42,6 +42,12 @@ static inline size_t randInt (size_t a, size_t b) {
 /* ----------------------------------------------
      saving, loading, constructors, destructors 
    ---------------------------------------------- */
+   
+template<size_t In, size_t Out>
+NNetwork<In,Out>::NNetwork() {
+	NNetwork(std::vector<size_t>(0));
+}
+	
 template<size_t In, size_t Out>
 NNetwork<In,Out>::NNetwork(std::vector<size_t> layers) {
 	

@@ -11,10 +11,12 @@
 #include "Player.h"
 
 struct AIPlayer: public Player, public ml::entity_t {
-	std::shared_ptr<network::NetworkType<64, 32>> network;
+	std::shared_ptr<ml::network_t<64, 32>> network;
 	double rating;
 	
-	AIPlayer(int whichPlayer, std::shared_ptr<network::NetworkType<64, 32>> network, double rating = 100);
+	AIPlayer(std::shared_ptr<ml::network_t<64, 32>> network);
+	
+	AIPlayer(int whichPlayer, std::shared_ptr<ml::network_t<64, 32>> network, double rating = 100);
 	AIPlayer(int whichPlayer, const std::string &filename);	
 	
 	void getMove(const std::vector< std::vector<Piece> > &gameBoard);

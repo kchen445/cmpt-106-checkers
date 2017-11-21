@@ -5,12 +5,19 @@
 #include "AIPlayer.h"
 
 #include <array>
-AIPlayer::AIPlayer(int whichPlayer, std::shared_ptr<network::NetworkType<64, 32>> network, double rating) : Player(whichPlayer), network(network), rating(rating)
+
+AIPlayer::AIPlayer(std::shared_ptr<ml::network_t<64, 32>> network) : Player(1), network(network), rating(100)
+{}
+	
+	
+
+
+AIPlayer::AIPlayer(int whichPlayer, std::shared_ptr<ml::network_t<64, 32>> network, double rating) : Player(whichPlayer), network(network), rating(rating)
 {}
 
 AIPlayer::AIPlayer(int whichPlayer, const std::string &filename) : Player(whichPlayer), rating(100)
 {
-	network = std::shared_ptr<network::NetworkType<64, 32>>(new NNetwork<64,32>(filename));
+	network = std::shared_ptr<ml::network_t<64, 32>>(new NNetwork<64,32>(filename));
 	//network = std::shared_ptr<network::NetworkType<64, 32>>(new NNetwork<64,32>(std::vector<size_t>()));
 }	
 
