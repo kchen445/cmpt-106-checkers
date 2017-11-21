@@ -74,7 +74,7 @@ namespace ml {
 
     };
 
-    ptr<cfg> cfg::global{new cfg{}};
+    // ptr<cfg> cfg::global{new cfg{}};
 
 
 
@@ -89,6 +89,6 @@ namespace ml {
 
     };
 
-    ptr<flags> flags::global{new flags{}};
+    // ptr<flags> flags::global{new flags{}};
 
 }

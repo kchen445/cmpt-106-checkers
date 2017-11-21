@@ -121,7 +121,7 @@ namespace ml {
 
     }; // class display
 
-    lang::tsafe_ptr<display> display::interface{new display{}};
+    // lang::tsafe_ptr<display> display::interface{new display{}};
 
     inline void display_add_data (p_report const &data) {
         display::interface.exec<p_report>(data, [](display &src, p_report const &arg) {

@@ -142,7 +142,7 @@ namespace lang {
             
         };
         
-        __mem *__mem::__instance = new __mem{};
+        // __mem *__mem::__instance = new __mem{};
         
     } // namespace __p
 } // namespace lang
