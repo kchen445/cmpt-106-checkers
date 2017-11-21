@@ -10,8 +10,8 @@ AIPlayer::AIPlayer(int whichPlayer, std::shared_ptr<network::NetworkType<64, 32>
 
 AIPlayer::AIPlayer(int whichPlayer, const std::string &filename) : Player(whichPlayer), rating(100)
 {
-	//network = (ptr<ml::network_o>)(new NNetwork<64,32>(filename));
-	network = std::shared_ptr<network::NetworkType<64, 32>>(new NNetwork<64,32>(std::vector<size_t>()));
+	network = std::shared_ptr<network::NetworkType<64, 32>>(new NNetwork<64,32>(filename));
+	//network = std::shared_ptr<network::NetworkType<64, 32>>(new NNetwork<64,32>(std::vector<size_t>()));
 }	
 
 inline unsigned int index(int row, int col) {
@@ -45,8 +45,26 @@ void AIPlayer::getMove(const std::vector< std::vector<Piece> > &gameBoard){
 		}
 	}
 	
+	//temp: print out AI view of board
+	/*for (int row=0; row<16; row++) {
+		for (int pos=0; pos<4; pos++) {
+			std::cout << inputs[row*4 + pos] << ' ';
+		}
+		std::cout << std::endl;
+		if (row == 7) std::cout << std::endl;
+	}*/
+	
 	//ask the AI
 	std::array<double,32> outputs = network->solve(inputs);
+	
+	//temp: print out AI output view
+	/*std::cout << "----------------------------" << std::endl;
+	for (int row=0; row<8; row++) {
+		for (int pos=0; pos<4; pos++) {
+			std::cout << outputs[row*4 + pos] << '\t';
+		}
+		std::cout << std::endl;
+	}*/
 	
 	//pick the dest with the highest fitness value,
 	//	and the orig with the lowest fitness value

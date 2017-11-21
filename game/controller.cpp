@@ -88,9 +88,6 @@ array<Data,2> CheckerController::gameLoop(Player* player1, Player* player2){
             if(turns == 75){
                 break;
             }
-			
-			char c;
-			cin >> c;
         }
 
         player1LostPieces = listOfPlayers[0]->findLostPieces();
@@ -135,7 +132,7 @@ array<Data,2> CheckerController::gameLoop(Player* player1, Player* player2){
 }
     
     
-// Override from cl::game_template<AIPlayer>c
+// Override from cl::game_template<AIPlayer>
 array<Data, 2> CheckerController::compete (AIPlayer &e1, AIPlayer &e2) {
 	e1.player = 1;
 	e2.player = 2;

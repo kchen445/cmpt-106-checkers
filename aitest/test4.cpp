@@ -1,4 +1,4 @@
-#include "NNetwork.hpp"
+#include "../ai/NNetwork.hpp"
 
 #include <array>
 #include <iostream>
@@ -7,7 +7,7 @@
 using namespace network;
 
 int main() {
-	NNetwork<3,1> net(std::vector<size_t>({2}));
+	NNetwork<64,32> net(std::vector<size_t>(0));
 	net.save("random_network.txt");
 	return 0;
 }
