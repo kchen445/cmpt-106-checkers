@@ -44,7 +44,7 @@ namespace cl {
                   game(std::move(game))
         {
 			evolstats.open("evolution_data.txt", std::fstream::app);
-			
+			/*
 			evolstats << "Time" << ' ';
 			evolstats << "Generation" << ' ';
 			evolstats << "Total_Turns" << ' ';
@@ -54,6 +54,7 @@ namespace cl {
 			evolstats << "P1_LostPieces" << ' ';
 			evolstats << "P2_LostPieces" << ' ';
 			evolstats << "Ratings" << std::endl;
+             */
 		}
 		
 		
