@@ -38,11 +38,22 @@ namespace cl {
 		
         // Populate this set via a seed network.
         // Calls explicit network constructor for entity type.
+			
         tournament_set (ptr<ml::network_o> const &seed, ptr<game_template<entity_t>> game)
                 : ml::set_t<AIPlayer>(seed),
                   game(std::move(game))
         {
 			evolstats.open("evolution_data.txt", std::fstream::app);
+			
+			evolstats << "Time" << ' ';
+			evolstats << "Generation" << ' ';
+			evolstats << "Total_Turns" << ' ';
+			evolstats << "Ties" << ' ';
+			evolstats << "P1_Wins" << ' ';
+			evolstats << "P2_Wins" << ' ';
+			evolstats << "P1_LostPieces" << ' ';
+			evolstats << "P2_LostPieces" << ' ';
+			evolstats << "Ratings" << std::endl;
 		}
 		
 		
@@ -79,8 +90,20 @@ namespace cl {
         // The file path of where to save is defined in the config singleton
         // and may be set using ml::cfg::global->save_path = "<path>";
         void save () {
-            entities[0]->network->save(config->save_path);
+            entities[0]->network->save(ml::cfg::global->save_path);
+			//entities[0]->network->save(ml::cfg::global->save_path + "G" + std::to_string(step_count) + "P1.txt");
         }
+		
+		void save_samplegame() {
+			entities[0]->network->save("networks/G" + std::to_string(step_count) + "P1.txt");
+            entities[1]->network->save("networks/G" + std::to_string(step_count) + "P2.txt");
+		}
+		
+		/*void save_all () {
+            entities[0]->network->save("net.txt");
+			entities[0]->network->save(ml::cfg::global->save_path + "G" + std::to_string(step_count) + "P1.txt");
+            entities[1]->network->save(ml::cfg::global->save_path + "G" + std::to_string(step_count) + "P2.txt");
+        }*/
 
         std::string get_time () {
             return util::as_str(ml::flags::global->clock.elapsed());
@@ -94,17 +117,20 @@ namespace cl {
         // reached.
         //
         // If a target is not used then 0 may be returned.
+		
+		struct statistics {
+			unsigned int totalturns = 0;
+			unsigned int p1wins = 0;
+			unsigned int p2wins = 0;
+			unsigned int ties = 0;
+			unsigned int p1pieces = 0;
+			unsigned int p2pieces = 0;
+		};
+		
         double step () override {			
 			std::random_shuffle(entities.begin(), entities.end());
 			
-			
-			
-			//write evolution data
-			evolstats << step_count << ' ';
-			for (auto e : entities) {
-				evolstats << e->rating << ' ';
-			}
-			evolstats << std::endl;		//should flush stream
+			statistics stats;
 			
 			//have each group of TOURNEY_SIZE entities play a full round-robin tournament
 			for (size_t i=0; i<entities.size(); i+=TOURNEY_SIZE)
@@ -117,6 +143,13 @@ namespace cl {
 						
 						//play the game
 						std::array<player_data, 2> results = game->compete(*(entities[p1]), *(entities[p2]));
+						
+						stats.totalturns += results[0].turns;
+						stats.ties += results[0].tie;
+						stats.p1wins += results[0].win;
+						stats.p2wins += results[1].win;
+						stats.p1pieces += results[0].piecesLost;
+						stats.p2pieces += results[1].piecesLost;
 						
 						/*std::cout << "Entity " << p1 << " vs. Entity " << p2 << std::endl;
 						std::cout << results[0].turns << ' '
@@ -137,8 +170,8 @@ namespace cl {
 						double e = elo::expected(entities[p1]->rating, entities[p2]->rating);
 						expected[p1-i] += e;
 						expected[p2-i] += 1-e;
-						scores[p1-i] += results[0].win + results[0].tie * 0.5;
-						scores[p2-i] += results[1].win + results[1].tie * 0.5;
+						scores[p1-i] += results[0].win ? (results[0].win) : (results[0].tie * 0.5);
+						scores[p2-i] += results[1].win ? (results[1].win) : (results[0].tie * 0.5);
 					}
 				}
 				
@@ -159,7 +192,16 @@ namespace cl {
 			sort_entities();
 			
 			//write evolution data
+			evolstats << ml::flags::global->clock.elapsed().condence() << ' ';
 			evolstats << step_count << ' ';
+			
+			//write stats
+			evolstats << stats.totalturns << ' ';
+			evolstats << stats.ties << ' ';
+			evolstats << stats.p1wins << ' ';
+			evolstats << stats.p2wins << ' ';
+			evolstats << stats.p1pieces << ' ';
+			evolstats << stats.p2pieces << ' ';
 			for (auto e : entities) {
 				evolstats << e->rating << ' ';
 			}
@@ -213,15 +255,29 @@ namespace cl {
 
         // The main training function.
         void run_training (size_t num_rounds, size_t save_interval = 10) {
-
             ml::display::interface.unsafe_raw()->setup();
-            ml::flags::global->clock.set_start();
-
+			
+			std::cout << "if starting with a fresh network, the elo rating is 100 and the generation is 0" << std::endl;
+			std::cout << "otherwise, look in evolution_data for the latest entry; elo rating is the 9th value, and generation is the 2nd value" << std::endl;
+			
+			double rating;
+			std::cout << "What is the elo rating of the seed network? ";
+			std::cin >> rating;
+			for (auto &e : entities) {
+				e->rating = rating;
+			}
+			
+			std::cout << "What generation was the seed network? ";
+			std::cin >> step_count;
+			step_count++;
+			
+			ml::flags::global->clock.set_start();
             for (size_t i = 0; i < num_rounds; ++i) {
                 // Autosave in case of crash
-                if (num_rounds % save_interval == 0) {
-                    save();
+                if (step_count % save_interval == 0) {	//save two networks for a sample game
+                    save_samplegame();
                 }
+				save();									//save current best network
 
                 step();
                 step_count++;

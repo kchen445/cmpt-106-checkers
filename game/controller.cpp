@@ -103,6 +103,7 @@ array<Data,2> CheckerController::gameLoop(Player* player1, Player* player2){
             cout << endl << "Player 2 wins!" << endl << endl;
 #endif
         }else{
+			tie = true;
             if(player1LostPieces < player2LostPieces){
                 listOfPlayers[1]->canMove = false;
                 player2Loss = true;
@@ -112,7 +113,6 @@ array<Data,2> CheckerController::gameLoop(Player* player1, Player* player2){
             }else if(player1LostPieces == player2LostPieces){
                 listOfPlayers[0]->canMove = false;
                 listOfPlayers[1]->canMove = false;
-				tie = true;
 #ifndef DISABLE_DISPLAY
                 cout << "Complete Tie" << endl;
 #endif
