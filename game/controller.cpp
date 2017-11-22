@@ -98,10 +98,12 @@ array<Data,2> CheckerController::gameLoop(Player* player1, Player* player2){
 #ifndef DISABLE_DISPLAY
             cout << endl << "Player 1 wins!" << endl << endl;
 #endif
+            player2Loss = true;
         }else if (!listOfPlayers[0]->canMove){
 #ifndef DISABLE_DISPLAY
             cout << endl << "Player 2 wins!" << endl << endl;
 #endif
+            player1Loss = true;
         }else{
 			tie = true;
             if(player1LostPieces < player2LostPieces){
