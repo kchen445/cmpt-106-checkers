@@ -18,28 +18,9 @@ int main() {
     ptr<cl::game_template<AIPlayer>> game{new CheckerController{}};
 
     // Load network from save path, or define a brand new one.
-	
 	ptr<ml::network_o> seed_net{new network::NNetwork<NEURAL_IN, NEURAL_OUT>{ml::cfg::global->save_path}};
 	cl::tournament_set training_set{seed_net, game};
-	
-    /*try {		//try loading the backup
-		ptr<ml::network_o> seed_net{new network::NNetwork<NEURAL_IN, NEURAL_OUT>{ml::cfg::global->save_path}};
-		training_set{seed_net, game};
-	} catch (const std::runtime_error& e) {
-		training_set{game};
-		
-	}*/
-    
 
     training_set.run_training(100000000); // run forever!!!
-    training_set.save(); // save the final resultptr<cl::game_template<AIPlayer>> game{new CheckerController{}};
-
-    // Load network from save path, or define a brand new one.
-    //ptr<ml::network_o> seed_net{new network::NNetwork<NEURAL_IN, NEURAL_OUT>{ml::cfg::global->save_path}};
-    /*ptr<ml::network_o> seed_net{new network::NNetwork<NEURAL_IN, NEURAL_OUT>(std::vector<size_t>(0))};
-
-    cl::tournament_set training_set{seed_net};
-
-    training_set.run_training(1); // run 1000 generations
-    training_set.save(); // save the final result*/
+    training_set.save(); // save the final result
 }

@@ -70,7 +70,7 @@ namespace cl {
 
         // Function to sort the entities in order of descending rating.
         void sort_entities () override {
-			std::sort(entities.begin(), entities.end(), [](std::shared_ptr<AIPlayer> p1, std::shared_ptr<AIPlayer> p2) { return p1->rating > p2->rating; });
+			std::sort(entities.begin(), entities.end(), [](std::shared_ptr<AIPlayer> p1, std::shared_ptr<AIPlayer> p2) { return p1->performance > p2->performance; });
         }
 
 
@@ -121,11 +121,12 @@ namespace cl {
 		
 		struct statistics {
 			unsigned int totalturns = 0;
+			unsigned int nontieturns = 0;
 			unsigned int p1wins = 0;
 			unsigned int p2wins = 0;
 			unsigned int ties = 0;
-			unsigned int p1pieces = 0;
-			unsigned int p2pieces = 0;
+			std::array<unsigned int, 15> p1take{0};	//pieces taken by p1 in 5-turn timeslices
+			std::array<unsigned int, 15> p2take{0};	//pieces taken by p2
 		};
 		
         double step () override {			
@@ -136,43 +137,49 @@ namespace cl {
 			//have each group of TOURNEY_SIZE entities play a full round-robin tournament
 			for (size_t i=0; i<entities.size(); i+=TOURNEY_SIZE)
 			{
-				std::array<double, TOURNEY_SIZE> expected{0};	//what score each player is expected to get
-				std::array<double, TOURNEY_SIZE> scores{0};		//what score each player actually gets
+				//values tracked for elo rating
+				//	0 - lose, 1 - win
+				std::array<double, TOURNEY_SIZE> expected{0};		//what score each player is expected to get
+				std::array<double, TOURNEY_SIZE> scores{0};			//what score each player actually gets
+				
+				//performance in tournament. used to deter stalemates
+				//	-1 - tie, 0 - lose, 1 - win
+				std::array<double, TOURNEY_SIZE> performance{0};
+				
+				//play tournament
 				for (size_t p1=i; p1<i+TOURNEY_SIZE; p1++) {
 					for (size_t p2=i; p2<i+TOURNEY_SIZE; p2++) {
 						if (p1==p2) continue;
 						
 						//play the game
-						std::array<player_data, 2> results = game->compete(*(entities[p1]), *(entities[p2]));
+						game_data results = game->compete(*(entities[p1]), *(entities[p2]));
 						
-						stats.totalturns += results[0].turns;
-						stats.ties += results[0].tie;
-						stats.p1wins += results[0].win;
-						stats.p2wins += results[1].win;
-						stats.p1pieces += results[0].piecesLost;
-						stats.p2pieces += results[1].piecesLost;
+						//collect stats
+						stats.ties += results.tie;
+						stats.p1wins += (results.winner == 1);
+						stats.p2wins += (results.winner == 2);
 						
-						/*std::cout << "Entity " << p1 << " vs. Entity " << p2 << std::endl;
-						std::cout << results[0].turns << ' '
-							 << results[0].win   << ' '
-							 << results[0].loss  << ' '
-							 << results[0].tie   << ' '
-							 << results[0].piecesLost << std::endl;
-							std::cout << results[1].turns << ' '
-							 << results[1].win   << ' '
-							 << results[1].loss  << ' '
-							 << results[1].tie   << ' '
-							 << results[1].piecesLost << std::endl;*/
-						//	assume result = 1   if win
-						//		   result = 0.5 if tie
-						//	       result = 0   if loss
+						stats.totalturns += results.turns;
+						stats.nontieturns += (results.tie) ? 0 : results.turns;
 						
-						//expected probabilities always add up to 1
-						double e = elo::expected(entities[p1]->rating, entities[p2]->rating);
-						expected[p1-i] += e;
-						expected[p2-i] += 1-e;
-						scores[p1-i] += results[0].win ? (results[0].win) : (results[0].tie * 0.5);
-						scores[p2-i] += results[1].win ? (results[1].win) : (results[0].tie * 0.5);
+						for (unsigned int j=0; j<results.p1take.size(); j++) {
+							stats.p1take[j] += results.p1take[j];
+							stats.p2take[j] += results.p2take[j];
+						}
+						
+						//adjust scores and performance
+						if (results.tie) {
+							performance[p1-i] -= 1;
+							performance[p2-i] -= 1;
+						} else {
+							double e = elo::expected(entities[p1]->rating, entities[p2]->rating);
+							expected[p1-i] += e;
+							expected[p2-i] += 1-e;
+							scores[p1-i] += (results.winner == 1);
+							scores[p2-i] += (results.winner == 2);
+							performance[p1-i] += (results.winner == 1);
+							performance[p2-i] += (results.winner == 2);
+						}
 					}
 				}
 				
@@ -181,6 +188,7 @@ namespace cl {
 					//std::cout << i+j << ':' << expected[j] << ' ' << scores[j] << std::endl;
 //					std::cout << "Entity " << i+j << ": " << entities[i+j]->rating;
 					entities[i+j]->rating = elo::update_raw(entities[i+j]->rating, expected[j], scores[j]);
+					entities[i+j]->performance = performance[j];
 //					std::cout << " -> " << entities[i+j]->rating << std::endl;
 				}
 				
@@ -197,12 +205,20 @@ namespace cl {
 			evolstats << step_count << ' ';
 			
 			//write stats
-			evolstats << stats.totalturns << ' ';
 			evolstats << stats.ties << ' ';
 			evolstats << stats.p1wins << ' ';
 			evolstats << stats.p2wins << ' ';
-			evolstats << stats.p1pieces << ' ';
-			evolstats << stats.p2pieces << ' ';
+			
+			evolstats << stats.totalturns << ' ';
+			evolstats << stats.nontieturns << ' ';
+			
+			for (unsigned int j=0; j<stats.p1take.size(); j++) {
+				evolstats << stats.p1take[j] << ' ';
+			}
+			for (unsigned int j=0; j<stats.p1take.size(); j++) {
+				evolstats << stats.p2take[j] << ' ';
+			}
+			
 			for (auto e : entities) {
 				evolstats << e->rating << ' ';
 			}
@@ -223,7 +239,7 @@ namespace cl {
 					survivor = entities.size()-1-i;
 					unlucky = i;
 				}
-				//std::cout << "deleting" << unlucky << std::endl;
+				
 				entities[unlucky]->network = entities[survivor]->network->clone();
 				entities[unlucky]->rating = entities[survivor]->rating;
 				entities[unlucky]->network->tweakWeight(80, 0.1);
@@ -233,18 +249,21 @@ namespace cl {
 			}
 
             double average = 0;
+			double average_perf = 0;
             for (auto const &entity : entities) {
                 average += entity->get_value();
+				average_perf += entity->performance;
             }
             average = average / double(entities.size());
+			average_perf = average_perf / double(entities.size());
 
 			ml::p_report report{
                     0,
                     (size_t)step_count,
                     entities[0]->get_value(),
                     average,
-                    0,
-                    0
+                    entities[0]->performance,
+                    average_perf
             };
 
             send_report_to_display(report);

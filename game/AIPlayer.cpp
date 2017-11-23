@@ -21,8 +21,12 @@ AIPlayer::AIPlayer(int whichPlayer, const std::string &filename) : Player(whichP
 	//network = std::shared_ptr<network::NetworkType<64, 32>>(new NNetwork<64,32>(std::vector<size_t>()));
 }	
 
-inline unsigned int index(int row, int col) {
-	return row*4 + col/2;
+unsigned int AIPlayer::index(int row, int col) {
+	unsigned int pos = row*4 + col/2;
+	if (this->player == 2) pos = 31-pos;
+	return pos;
+	
+	//return row*4 + col/2;
 }
 
 void AIPlayer::getMove(const std::vector< std::vector<Piece> > &gameBoard){

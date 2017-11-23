@@ -15,24 +15,25 @@ using namespace std;
 //    {}
 //};
 
-using Data = cl::player_data;
+using Data = cl::game_data;
 
 
 //order of player parameters matter
 //board will treat the first player passed in as player 1
 //and have their pieces at the bottom
-array<Data,2> CheckerController::gameLoop(Player* player1, Player* player2){
+Data CheckerController::gameLoop(Player* player1, Player* player2){
 #ifndef DISABLE_DISPLAY
         Display display;
 #endif
         Board board;
-
-        bool tie = false;
+		
+		Data stats;
+        //bool tie = false;
         int player1LostPieces = 0;
         int player2LostPieces = 0;
         int turns = 0;
-        bool player1Loss = false;
-        bool player2Loss = false;
+        //bool player1Loss = false;
+        //bool player2Loss = false;
 
         vector < Player*> listOfPlayers;
         listOfPlayers.push_back(player1);
@@ -59,8 +60,9 @@ array<Data,2> CheckerController::gameLoop(Player* player1, Player* player2){
             //canMove is updated inside getMove
             listOfPlayers[0]->getMove(board.gameBoard);
             if(!listOfPlayers[0]->canMove){break;}
-            board.update(listOfPlayers,0);
-            
+            stats.p1take[turns/5] += board.update(listOfPlayers,0);
+			
+			
 #ifndef DISABLE_DISPLAY
             cout << "Player 1 move: " << listOfPlayers[0]->movesAsString.at(listOfPlayers[0]->indexOfMove) << endl;
 #endif
@@ -75,7 +77,7 @@ array<Data,2> CheckerController::gameLoop(Player* player1, Player* player2){
             listOfPlayers[1]->findMoves(board.gameBoard);
             listOfPlayers[1]->getMove(board.gameBoard);
             if(!listOfPlayers[1]->canMove){break;}
-            board.update(listOfPlayers,1);
+            stats.p2take[turns/5] += board.update(listOfPlayers,1);
             
 #ifndef DISABLE_DISPLAY
             cout << "Player 2 move: " << listOfPlayers[1]->movesAsString.at(listOfPlayers[1]->indexOfMove) << endl;
@@ -88,6 +90,9 @@ array<Data,2> CheckerController::gameLoop(Player* player1, Player* player2){
             if(turns == 75){
                 break;
             }
+			
+			/*char c;
+			std::cin >> c;*/
         }
 		
         player1LostPieces = listOfPlayers[0]->findLostPieces();
@@ -98,29 +103,34 @@ array<Data,2> CheckerController::gameLoop(Player* player1, Player* player2){
 #ifndef DISABLE_DISPLAY
             cout << endl << "Player 1 wins!" << endl << endl;
 #endif
-            player2Loss = true;
+            stats.winner = 1;
+			//player2Loss = true;
         }else if (!listOfPlayers[0]->canMove){
 #ifndef DISABLE_DISPLAY
             cout << endl << "Player 2 wins!" << endl << endl;
 #endif
-            player1Loss = true;
+			stats.winner = 2;
+            //player1Loss = true;
         }else{
-			tie = true;
+			stats.tie = true;
             if(player1LostPieces < player2LostPieces){
-                listOfPlayers[1]->canMove = false;
-                player2Loss = true;
+				stats.winner = 1;
+                //listOfPlayers[1]->canMove = false;
+                //player2Loss = true;
 #ifndef DISABLE_DISPLAY
                 cout << "Stalemate with Player 1 taking more pieces!" << endl;
 #endif
             }else if(player1LostPieces == player2LostPieces){
-                listOfPlayers[0]->canMove = false;
-                listOfPlayers[1]->canMove = false;
+                stats.winner = 0;
+				//listOfPlayers[0]->canMove = false;
+                //listOfPlayers[1]->canMove = false;
 #ifndef DISABLE_DISPLAY
                 cout << "Complete Tie" << endl;
 #endif
             }else{
-                listOfPlayers[0]->canMove = false;
-                player1Loss = true;
+				stats.winner = 2;
+                //listOfPlayers[0]->canMove = false;
+                //player1Loss = true;
 #ifndef DISABLE_DISPLAY
                 cout << "Stalemate with Player 2 taking more pieces!" << endl;
 #endif
@@ -128,15 +138,18 @@ array<Data,2> CheckerController::gameLoop(Player* player1, Player* player2){
         }
 		
 		//display.displayGame(board.gameBoard);
-        Data dataPlayer1{turns,listOfPlayers[0]->canMove,player1Loss,tie,player1LostPieces};
+		stats.turns = turns;
+		return stats;
+		
+        /*Data dataPlayer1{turns,listOfPlayers[0]->canMove,player1Loss,tie,player1LostPieces};
         Data dataPlayer2{turns,listOfPlayers[1]->canMove,player2Loss,tie,player2LostPieces};
         array<Data,2> arr = {dataPlayer1,dataPlayer2};
-        return arr;
+        return arr;*/
 }
     
     
 // Override from cl::game_template<AIPlayer>
-array<Data, 2> CheckerController::compete (AIPlayer &e1, AIPlayer &e2) {
+Data CheckerController::compete (AIPlayer &e1, AIPlayer &e2) {
 	e1.player = 1;
 	e2.player = 2;
 	return gameLoop(&e1, &e2);

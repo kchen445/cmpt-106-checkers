@@ -3,6 +3,23 @@
 
 using namespace std;
 
+void print_results(const cl::game_data &results) {
+	cout << results.turns << ' '
+        << results.winner   << ' '
+        << results.tie  << " | ";
+	
+	for (unsigned int i=0; i<results.p1take.size(); i++) {
+		cout << (int)results.p1take[i] << " ";
+	}
+	cout << "| ";
+	
+	for (unsigned int i=0; i<results.p1take.size(); i++) {
+		cout << (int)results.p2take[i] << " ";
+	}
+	cout << endl;
+}
+
+
 void play_against_old (size_t num_games) {
     CheckerController controller;
     std::unique_ptr<Player> p2{new AIPlayer{2, "../bin/net.txt"}};
@@ -10,16 +27,7 @@ void play_against_old (size_t num_games) {
         std::unique_ptr<Player> p1{new AIPlayer{1, "../bin/networks/G" + std::to_string(10 * (i + 1)) + "P1.txt"}};
         auto results = controller.gameLoop(p1.get(), p2.get());
         
-        cout << results[0].turns << ' '
-        << results[0].win   << ' '
-        << results[0].loss  << ' '
-        << results[0].tie   << ' '
-        << results[0].piecesLost << endl;
-        cout << results[1].turns << ' '
-        << results[1].win   << ' '
-        << results[1].loss  << ' '
-        << results[1].tie   << ' '
-        << results[1].piecesLost << endl;
+        print_results(results);
         
         std::cout << "Press enter to play next game...";
         std::string s;
@@ -34,21 +42,13 @@ int main(int argc, char **argv){
     } else {
         CheckerController controller;
         //Player* player1 = new AIPlayer(1);
-        Player* player1 = new AIPlayer{1, "../bin/networks/G10P2.txt"};
+        Player* player1 = new AIPlayer{1, "../bin/networks/G1290P1.txt"};
         //Player* player2 = new HumanPlayer(2);
-        Player* player2 = new AIPlayer(2, "../bin/net.txt");
+        //Player* player2 = new AIPlayer(2, "../bin/net.txt");
+        Player* player2 = new AIPlayer(2, "../bin/networks/G1290P2.txt");
         auto results = controller.gameLoop(player1,player2);
         
-        cout << results[0].turns << ' '
-        << results[0].win   << ' '
-        << results[0].loss  << ' '
-        << results[0].tie   << ' '
-        << results[0].piecesLost << endl;
-        cout << results[1].turns << ' '
-        << results[1].win   << ' '
-        << results[1].loss  << ' '
-        << results[1].tie   << ' '
-        << results[1].piecesLost << endl;
+		print_results(results);
     }
 	return 0;
 }

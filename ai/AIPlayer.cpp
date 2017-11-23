@@ -14,7 +14,11 @@ AIPlayer::AIPlayer(int whichPlayer, const std::string &filename) : Player(whichP
 }	
 
 inline unsigned int index(int row, int col) {
-	return row*4 + col/2;
+	unsigned int pos = row*4 + col/2;
+	if (this->player == 1) pos = 31-pos;
+	return pos;
+	
+	//return row*4 + col/2;
 }
 
 void AIPlayer::getMove(const std::vector< std::vector<Piece> > &gameBoard){

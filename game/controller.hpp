@@ -24,17 +24,17 @@ using namespace std;
 //    {}
 //};
 
-using Data = cl::player_data;
+using Data = cl::game_data;
 
 
 struct CheckerController : public cl::game_template<AIPlayer> {
 	//order of player parameters matter
 	//board will treat the first player passed in as player 1
 	//and have their pieces at the bottom
-    array<Data,2> gameLoop(Player* player1, Player* player2);
+    Data gameLoop(Player* player1, Player* player2);
     
     
     // Override from cl::game_template<AIPlayer>c
-    array<Data, 2> compete (AIPlayer &e1, AIPlayer &e2) override;
+    Data compete (AIPlayer &e1, AIPlayer &e2) override;
     
 }; // struct CheckersController

@@ -40,7 +40,7 @@ void Board::initializeBoard (){
 }
 
 //function to take a player's move and apply it to the game board
-void Board::update(vector<Player*> listOfPlayers, int whichPlayer){
+char Board::update(vector<Player*> listOfPlayers, int whichPlayer){
 	int otherPlayer;
 	whichPlayer == 0 ? otherPlayer = 1 : otherPlayer = 0;
 	
@@ -115,4 +115,6 @@ void Board::update(vector<Player*> listOfPlayers, int whichPlayer){
 			gameBoard[endPosition.row][endPosition.col].isKing = true;
 		}
 	}
+	
+	return moveTakesPiece * (chosenMove.size()-1);
 }
