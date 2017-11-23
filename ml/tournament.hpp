@@ -125,8 +125,8 @@ namespace cl {
 			unsigned int p1wins = 0;
 			unsigned int p2wins = 0;
 			unsigned int ties = 0;
-			std::array<unsigned int, 15> p1take{0};	//pieces taken by p1 in 5-turn timeslices
-			std::array<unsigned int, 15> p2take{0};	//pieces taken by p2
+			std::array<unsigned int, 15> p1take{};	//pieces taken by p1 in 5-turn timeslices
+			std::array<unsigned int, 15> p2take{};	//pieces taken by p2
 		};
 		
         double step () override {			

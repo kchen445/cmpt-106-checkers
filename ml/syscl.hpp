@@ -22,8 +22,8 @@ namespace cl {
         int turns = -1;          			// The length of the game.
         int winner = -1;         			// who won?
         bool tie = false;          			// tie?
-		std::array<char, 15> p1take{0};	//pieces taken by p1 in 5-turn timeslices
-		std::array<char, 15> p2take{0};	//pieces taken by p2
+		std::array<char, 15> p1take{};	//pieces taken by p1 in 5-turn timeslices
+		std::array<char, 15> p2take{};	//pieces taken by p2
     };
 
     // GameController should extend this class
