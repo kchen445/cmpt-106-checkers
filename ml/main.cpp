@@ -3,7 +3,7 @@
 #include <iostream>
 #include <ctime>
 
-#define NEURAL_IN   64
+#define NEURAL_IN   65
 #define NEURAL_OUT  32
 #define NUM_THREADS 1
 
@@ -19,7 +19,11 @@ int main() {
 
     // Load network from save path, or define a brand new one.
 	ptr<ml::network_o> seed_net{new network::NNetwork<NEURAL_IN, NEURAL_OUT>{ml::cfg::global->save_path}};
-	cl::tournament_set training_set{seed_net, game};
+    // ptr<ml::network_o> seed_net{new network::NNetwork<NEURAL_IN, NEURAL_OUT>{std::vector<size_t>{60, 40}}};
+	// seed_net->save(ml::cfg::global->save_path);
+    // return 0;
+
+    cl::tournament_set training_set{seed_net, game};
 
     training_set.run_training(100000000); // run forever!!!
     training_set.save(); // save the final result

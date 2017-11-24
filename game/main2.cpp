@@ -1,3 +1,6 @@
+#define NEURAL_IN  65
+#define NEURAL_OUT 32
+
 #include "controller.hpp"
 #include <memory>
 

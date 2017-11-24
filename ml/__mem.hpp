@@ -46,8 +46,6 @@ namespace lang {
             
             bool full_lock = false;
             
-            size_t usage = 0;
-            
             bool is_block_free (m_idx idx) {
                 return mem_interf.at(idx).ref_count == 0;
             }

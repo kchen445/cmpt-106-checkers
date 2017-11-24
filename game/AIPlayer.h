@@ -11,20 +11,25 @@
 #include "Player.h"
 
 struct AIPlayer: public Player, public ml::entity_t {
-	std::shared_ptr<ml::network_t<64, 32>> network;
-	double rating;
-	double performance;
-	
-	AIPlayer(std::shared_ptr<ml::network_t<64, 32>> network);
-	
-	AIPlayer(int whichPlayer, std::shared_ptr<ml::network_t<64, 32>> network, double rating = 100);
-	AIPlayer(int whichPlayer, const std::string &filename);	
-	
-	inline unsigned int index(int row, int col);
-	
-	void getMove(const std::vector< std::vector<Piece> > &gameBoard);
+    double rating;
+    double performance;
+    
+    explicit AIPlayer(std::shared_ptr<ml::network_o> const &network)
+            : Player(1), ml::entity_t(network), rating(100)
+    {}
+    
+    AIPlayer(int whichPlayer, std::shared_ptr<ml::network_o> network, double rating = 100);
+    AIPlayer(int whichPlayer, const std::string &filename); 
+    
+    inline unsigned int index(int row, int col);
+    
+    void getMove(const std::vector< std::vector<Piece> > &gameBoard) override;
     
     double get_value () const override;
+
+private:
+
+    size_t num_turns;
 
 };
 

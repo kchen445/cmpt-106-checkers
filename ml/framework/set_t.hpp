@@ -43,7 +43,7 @@ namespace ml {
             for (auto &entity : this->entities) {
                 auto seed_variant = seed->clone();
                 seed_variant->tweakWeight(10, 0.1);
-				entity = ptr<E>(new E(seed_variant));
+				entity = ptr<E>(new E{seed_variant});
                 //entity = ptr<E>{new E{seed_variant}};
             }
         }

@@ -113,9 +113,9 @@ clean:
 	@rm -f $(wildcard *.gch)
 
 # Executable build target.
-exe: $(MAIN_OBJ)
+exe:
 	$(info Creating Executable...)
-	@$(CMPL) $(CMPL_FLAGS) -pthread -o $(EXE) $(MAIN_OBJ) singleton_def.cpp ../game/Display.cpp ../game/Board.cpp ../game/Player.cpp ../game/Piece.cpp ../game/Helpers.cpp ../game/AIPlayer.cpp
+	@$(CMPL) $(CMPL_FLAGS) -pthread -o $(EXE) $(MAIN) singleton_def.cpp ../game/Display.cpp ../game/Board.cpp ../game/Player.cpp ../game/Piece.cpp ../game/Helpers.cpp ../game/AIPlayer.cpp
 
 # Archive/library target.
 # lib: $(OBJECTS)

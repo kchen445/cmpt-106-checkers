@@ -46,7 +46,7 @@ char Board::update(vector<Player*> listOfPlayers, int whichPlayer){
 	
 	vector< Point > chosenMove = (listOfPlayers.at(whichPlayer)->possibleMoves.at(listOfPlayers.at(whichPlayer)->indexOfMove));
 
-	int indexOfPieceToBeMoved;
+	int indexOfPieceToBeMoved = 0;
 	for(int i = 0;i < listOfPlayers[whichPlayer]->pieces.size(); i++){
 		if(chosenMove.at(0) == listOfPlayers[whichPlayer]->pieces.at(i).position){
 			indexOfPieceToBeMoved = i;
@@ -73,7 +73,7 @@ char Board::update(vector<Player*> listOfPlayers, int whichPlayer){
 			int otherPlayerPieceRow = initialPosition.row+(positionDifference.row/2);
 			int otherPlayerPieceCol = initialPosition.col+(positionDifference.col/2);
 			Point otherPlayerPiecePosition(otherPlayerPieceRow,otherPlayerPieceCol);
-			int indexOfOtherPlayerPiece;
+			int indexOfOtherPlayerPiece = 0;
 			for(int j = 0; j < listOfPlayers[whichPlayer]->pieces.size(); j++){
 				if(otherPlayerPiecePosition == listOfPlayers[otherPlayer]->pieces.at(j).position){
 					indexOfOtherPlayerPiece = j;
