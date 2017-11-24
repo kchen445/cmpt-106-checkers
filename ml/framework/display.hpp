@@ -31,9 +31,8 @@ namespace ml {
 
         std::string format_f (const char *format, double val) {
             char str[32];
-            std::string prefix = val < 0 ? "-" : " ";
-            sprintf(str, format, util::abs(val));
-            return prefix + std::string{str};
+            sprintf(str, format, val);
+            return std::string{str};
         }
 
         std::string format_i (const char *format, int val) {
@@ -67,24 +66,24 @@ namespace ml {
             std::string indent = "          ";
             std::string separator = "  ";
 
-            const char *numericalFormat = "%.5f";
+            const char *numericalFormat = "%16.2f";
             char EOL = '\n';
 
             std::string title;
-            title = format_i("Report %d", (int)next_index);
+            title = format_i("Gen %6d", (int)next_index);
             title += " - Elapsed Time: " + util::as_str(flags::global->clock.elapsed());
 
             std::string header = indent;
             std::string underline = indent;
             for (size_t i = 0; i < data.size(); ++i) {
-                header += format_i("Thread %d", (int)i) + separator;
-                underline += "--------" + separator;
+                header += format_i("    Thread %d   ", (int)i) + separator;
+                underline +=       "----------------" + separator;
             }
 
-            std::string rowBest     = "Best    : ";
-            std::string rowAverage  = "Average : ";
-            std::string rowDeltaB   = "Delta B : ";
-            std::string rowDeltaA   = "Delta A : ";
+            std::string rowBest     = "Best Elo :";
+            std::string rowAverage  = "Mean Elo :";
+            std::string rowDeltaB   = "Pref.    :";
+            std::string rowDeltaA   = "Mean Pref:";
 
             for (auto row : data) {
                 if (!row.empty()) {
@@ -93,10 +92,10 @@ namespace ml {
                     rowDeltaB += format_f(numericalFormat, row.back().delta_best) + separator;
                     rowDeltaA += format_f(numericalFormat, row.back().delta_average) + separator;
                 } else {
-                    rowBest += "********" + separator;
-                    rowAverage += "********" + separator;
-                    rowDeltaB += "********" + separator;
-                    rowDeltaA += "********" + separator;
+                    rowBest += "****************" + separator;
+                    rowAverage += "****************" + separator;
+                    rowDeltaB += "****************" + separator;
+                    rowDeltaA += "****************" + separator;
                 }
             }
 
