@@ -11,10 +11,8 @@ namespace network {
 	struct Edge {
 		size_t startid;
 		size_t endid;
-		size_t innov;
 		
 		double weight;
-		bool enabled;
 	};
 
 	template<size_t In, size_t Out>
@@ -27,6 +25,7 @@ namespace network {
 		std::vector<double> biases;		//to-do: remove input nodes from biases
 		
 		size_t connsize;
+		size_t numConns;
 		size_t numNodes;
 		
 	/* saving, loading, constructors, destructors */
@@ -58,7 +57,12 @@ namespace network {
 		
 	/* Network modification functions */		
 		//Add a connection to the neural network
-		//void addConnection(std::forward_list<std::vector<Edge>>::iterator it, size_t endid, double weight);
+		void addConnection(std::forward_list<std::vector<Edge>>::iterator it, size_t startid, size_t endid, double weight);
+		void addConnection(std::forward_list<std::vector<Edge>>::iterator it, size_t endid, double weight);
+
+		//Add a node to the network and return its edge list
+		std::forward_list<std::vector<Edge>>::iterator addNode(std::forward_list<std::vector<Edge>>::iterator it);
+		std::forward_list<std::vector<Edge>>::iterator addNodeWithoutBias(std::forward_list<std::vector<Edge>>::iterator it);
 
 	/* Calculation functions */
         std::array<double, Out> solve (std::array<double, In> const &input);
@@ -66,7 +70,10 @@ namespace network {
     /* Mutation functions */
         void tweakWeight (int chance, double range);
         void randomizeWeight (int chance);
-
+		
+		void mutateWeight(int chance, int bigchance, double range);
+		void mutateBias(int chance, int bigchance, double range);
+		
         void tweakBias (int chance, double range);
         void randomizeBias (int chance);
 		

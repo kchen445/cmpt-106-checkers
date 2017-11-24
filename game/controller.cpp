@@ -29,8 +29,8 @@ Data CheckerController::gameLoop(Player* player1, Player* player2){
 		
 		Data stats;
         //bool tie = false;
-        int player1LostPieces = 0;
-        int player2LostPieces = 0;
+        //int player1LostPieces = 0;
+        //int player2LostPieces = 0;
         int turns = 0;
         //bool player1Loss = false;
         //bool player2Loss = false;
@@ -47,6 +47,7 @@ Data CheckerController::gameLoop(Player* player1, Player* player2){
 
         //actual game loop
         while (listOfPlayers[0]->canMove || listOfPlayers[1]->canMove) {
+			char taken;
 
 #ifndef DISABLE_DISPLAY
             display.displayGame(board.gameBoard);
@@ -60,7 +61,9 @@ Data CheckerController::gameLoop(Player* player1, Player* player2){
             //canMove is updated inside getMove
             listOfPlayers[0]->getMove(board.gameBoard);
             if(!listOfPlayers[0]->canMove){break;}
-            stats.p1take[turns/5] += board.update(listOfPlayers,0);
+			taken = board.update(listOfPlayers,0);
+            stats.p1take[turns/5] += taken;
+			stats.p1taken += taken;
 			
 			
 #ifndef DISABLE_DISPLAY
@@ -77,7 +80,9 @@ Data CheckerController::gameLoop(Player* player1, Player* player2){
             listOfPlayers[1]->findMoves(board.gameBoard);
             listOfPlayers[1]->getMove(board.gameBoard);
             if(!listOfPlayers[1]->canMove){break;}
-            stats.p2take[turns/5] += board.update(listOfPlayers,1);
+			taken = board.update(listOfPlayers,1);
+            stats.p2take[turns/5] += taken;
+			stats.p2taken += taken;
             
 #ifndef DISABLE_DISPLAY
             cout << "Player 2 move: " << listOfPlayers[1]->movesAsString.at(listOfPlayers[1]->indexOfMove) << endl;
@@ -95,8 +100,8 @@ Data CheckerController::gameLoop(Player* player1, Player* player2){
 			std::cin >> c;*/
         }
 		
-        player1LostPieces = listOfPlayers[0]->findLostPieces();
-        player2LostPieces = listOfPlayers[1]->findLostPieces();
+        //player1LostPieces = listOfPlayers[0]->findLostPieces();
+        //player2LostPieces = listOfPlayers[1]->findLostPieces();
         
 
         if(!listOfPlayers[1]->canMove){
@@ -113,14 +118,14 @@ Data CheckerController::gameLoop(Player* player1, Player* player2){
             //player1Loss = true;
         }else{
 			stats.tie = true;
-            if(player1LostPieces < player2LostPieces){
+            if(stats.p1taken > stats.p2taken){
 				stats.winner = 1;
                 //listOfPlayers[1]->canMove = false;
                 //player2Loss = true;
 #ifndef DISABLE_DISPLAY
                 cout << "Stalemate with Player 1 taking more pieces!" << endl;
 #endif
-            }else if(player1LostPieces == player2LostPieces){
+            }else if(stats.p1taken == stats.p2taken){
                 stats.winner = 0;
 				//listOfPlayers[0]->canMove = false;
                 //listOfPlayers[1]->canMove = false;

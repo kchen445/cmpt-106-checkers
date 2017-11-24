@@ -53,6 +53,11 @@ int main() {
 	print_network(net);
 	
 	net2.save("net_zmutation.txt");
-	std::cout << "saved to mutation.txt" << std::endl;
+	std::cout << "saved to net_zmutation.txt" << std::endl;
+	
+	NNetwork<3,1> random(std::vector<size_t>({3}));
+	print_network(random);
+	random.save("net_zrandom.txt");
+	std::cout << "saved to net_zrandom.txt" << std::endl;
 	return 0;
 }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "NNetwork.hpp"
+//#include "NNetwork.hpp"
 
 #include <fstream>
 #include <cstdlib>
@@ -15,7 +15,6 @@ using namespace network;
 template<size_t In, size_t Out>
 double NNetwork<In,Out>::sigmoid(double value) {
 	return tanh(value*2);
-	//	1/(1+exp(-4.9*value));
 	//return value;
 }
 
@@ -49,8 +48,13 @@ NNetwork<In,Out>::NNetwork() {
 }
 	
 template<size_t In, size_t Out>
-NNetwork<In,Out>::NNetwork(std::vector<size_t> layers) {
-	
+NNetwork<In,Out>::NNetwork(std::vector<size_t> layers) 
+  : conns(),
+    biases(),
+    connsize(0),
+	numConns(0),
+    numNodes(0)
+{
 	size_t curstart = 0;
 	size_t curend = In;
 	size_t nextstart;
@@ -65,26 +69,22 @@ NNetwork<In,Out>::NNetwork(std::vector<size_t> layers) {
 		//connect the current layer to the next layer
 		//	make all edges [curstart, curend) to [nextstart, nextend)
 		for (size_t u=curstart; u<curend; u++) {
-			it = conns.insert_after(it, std::vector<Edge>());
+			it = addNode(it);
 			for (size_t v=nextstart; v<nextend; v++) {
-				it->push_back({u, v, 1, randDouble(-1, 1), true});
+				addConnection(it, u, v, randDouble(-1, 1));
 			}
 		}
 		curstart = nextstart;
 		curend = nextend;
 	}
 	
-	this->numNodes = nextend;
-	this->connsize = numNodes-Out;
-	this->biases.resize(numNodes, 0);
-	
 	//connect last layer to output layer
 	nextstart = In;
 	nextend = In+Out;
 	for (size_t u=curstart; u<curend; u++) {
-		it = conns.insert_after(it, std::vector<Edge>());
+		it = addNode(it);
 		for (size_t v=nextstart; v<nextend; v++) {
-			it->push_back({u, v, 1, randDouble(-1, 1), true});
+			addConnection(it, u, v, randDouble(-1, 1));
 		}
 	}
 }
@@ -96,6 +96,7 @@ NNetwork<In,Out>::NNetwork(const NNetwork &other)
   :	conns(other.conns),
 	biases(other.biases), 
 	connsize(other.connsize),
+	numConns(other.numConns),
 	numNodes(other.numNodes)
 {
 	// no code
@@ -103,6 +104,11 @@ NNetwork<In,Out>::NNetwork(const NNetwork &other)
 
 template<size_t In, size_t Out>
 NNetwork<In,Out>::NNetwork(const std::string &filename)
+  : conns(),
+    biases(),
+    connsize(0),
+	numConns(0),
+    numNodes(0)
 {
 	std::ifstream file(filename);
 	if (!file) {
@@ -124,7 +130,7 @@ NNetwork<In,Out>::NNetwork(const std::string &filename)
 	}
 	
 	// --- parse connections ---
-	this->connsize = 0;
+	//this->connsize = 0;
 	size_t curid = -1;
 	auto it = conns.before_begin();
 	while (file.good()) {
@@ -136,12 +142,12 @@ NNetwork<In,Out>::NNetwork(const std::string &filename)
 		
 		//start new group of edges if necessary
 		if (curid != startid) {
-			it = conns.insert_after(it, std::vector<Edge>());
+			it = addNodeWithoutBias(it);
 			curid = startid;
-			this->connsize++;
 		}
 		
-		it->push_back({startid, endid, innov, weight, enabled});
+		//add connection
+		addConnection(it, startid, endid, weight);
 	}
 	file.close();
 }
@@ -169,9 +175,9 @@ void NNetwork<In,Out>::save(const std::string &filename) {
 		for (auto &conn : group) {
 			file << conn.startid << ' '
 				 << conn.endid 	 << ' '
-				 << conn.innov   << ' '
+				 << 1            << ' '
 				 << conn.weight  << ' '
-				 << conn.enabled << std::endl;
+				 << 1            << std::endl;
 		}
 	}
 	file.close();
@@ -199,13 +205,11 @@ std::array<double, Out> NNetwork<In,Out>::solve(std::array<double, In> const &in
 	}
 	
 	for (auto &group : conns) {
-		if (group[0].startid >= In) {		//calculate sigmoid, if value is an internal node
-			values[group[0].startid] = sigmoid(values[group[0].startid]);
-		}
+		size_t curid = group[0].startid;
+		double value = (curid >= In) ? sigmoid(values[curid]) : values[curid];	//calculate sigmoid, if value is an internal node
 		
 		for (auto &conn : group) {			//push value to connected nodes
-			if (conn.enabled)
-				values.at(conn.endid) += values.at(conn.startid) * conn.weight;
+			values[conn.endid] += value * conn.weight;
 		}
 	}
 	
@@ -216,26 +220,79 @@ std::array<double, Out> NNetwork<In,Out>::solve(std::array<double, In> const &in
 	return output;
 }
 	
-
-/*template<size_t In, size_t Out>
-void NNetwork<In,Out>::addConnection(std::forward_list<std::vector<Edge>>::iterator it, size_t endid, double weight) {
+/* ----------------------------------------------
+               modification functions
+   ---------------------------------------------- */
+template<size_t In, size_t Out>
+void NNetwork<In,Out>::addConnection(std::forward_list<std::vector<Edge>>::iterator it, size_t startid, size_t endid, double weight) {
 	//assert(0 <= startid && startid < numNodes);
 	//assert(0 <= endid && endid < numNodes);
 	
-	it->push_back({(*it)[0].startid, endid, 1, weight, true});
-}*/
+	it->push_back({startid, endid, weight});
+	numConns++;
+}
+
+template<size_t In, size_t Out>
+void NNetwork<In,Out>::addConnection(std::forward_list<std::vector<Edge>>::iterator it, size_t endid, double weight) {
+	it->push_back({(*it)[0].startid, endid, weight});
+	numConns++;
+}
+
+template<size_t In, size_t Out>
+std::forward_list<std::vector<Edge>>::iterator NNetwork<In,Out>::addNode(std::forward_list<std::vector<Edge>>::iterator it) {
+	biases.push_back(0);
+	connsize++;
+	numNodes++;
+	return conns.insert_after(it, std::vector<Edge>());
+}
+
+template<size_t In, size_t Out>
+std::forward_list<std::vector<Edge>>::iterator NNetwork<In,Out>::addNodeWithoutBias(std::forward_list<std::vector<Edge>>::iterator it) {
+	//biases.push_back(0);
+	connsize++;
+	//numNodes++;
+	return conns.insert_after(it, std::vector<Edge>());
+}
 
 /* ----------------------------------------------
                 mutation functions
    ---------------------------------------------- */
+template<size_t In, size_t Out>
+void NNetwork<In,Out>::mutateWeight(int chance, int bigchance, double range) {
+	for (auto &group : conns) {
+		for (auto &conn : group) {
+			if (randChance(chance)) {
+				if (randChance(bigchance)) {
+					conn.weight = randDouble(-1, 1);
+				} else {
+					conn.weight += randDouble(-range, range);
+				}
+			}
+		}
+	}
+}
+
+
+template<size_t In, size_t Out>
+void NNetwork<In,Out>::mutateBias(int chance, int bigchance, double range) {
+	for (double &bias : biases) {
+		if (randChance(chance)) {
+			if (randChance(bigchance)) {
+				bias = randDouble(-1, 1);
+			} else {
+				bias += randDouble(-range, range);
+			}
+		}
+	}
+}
+
+
 template<size_t In, size_t Out>
 void NNetwork<In,Out>::tweakWeight(int chance, double range) {
 	for (auto &group : conns) {
 		for (auto &conn : group) {
 			if (randChance(chance)) {
 				conn.weight += randDouble(-range, range);
-				//if (conn.weight >= 1) conn.weight = 1;
-				//else if (conn.weight < -1) conn.weight = -1;
 			}
 		}
 	}
@@ -257,8 +314,6 @@ void NNetwork<In,Out>::tweakBias(int chance, double range) {
 	for (double &bias : biases) {
 		if (randChance(chance)) {
 			bias += randDouble(-range, range);
-			//if (bias >= 1) bias = 1;
-			//else if (bias < -1) bias = -1;
 		}
 	}
 }
@@ -283,23 +338,15 @@ void NNetwork<In,Out>::mutateNode(int chance) {
 		//pick rand connection of that node
 		Edge &conn = (*itnode)[randInt(0, itnode->size()-1)];		
 		
-		//disable the connection
-		conn.enabled = false;
-		size_t endid = conn.endid;
-		double weight = conn.weight;
+		size_t newnode = numNodes;
+		
+		//create new node, add connection from new node to end node
+		addConnection(addNode(itnode), newnode, conn.endid, conn.weight);
 		
 		//add connection from start node to new node
-		itnode->push_back({(*itnode)[0].startid, numNodes, 1, 1, true});
-			
-		//create new node
-		//add connection from new node to end node
-		itnode = conns.insert_after(itnode, std::vector<Edge>());	
-		itnode->push_back({numNodes, endid, 1, weight, true});
+		conn.endid = newnode;
+		conn.weight = 1;
 		
-		//add node bias
-		biases.push_back(0);
-		connsize++;
-		numNodes++;
 	}
 }
 
@@ -319,36 +366,30 @@ void NNetwork<In,Out>::mutateConnection(int chance, int retries) {
 			auto itstart = conns.begin();
 			for (size_t i=0; i<groupstart; i++) ++itstart;
 			
-			//get id of end node
+			//get end node
 			size_t endid;
-			if (groupend < connsize) {			//endid is in conns[x]
+			if (groupend < connsize) {			//end node is in conns
 				auto itend = itstart;
 				for (size_t i=0; i<groupend-groupstart; i++) ++itend;
 				endid = (*itend)[0].startid;
-				if (endid < In) continue;	//check that end node is not an input node
-			} else {							//endid is an output
-				endid = groupend - connsize;
+				//check that end node is not an input node
+				if (endid < In) continue;
+			} else {							//end node is not in conns => an output node
+				endid = groupend - connsize + In;
 			}
 			
 			//check that start->end is not already a connection
 			bool isfree = true;
 			for (auto &conn : *itstart) {
 				if (conn.endid == endid) {
-					if (conn.enabled) {			//if enabled: then not valid edge
-						isfree = false;
-						break;
-					} else {					//if disabled: reenable edge with new weight
-						conn.weight = randDouble(-1, 1);
-						conn.enabled = true;
-						return;
-					}
+					isfree = false;
+					break;
 				}
 			}
 			
 			//add edge if it was not found
 			if (isfree) {
-				itstart->push_back({(*itstart)[0].startid, endid, 1, randDouble(-1, 1), true});
-				//addConnection(itstart, endid, randDouble(-1, 1));
+				addConnection(itstart, endid, randDouble(-1, 1));
 				break;
 			}
 		}

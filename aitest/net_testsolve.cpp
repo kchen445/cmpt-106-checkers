@@ -18,31 +18,33 @@ int main() {
 	net.save("net_zcopy.txt");
 	
 	//test calculation
-	for (unsigned int i=0; i<5; i++) {
-		inps[0] = randInt(0, 10);
-		inps[1] = randInt(0, 10);
-		inps[2] = randInt(0, 10);
+	for (int i=0; i<5; i++) {
+		inps[0] = i; //randInt(0, 10);
+		inps[1] = i*2; //randInt(0, 10);
+		inps[2] = i; //randInt(0, 10);
 		std::cout << inps[0] << " + " << inps[1] << " - 0.5*" << inps[2] << " = ";
 		std::cout << net.solve(inps)[0] << std::endl;
 	}
 	std::cout << std::endl;
 	
 	//test calculation with biases
-	net.biases[1] = 0.5;		//modify output bias to +0.5 -- should see output change
-	for (unsigned int i=0; i<5; i++) {
-		inps[0] = randInt(0, 10);
-		inps[1] = randInt(0, 10);
-		inps[2] = randInt(0, 10);
+	net.biases[3] = 0.5;		//modify output bias to +0.5 -- should see output change
+	print_network(net);
+	for (int i=0; i<5; i++) {
+		inps[0] = i; //randInt(0, 10);
+		inps[1] = i*2; //randInt(0, 10);
+		inps[2] = i; //randInt(0, 10);
 		std::cout << inps[0] << " + " << inps[1] << " - 0.5*" << inps[2] << " = ";
 		std::cout << net.solve(inps)[0] << std::endl;
 	}
 	std::cout << std::endl;
 	
-	net.biases[3] = 0.5;		//modify internal node bias to +0.5 -- should see output change
-	for (unsigned int i=0; i<5; i++) {
-		inps[0] = randInt(0, 10);
-		inps[1] = randInt(0, 10);
-		inps[2] = randInt(0, 10);
+	net.biases[4] = -2;		//modify internal node bias to +0.5 -- should see output change
+	print_network(net);
+	for (int i=0; i<5; i++) {
+		inps[0] = i; //randInt(0, 10);
+		inps[1] = i*2; //randInt(0, 10);
+		inps[2] = i; //randInt(0, 10);
 		std::cout << inps[0] << " + " << inps[1] << " - 0.5*" << inps[2] << " = ";
 		std::cout << net.solve(inps)[0] << std::endl;
 	}

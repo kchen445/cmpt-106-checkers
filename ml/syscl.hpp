@@ -24,6 +24,8 @@ namespace cl {
         bool tie = false;          			// tie?
 		std::array<char, 15> p1take{};	//pieces taken by p1 in 5-turn timeslices
 		std::array<char, 15> p2take{};	//pieces taken by p2
+		int p1taken;
+		int p2taken;
     };
 
     // GameController should extend this class

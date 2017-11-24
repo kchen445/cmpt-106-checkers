@@ -1,3 +1,6 @@
 out/
 *.exe
 test_generation/*
+net_zcopy.txt
+net_zmutation.txt
+net_zrandom.txt

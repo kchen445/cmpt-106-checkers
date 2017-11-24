@@ -16,6 +16,8 @@ namespace ml {
 
         virtual void tweakWeight (int chance, double range) = 0;
         virtual void randomizeWeight (int chance) = 0;
+        virtual void mutateWeight (int chance, int bigchance, double range) = 0;
+		virtual void mutateBias (int chance, int bigchance, double range) = 0;
 
         virtual void tweakBias (int chance, double range) = 0;
         virtual void randomizeBias (int chance) = 0;
