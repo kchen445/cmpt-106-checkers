@@ -38,10 +38,28 @@ void play_against_old (size_t num_games) {
     }
 }
 
+void replay (size_t num_games) {
+    CheckerController controller;
+    for (size_t i = 0; i < num_games; ++i) {
+        std::unique_ptr<Player> p1{new AIPlayer{2, "../bin/networks/G" + std::to_string(10 * (i + 1)) + "P1.txt"}};
+        std::unique_ptr<Player> p2{new AIPlayer{2, "../bin/networks/G" + std::to_string(10 * (i + 1)) + "P2.txt"}};
+        auto results = controller.gameLoop(p1.get(), p2.get());
+        print_results(results);
+        std::cout << "Press enter to play next game, enter 'quit' to quit: ";
+        std::string s;
+        std::getline(std::cin, s);
+        if (s == "quit") {
+            exit(0);
+        }
+    }
+}
+
 int main(int argc, char **argv){
     std::cout << argc << std::endl;
     if (argc == 2 && std::string(argv[1]) == "-c") {
         play_against_old(100);
+    } else if (argc == 2 && std::string(argv[1]) == "-r") {
+        replay(100000);
     } else {
         CheckerController controller;
         //Player* player1 = new AIPlayer(1);

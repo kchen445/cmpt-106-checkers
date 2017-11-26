@@ -8,6 +8,7 @@
 #include "AIPlayer.h"
 
 #include <array>
+#include <algorithm>
 
 // AIPlayer::AIPlayer(std::shared_ptr<ml::network_o> const &network) 
 //         : Player(1), ml::entity_t(network), rating(100)
@@ -35,6 +36,11 @@ void AIPlayer::getMove(const std::vector< std::vector<Piece>> &gameBoard){
         return;
     }
     movesToString();
+    std::cout << "Possible Moves: ";
+    for (auto s : movesAsString) {
+        std::cout << s << " ";
+    }
+    std::cout << std::endl;
 
     //format inputs for neural network
     std::array<double,NEURAL_IN> inputs{};
@@ -57,6 +63,9 @@ void AIPlayer::getMove(const std::vector< std::vector<Piece>> &gameBoard){
     }
     inputs[64] = double(num_turns) / 75.0;
     num_turns++;
+
+    // if (this->player == 2)
+    //     invertInputs(inputs);
     
     //temp: print out AI view of board
     /*for (int row=0; row<16; row++) {

@@ -7,6 +7,14 @@
 #define NEURAL_OUT  32
 #define NUM_THREADS 1
 
+// #define LETS_PLAY_FIND_THE_SEGFAULT
+
+#ifdef LETS_PLAY_FIND_THE_SEGFAULT
+#define __debug(MSG) {printf("Debug - %s\n", (MSG)); fflush(stdout);}
+#else
+#define __debug(MSG)
+#endif
+
 #include "tournament.hpp"
 
 #define DISABLE_DISPLAY
