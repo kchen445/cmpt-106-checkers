@@ -41,7 +41,7 @@ void play_against_old (size_t num_games) {
 void replay (size_t num_games) {
     CheckerController controller;
     for (size_t i = 0; i < num_games; ++i) {
-        std::unique_ptr<Player> p1{new AIPlayer{2, "../bin/networks/G" + std::to_string(10 * (i + 1)) + "P1.txt"}};
+        std::unique_ptr<Player> p1{new AIPlayer{1, "../bin/networks/G" + std::to_string(10 * (i + 1)) + "P1.txt"}};
         std::unique_ptr<Player> p2{new AIPlayer{2, "../bin/networks/G" + std::to_string(10 * (i + 1)) + "P2.txt"}};
         auto results = controller.gameLoop(p1.get(), p2.get());
         print_results(results);

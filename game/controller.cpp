@@ -104,13 +104,13 @@ Data CheckerController::gameLoop(Player* player1, Player* player2){
         //player2LostPieces = listOfPlayers[1]->findLostPieces();
         
 
-        if(!listOfPlayers[1]->canMove){
+        if(!listOfPlayers[1]->canMove && listOfPlayers[1]->pieces.size() == 0){
 #ifndef DISABLE_DISPLAY
             cout << endl << "Player 1 wins!" << endl << endl;
 #endif
             stats.winner = 1;
 			//player2Loss = true;
-        }else if (!listOfPlayers[0]->canMove){
+        }else if (!listOfPlayers[0]->canMove && listOfPlayers[0]->pieces.size() == 0){
 #ifndef DISABLE_DISPLAY
             cout << endl << "Player 2 wins!" << endl << endl;
 #endif
@@ -119,7 +119,7 @@ Data CheckerController::gameLoop(Player* player1, Player* player2){
         }else{
 			stats.tie = true;
             if(stats.p1taken > stats.p2taken){
-				stats.winner = 1;
+				stats.winner = 0; // was 1
                 //listOfPlayers[1]->canMove = false;
                 //player2Loss = true;
 #ifndef DISABLE_DISPLAY
@@ -133,7 +133,7 @@ Data CheckerController::gameLoop(Player* player1, Player* player2){
                 cout << "Complete Tie" << endl;
 #endif
             }else{
-				stats.winner = 2;
+				stats.winner = 0; // was 2
                 //listOfPlayers[0]->canMove = false;
                 //player1Loss = true;
 #ifndef DISABLE_DISPLAY

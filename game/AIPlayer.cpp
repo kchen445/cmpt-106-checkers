@@ -36,11 +36,11 @@ void AIPlayer::getMove(const std::vector< std::vector<Piece>> &gameBoard){
         return;
     }
     movesToString();
-    std::cout << "Possible Moves: ";
-    for (auto s : movesAsString) {
-        std::cout << s << " ";
-    }
-    std::cout << std::endl;
+    // std::cout << "Possible Moves: ";
+    // for (auto s : movesAsString) {
+    //     std::cout << s << " ";
+    // }
+    // std::cout << std::endl;
 
     //format inputs for neural network
     std::array<double,NEURAL_IN> inputs{};

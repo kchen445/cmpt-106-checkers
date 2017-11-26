@@ -17,6 +17,12 @@
         
 namespace cl {
 
+
+    inline bool random_chance (int percent) {
+        return rand() % 100 < percent;
+    }
+
+
     class tournament_set : protected ml::set_t<AIPlayer> {
     public:
         /*
@@ -243,12 +249,18 @@ namespace cl {
                     unlucky = i;
                 }
                 
-                entities[unlucky]->network = entities[survivor]->network->clone();
-                entities[unlucky]->rating = entities[survivor]->rating;
-                entities[unlucky]->network->tweakWeight(60, 0.2);
-                entities[unlucky]->network->tweakBias(50, 0.1);
-                entities[unlucky]->network->mutateNode(3);
-                entities[unlucky]->network->mutateConnection(5);
+                if (random_chance(50)) {
+                    entities[unlucky]->network = entities[survivor]->network->clone();
+                    entities[unlucky]->rating = entities[survivor]->rating;
+                    entities[unlucky]->network->tweakWeight(60, 0.2);
+                    entities[unlucky]->network->tweakBias(50, 0.1);
+                    entities[unlucky]->network->mutateNode(3);
+                    entities[unlucky]->network->mutateConnection(5);
+                } else {
+                    entities[unlucky]->network->mutateWeight(50, 70, 1.5);
+                    entities[unlucky]->network->mutateBias(50, 70, 1.5);
+                }
+                
             }
 
             double average = 0;
