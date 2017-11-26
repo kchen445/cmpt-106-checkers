@@ -50,10 +50,10 @@ NNetwork<In,Out>::NNetwork() {
 template<size_t In, size_t Out>
 NNetwork<In,Out>::NNetwork(std::vector<size_t> layers) 
   : conns(),
-    biases(),
+    biases(Out, 0),
     connsize(0),
 	numConns(0),
-    numNodes(0)
+    numNodes(Out)
 {
 	size_t curstart = 0;
 	size_t curend = In;

@@ -29,7 +29,7 @@ neteval: neteval.cpp
 	$(CXX) $(CXX_FLAGS) -o neteval neteval.cpp
 
 genrand: genrand.cpp
-	$(CXX) $(CXX_FLAGS) -o genrand genrand.cpp ../lib/ailib.a ../lib/imlib.a
+	$(CXX) $(CXX_FLAGS) -o genrand genrand.cpp
 
 clean:
 	rm *.exe
