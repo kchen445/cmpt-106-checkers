@@ -80,10 +80,10 @@ namespace ml {
                 underline +=       "----------------" + separator;
             }
 
-            std::string rowBest     = "Best Elo :";
-            std::string rowAverage  = "Mean Elo :";
-            std::string rowDeltaB   = "Pref.    :";
-            std::string rowDeltaA   = "Mean Pref:";
+            std::string rowBest     = "best pts :";
+            std::string rowAverage  = "mean pts :";
+            std::string rowDeltaB   = "delta b  :";
+            std::string rowDeltaA   = "delta m  :";
 
             for (auto row : data) {
                 if (!row.empty()) {

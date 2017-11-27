@@ -8,7 +8,7 @@
 #include "clock.hpp"
 
 // Config that can not be defined as variables.
-#define NUM_ENTITY_PER_SET 40
+#define NUM_ENTITY_PER_SET 100
 
 #ifndef NUM_THREADS
 #define NUM_THREADS 4

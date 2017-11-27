@@ -7,6 +7,10 @@
 #include "display.hpp"
 #include "entity_t.hpp"
 
+#ifndef __debug
+#define __debug(MSG)
+#endif
+
 namespace ml {
 
     // Template type E must extend entity_t and be non-abstract.
@@ -107,27 +111,17 @@ namespace ml {
                 mutate();
             }
 
+            before_exec();
+            __debug("reset ok")
+
             for (size_t i = 0; i < this->entities.size(); ++i) {
                 evaluate(i);
             }
 
-            before_exec();
+            __debug("evaluate ok")
 
-            // Sort the entity array after evaluating
-            size_t count = 0;
-            while (true) {
-                try {
-                    sort_entities();
-                    break;
-                } catch (std::runtime_error const &e) {
-                    std::cout << "Caught: " << e.what() << std::endl;
-                    ++count;
-                    if (count > 10) {
-                        std::cout << "could not recover" << std::endl;
-                        exit(101);
-                    }
-                }
-            }
+            sort_entities();
+            __debug("sort ok")
 
             // Send a progress report to display
             double average = 0;
@@ -146,7 +140,7 @@ namespace ml {
                     average - std::get<1>(last_stats)
             };
             display_add_data(report);
-
+            __debug("report sent")
             std::get<0>(last_stats) = best;
             std::get<1>(last_stats) = average;
 

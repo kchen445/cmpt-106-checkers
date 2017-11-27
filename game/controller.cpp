@@ -28,12 +28,7 @@ Data CheckerController::gameLoop(Player* player1, Player* player2){
         Board board;
 		
 		Data stats;
-        //bool tie = false;
-        //int player1LostPieces = 0;
-        //int player2LostPieces = 0;
         int turns = 0;
-        //bool player1Loss = false;
-        //bool player2Loss = false;
 
         vector < Player*> listOfPlayers;
         listOfPlayers.push_back(player1);
@@ -154,7 +149,7 @@ Data CheckerController::gameLoop(Player* player1, Player* player2){
     
     
 // Override from cl::game_template<AIPlayer>
-Data CheckerController::compete (AIPlayer &e1, AIPlayer &e2) {
+Data CheckerController::compete (rl::ai_player &e1, rl::ai_player &e2) {
 	e1.player = 1;
 	e2.player = 2;
 	return gameLoop(&e1, &e2);
