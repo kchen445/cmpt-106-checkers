@@ -66,8 +66,9 @@ void Player::initializePlayer(){
 
 
 void Player::printMoveStringVector(){
-    for(int i = 0; i < movesAsString.size(); i++){
+    for(int i = 0; i < movesAsString.size()-1; i++){
         std::cout << movesAsString[i] <<", ";
     }
+	std::cout << movesAsString[movesAsString.size()-1];
     std::cout << std::endl;
 }
