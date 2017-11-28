@@ -4,6 +4,7 @@
 #include "Helpers.h"
 #include "Piece.h"
 #include "HumanPlayer.h"
+#include "controller.hpp"
 #include "AIPlayer.h"
 #include "Display.h"
 #include "Board.h"
@@ -15,6 +16,7 @@ const int PLAYER2 = 2;
 
 int main() {
 
+    CheckerController controller;
 	bool stillPlay = true;
 	//Display display;
 	//Board board;
@@ -35,7 +37,7 @@ int main() {
 		//listOfPlayers.push_back(player2);
 	}else{
 		player1 = new HumanPlayer(PLAYER1);
-		player2 = new AIPlayer(PLAYER2, "../bin/net.txt");
+		player2 = new AIPlayer(PLAYER2, "./bin/net.txt");
 		//listOfPlayers.push_back(player1);
 		//listOfPlayers.push_back(player2);
 	}

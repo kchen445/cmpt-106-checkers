@@ -59,9 +59,9 @@ namespace lang {
             /// Throws lang::mem_error if idx == 0 or underlying pointer is nullptr.
             void *unsafe_raw_access (m_idx idx) {
                 if (idx == 0) {
-                    throw mem_error{"memory interface via unsafe_raw_access: bad access [m_idx 0]"};
+                    throw mem_error("memory interface via unsafe_raw_access: bad access [m_idx 0]");
                 } else if (mem_interf.at(idx).ptr == nullptr) {
-                    throw mem_error{"memory interface via unsafe_raw_access: physical bad access [nullptr]"};
+                    throw mem_error("memory interface via unsafe_raw_access: physical bad access [nullptr]");
                 }
                 return this-> mem_interf.at(idx).ptr;
             }
@@ -72,7 +72,7 @@ namespace lang {
                     return &this->mem_interf.at(idx);
                 } catch (std::out_of_range e) {
                     std::string emsg = "out of range exception: m_idx = " + std::to_string(idx);
-                    throw mem_error{emsg.c_str()};
+                    throw mem_error(emsg.c_str());
                 }
             }
             

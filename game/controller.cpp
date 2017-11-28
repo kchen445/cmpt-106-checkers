@@ -21,7 +21,7 @@ using Data = cl::game_data;
 //order of player parameters matter
 //board will treat the first player passed in as player 1
 //and have their pieces at the bottom
-Data CheckerController::gameLoop(Player* player1, Player* player2){
+inline Data CheckerController::gameLoop(Player* player1, Player* player2){
 #ifndef DISABLE_DISPLAY
         Display display;
 #endif
@@ -149,7 +149,7 @@ Data CheckerController::gameLoop(Player* player1, Player* player2){
     
     
 // Override from cl::game_template<AIPlayer>
-Data CheckerController::compete (rl::ai_player &e1, rl::ai_player &e2) {
+inline Data CheckerController::compete (rl::ai_player &e1, rl::ai_player &e2) {
 	e1.player = 1;
 	e2.player = 2;
 	return gameLoop(&e1, &e2);

@@ -2,6 +2,12 @@
 # MASTER MAKEFILE #
 ###################
 
+# Compiler
+CMPL = g++
+
+# Compiler flags
+CMPL_FLAGS = -std=c++14 -Wall
+
 # Call to make the dependency script executable.
 setup:
 	$(shell chmod a+x ./scripts/dep.sh)
@@ -12,10 +18,10 @@ setup:
 all-lib: mllib gamelib
 
 mllib:
-	@cd ml && $(MAKE) gch
+	cd ml && $(MAKE) gch
 
 gamelib:
-	@cd game && $(MAKE) lib
+	cd game && $(MAKE) lib
 	
 # Executables #
 
@@ -28,10 +34,10 @@ gamelib:
 #	@cd core/im && $(MAKE) exe
 
 game: mllib gamelib
-	g++ -o bin/game game/main.cpp lib/gamelib.a
+	$(CMPL) $(CMPL_FLAGS) -o bin/game game/main.cpp lib/gamelib.a
 
 train: mllib gamelib
-	g++ -o bin/train ml/main.cpp lib/gamelib.a
+	$(CMPL) $(CMPL_FLAGS) -o bin/train ml/main.cpp lib/gamelib.a
 	
 # Cleaning #
 
@@ -42,8 +48,6 @@ purge:
 	@rm -f $(shell find . -name '*.o')
 	$(info Removing archive files...)
 	@rm -f $(shell find . -name '*.a')
-	$(info Removing executables...)
-	@rm -f bin/*
 	$(info Done)
 
 clean-ai:

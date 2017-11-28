@@ -124,9 +124,9 @@ exe:
 # 	@$(ARC) $(ARC_FLAGS) $(LIB) $(OBJECTS)
 
 gch:
-	if [ ! -f sysml.hpp.gch ] then; $(MAKE) sysml.hpp.gch; fi;
-	if [ ! -f syscl.hpp.gch ] then; $(MAKE) syscl.hpp.gch; fi;
-	if [ ! -f systl.hpp.gch ] then; $(MAKE) systl.hpp.gch; fi;
+	if [ ! -f sysml.hpp.gch ]; then $(CMPL) $(CMPL_FLAGS) sysml.hpp; fi
+	if [ ! -f syscl.hpp.gch ]; then $(CMPL) $(CMPL_FLAGS) systl.hpp; fi
+	if [ ! -f systl.hpp.gch ]; then $(CMPL) $(CMPL_FLAGS) syscl.hpp; fi
 
 # Main source file target.
 $(MAIN_OBJ): $(MAIN) network.hpp.gch systl.hpp.gch
@@ -136,24 +136,11 @@ $(MAIN_OBJ): $(MAIN) network.hpp.gch systl.hpp.gch
 # Generic source file target.
 # .SECONDEXPANSION:
 # $(OUT_DIR)%$(OUT_EXT): %$(EXT) $$(shell $(DEP_SCRIPT) %$(EXT))
-# 	@ if [ ! -d $(OUT_DIR) ]; then mkdir $(OUT_DIR); fi 
-# 	$(CMPL) $(CMPL_FLAGS) -c $< -o $@;
+#  	if [ ! -d $(OUT_DIR) ]; then mkdir $(OUT_DIR); fi 
+#  	$(CMPL) $(CMPL_FLAGS) -c $< -o $@;
 
 #########################
 # End of Implementation #
 #########################
 
 # Any custom targets may be defined below.
-
-# Precompiled header targets
-sysml.hpp.gch: sysml.hpp
-	$(info Compiling header: sysml.hpp...)
-	@$(CMPL) $(CMPL_FLAGS) sysml.hpp
-
-systl.hpp.gch: systl.hpp sysml.hpp.gch
-	$(info Compiling header: systl.hpp...)
-	@$(CMPL) $(CMPL_FLAGS) systl.hpp
-	
-syscl.hpp.gch: syscl.hpp sysml.hpp.gch
-	$(info Compiling header: systl.hpp...)
-	@$(CMPL) $(CMPL_FLAGS) syscl.hpp

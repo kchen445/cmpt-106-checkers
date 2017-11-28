@@ -83,13 +83,13 @@ namespace rl {
 
     };
 
-    unsigned int ai_player::index(int row, int col) {
+    inline unsigned int ai_player::index(int row, int col) {
         unsigned int pos = (unsigned int)(row*4 + col/2);
         if (this->player == 2) pos = 31-pos;
         return pos;
     }
 
-    void ai_player::getMove(std::vector<std::vector<Piece>> const &gameBoard) {
+    inline void ai_player::getMove(std::vector<std::vector<Piece>> const &gameBoard) {
         if (possibleMoves.size() == 0) {
             canMove = false;
             return;
