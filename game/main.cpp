@@ -22,22 +22,22 @@ int main() {
 	cout << "1. Human Vs Human" << endl;
 	cout << "2. Human Vs AI" << endl;
 	cout << "Input your choice:" << endl;
-	//char gameMode = findGameMode().at(0);
+	char gameMode = findGameMode().at(0);
 	
 	//add players to a vector of player objects
 	//so it will be easier to change between a human vs human
 	//and human vs ai mode
-	//if(gameMode == '1'){
+	if(gameMode == '1'){
 		Player* player1 = new HumanPlayer(PLAYER1);
 		Player* player2 = new HumanPlayer(PLAYER2);
 		listOfPlayers.push_back(player1);
 		listOfPlayers.push_back(player2);
-	//}else{
-	//	Player* player1 = new HumanPlayer(PLAYER1);
-	//	Player* player2 = new AIPlayer(PLAYER2);
-	//	listOfPlayers.push_back(player1);
-	//	listOfPlayers.push_back(player2);
-	//}
+	}else{
+		Player* player1 = new HumanPlayer(PLAYER1);
+		Player* player2 = new AIPlayer(PLAYER2, "../bin/net.txt");
+		listOfPlayers.push_back(player1);
+		listOfPlayers.push_back(player2);
+	}
 	
 
   //this while loop creates the conditions necessary for a new game to be played
