@@ -20,7 +20,7 @@ CMPL_FLAGS = -std=c++14 -Wall
 # # Archiver flags
 # ARC_FLAGS = rvs
 
-test: main2.cpp controller.cpp AIPlayer.cpp Display.cpp HumanPlayer.cpp Player.cpp Board.cpp Helpers.cpp Piece.cpp ../ml/singleton_def.cpp
+test: main.cpp controller.cpp AIPlayer.cpp Display.cpp HumanPlayer.cpp Player.cpp Board.cpp Helpers.cpp Piece.cpp ../ml/singleton_def.cpp
 	g++ $(CMPL_FLAGS) -o test $^
 
 
