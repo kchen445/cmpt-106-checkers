@@ -15,14 +15,19 @@ CMPL = g++
 CMPL_FLAGS = -std=c++14 -Wall
 
 # # Archiver
-# ARC = ar
+ARC = ar
 
 # # Archiver flags
-# ARC_FLAGS = rvs
+ARC_FLAGS = rvs
 
-test: main.cpp controller.cpp AIPlayer.cpp Display.cpp HumanPlayer.cpp Player.cpp Board.cpp Helpers.cpp Piece.cpp ../ml/singleton_def.cpp
-	g++ $(CMPL_FLAGS) -o test $^
+SRC = controller.cpp AIPlayer.cpp Display.cpp HumanPlayer.cpp Player.cpp Board.cpp Helpers.cpp Piece.cpp
+OBJECTS = $(addprefix out, $(SOURCES:.cpp=.o))
 
+lib: $(OBJECTS) ../ml/out/singleton_def.o
+	$(ARC) $(ARC_FLAGS) ../lib/gamelib.a $^
+
+#test: lib
+#	$(CMPL) $(CMPL_FLAGS) -o test main.cpp ../lib/gamelib.a
 
 do_not_execute_anything_past_here:
 # #                     #

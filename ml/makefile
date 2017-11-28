@@ -20,7 +20,8 @@ ARC = ar
 # Archiver flags
 ARC_FLAGS = rvs
 
-
+lib: 
+	
 
 #                     #
 # Source File Options #
@@ -122,7 +123,10 @@ exe:
 # 	$(info Archiving...)
 # 	@$(ARC) $(ARC_FLAGS) $(LIB) $(OBJECTS)
 
-gch: sysml.hpp.gch systl.hpp.gch network.hpp.gch
+gch:
+	if [ ! -f sysml.hpp.gch ] then; $(MAKE) sysml.hpp.gch; fi;
+	if [ ! -f syscl.hpp.gch ] then; $(MAKE) syscl.hpp.gch; fi;
+	if [ ! -f systl.hpp.gch ] then; $(MAKE) systl.hpp.gch; fi;
 
 # Main source file target.
 $(MAIN_OBJ): $(MAIN) network.hpp.gch systl.hpp.gch
@@ -149,7 +153,7 @@ sysml.hpp.gch: sysml.hpp
 systl.hpp.gch: systl.hpp sysml.hpp.gch
 	$(info Compiling header: systl.hpp...)
 	@$(CMPL) $(CMPL_FLAGS) systl.hpp
-
-network.hpp.gch: network.hpp sysml.hpp.gch
-	$(info Compiling header: network.hpp...)
-	@$(CMPL) $(CMPL_FLAGS) network.hpp
+	
+syscl.hpp.gch: syscl.hpp sysml.hpp.gch
+	$(info Compiling header: systl.hpp...)
+	@$(CMPL) $(CMPL_FLAGS) syscl.hpp

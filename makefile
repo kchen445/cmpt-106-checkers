@@ -9,18 +9,14 @@ setup:
 
 # Archives #
 
-all-lib: imlib.a ailib.a
+all-lib: mllib gamelib
 
-imlib.a:
-	@cd core/im && $(MAKE) lib
+mllib:
+	@cd ml && $(MAKE) gch
 
-ailib.a:
-	@cd ai && $(MAKE) lib
-
-gamelib.a:
+gamelib:
 	@cd game && $(MAKE) lib
-
-
+	
 # Executables #
 
 # builds ailib.a from local makefile
@@ -31,10 +27,12 @@ gamelib.a:
 #imexe:
 #	@cd core/im && $(MAKE) exe
 
-gameexe:
-	@cd game && $(MAKE) exe
+game: mllib gamelib
+	g++ -o bin/game game/main.cpp lib/gamelib.a
 
-
+train: mllib gamelib
+	g++ -o bin/train ml/main.cpp lib/gamelib.a
+	
 # Cleaning #
 
 # Removes all object (.o), archive (.a), and executable files from the project.
