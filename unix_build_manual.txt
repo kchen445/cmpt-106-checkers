@@ -1,0 +1,40 @@
+Instructions for building on Unix machines
+
+                          *** IMPORTANT ***
+
+This project uses g++ as a compiler and c++ 14 as the language version.
+
+All build commands should be run from the project root directory. Failing
+to do so will result in runtime exceptions to do with errors when looking
+for files and directories.
+
+Due to the complexity of the project layout, successful compilation and
+execution is only guaranteed on Unix based operating systems. This
+includes the Linux subsystem for Windows 10.
+
+
+
+To build the game executable, run command:
+
+    $ make game
+
+To run the game executable, run executable:
+
+    $ ./bin/game
+
+
+To build the training system, run command:
+
+    $ make train
+
+To run the training system, run following command sequence:
+
+    $ cd bin; ./train
+    (Note that the 'train' executable must be run from within the bin/ directory)
+
+
+Other useful commands:
+
+To remove all compiled binary files, run command:
+
+    $ make purge

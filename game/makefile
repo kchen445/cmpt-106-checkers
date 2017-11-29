@@ -1,23 +1,13 @@
-# #
-# # Generic Local Makefile v2
-# #
-# # Created by Jeremy Schwartz, 10/12/17
-# #
-
-# #                  #
-# # Compiler Options #
-# #                  #
-
-# # Compiler
+# Compiler
 CMPL = g++
 
-# # Compiler flags
+# Compiler flags
 CMPL_FLAGS = -std=c++14 -Wall
 
-# # Archiver
+# Archiver
 ARC = ar
 
-# # Archiver flags
+# Archiver flags
 ARC_FLAGS = rvs
 
 SRC = controller.cpp AIPlayer.cpp Display.cpp HumanPlayer.cpp Player.cpp Board.cpp Helpers.cpp Piece.cpp

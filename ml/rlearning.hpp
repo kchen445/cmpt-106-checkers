@@ -1,7 +1,6 @@
 #pragma once
 
 #include "framework/set_t.hpp"
-// #include "sysml.hpp"
 #include "syscl.hpp"
 #include "ai_player.hpp"
 

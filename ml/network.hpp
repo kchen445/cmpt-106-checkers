@@ -8,12 +8,6 @@
 #include <cmath>
 #include "sysml.hpp"
 
-
-//template<typename T>
-//using ptr = std::shared_ptr<T>;
-
-
-
 struct neuron {
 
 

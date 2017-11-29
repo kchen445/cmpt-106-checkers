@@ -1,3 +1,5 @@
+// This is the main source file for testing the ai and reviewing the training.
+
 #define NEURAL_IN  65
 #define NEURAL_OUT 32
 

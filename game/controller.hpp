@@ -14,17 +14,6 @@
 
 using namespace std;
 
-//struct Data{
-//    int turns;
-//    bool win;
-//    bool loss;
-//    bool tie;
-//    int piecesLost;
-//    Data(int turns, bool win, bool loss, bool tie, int piecesLost)
-//    :turns(turns),win(win),loss(loss),tie(tie),piecesLost(piecesLost)
-//    {}
-//};
-
 using Data = cl::game_data;
 
 
