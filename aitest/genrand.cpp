@@ -8,6 +8,7 @@
 using namespace network;
 
 int main(int argc, char** argv) {
+	//modify this to generate the networks you want
 	const size_t numNetworks = 10;
 	const size_t numInputs   = 3;
 	const size_t numOutputs  = 1;

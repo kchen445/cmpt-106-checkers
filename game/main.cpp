@@ -35,13 +35,9 @@ int main() {
 	if(gameMode == '1'){
 		player1 = new HumanPlayer(PLAYER1);
 		player2 = new HumanPlayer(PLAYER2);
-		//listOfPlayers.push_back(player1);
-		//listOfPlayers.push_back(player2);
 	}else{
 		player1 = new HumanPlayer(PLAYER1);
 		player2 = new AIPlayer(PLAYER2, "./bin/net.txt");
-		//listOfPlayers.push_back(player1);
-		//listOfPlayers.push_back(player2);
 	}
 
   //this while loop creates the conditions necessary for a new game to be played

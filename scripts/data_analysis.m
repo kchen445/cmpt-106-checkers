@@ -1,4 +1,4 @@
-M = dlmread('evolution_data.txt');
+M = dlmread('../bin/evolution_data.txt');
 
 Time = M(1:end,1);
 Generation = M(1:end,2);

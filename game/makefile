@@ -10,6 +10,8 @@ ARC = ar
 # Archiver flags
 ARC_FLAGS = rvs
 
+OUT_DIR = out
+
 SRC = controller.cpp AIPlayer.cpp Display.cpp HumanPlayer.cpp Player.cpp Board.cpp Helpers.cpp Piece.cpp
 OBJECTS = $(addprefix out/, $(SRC:.cpp=.o))
 
@@ -22,6 +24,7 @@ lib: $(OBJECTS) ../ml/singleton_def.o
 
 # Generic source file target.
 .SECONDEXPANSION:
-out/%.o: %.cpp $$(shell ../scripts/dep.sh %.cpp)
+out/%.o: %.cpp
 	if [ ! -d $(OUT_DIR) ]; then mkdir $(OUT_DIR); fi 
 	$(CMPL) $(CMPL_FLAGS) -c $< -o $@;
+#$$(shell ../scripts/dep.sh %.cpp)

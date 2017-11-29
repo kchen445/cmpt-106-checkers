@@ -79,19 +79,16 @@ inline Data CheckerController::gameLoop(Player* player1, Player* player2){
             if(turns == 75){
                 break;
             }
-            
-            /*char c;
-            std::cin >> c;*/
         }
         
 
-        if(!listOfPlayers[1]->canMove && listOfPlayers[1]->pieces.size() == 0){
+        if(!listOfPlayers[1]->canMove && stats.p1taken == 12) {
 #ifndef DISABLE_DISPLAY
             cout << endl << "Player 1 wins!" << endl << endl;
 #endif
             stats.winner = 1;
             //player2Loss = true;
-        }else if (!listOfPlayers[0]->canMove && listOfPlayers[0]->pieces.size() == 0){
+        }else if (!listOfPlayers[0]->canMove && stats.p2taken == 12) {
 #ifndef DISABLE_DISPLAY
             cout << endl << "Player 2 wins!" << endl << endl;
 #endif

@@ -25,14 +25,6 @@ gamelib:
 	
 # Executables #
 
-# builds ailib.a from local makefile
-# does not build imlib.a though, so we build it here
-#aiexe: ailib.a imlib.a
-#	@cd ai && $(MAKE) exe
-
-#imexe:
-#	@cd core/im && $(MAKE) exe
-
 game: mllib gamelib
 	$(CMPL) $(CMPL_FLAGS) -o bin/game game/main.cpp lib/gamelib.a
 
@@ -48,13 +40,8 @@ purge:
 	@rm -f $(shell find . -name '*.o')
 	$(info Removing archive files...)
 	@rm -f $(shell find . -name '*.a')
+	$(info Removing compiled headers...)
+	@rm -f $(shell find . -name '*.gch')
+	rm -f bin/game
+	rm -f bin/train
 	$(info Done)
-
-clean-ai:
-	@cd ai && $(MAKE) clean
-
-clean-im:
-	@cd core/im && $(MAKE) clean
-
-clean-game:
-	@cd game && $(MAKE) clean
