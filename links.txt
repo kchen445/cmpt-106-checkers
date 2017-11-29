@@ -1,0 +1,3 @@
+Link to machine learning proof of concept system created by Jeremy.
+(Note: This system will only compile on macOS)
+https://github.com/Miraion/Swift-SQLite-NeuralAI
