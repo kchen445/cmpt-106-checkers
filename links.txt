@@ -1,3 +1,9 @@
+Main git repository:
+https://github.com/kchen445/cmpt-106-checkers
+
 Link to machine learning proof of concept system created by Jeremy.
 (Note: This system will only compile on macOS)
 https://github.com/Miraion/Swift-SQLite-NeuralAI
+
+Google Drive:
+https://drive.google.com/drive/folders/0B2KAJHh65bZlSTIxTXIzZDZNX0E?usp=sharing
